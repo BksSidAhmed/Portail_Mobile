@@ -6,7 +6,6 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux'
 import {postCheckToken, postActionButton} from '../api/index'
-import { Root, Popup } from 'popup-ui';
 import {requestACCESS_FINE_LOCATION} from '../permissions/index'
 import Geolocation from '@react-native-community/geolocation';
 import { Overlay} from 'react-native-elements'

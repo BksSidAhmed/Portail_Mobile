@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { View, StyleSheet, Text, TouchableOpacity, TextInput, StatusBar } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, TextInput, StatusBar, ActivityIndicator } from 'react-native';
 import {emailAction} from '../redux/actions/emailAction'
 import {passwordAction} from '../redux/actions/passwordAction'
 //API
@@ -14,6 +14,9 @@ class SignIn extends React.Component {
         super(props)
         this.email = "",
         this.password = ""
+        this.state = {
+            loading : false
+        }
     }
     editemail = (text) => {
         this.email = text
@@ -23,6 +26,9 @@ class SignIn extends React.Component {
     }
 
     connexion = () => {
+        this.setState({
+            loading : true
+        })
         postCheckToken(this.email,this.password).then(data => {
             console.log(data[0])
             if(data[0] == 200) {
@@ -33,6 +39,13 @@ class SignIn extends React.Component {
     }
 
     render() {
+        if(this.state.loading) {
+            return(
+                <View style={{flex: 1,justifyContent: "center"}}>
+                    <ActivityIndicator size="large" color="#00ff00" />
+                </View>
+            )
+        }
         return(
         <View style={styles.container}>
             <StatusBar backgroundColor='#008080' barStyle="light-content"/>
@@ -165,7 +178,7 @@ const mapStateToProps = (state) => {
         email: state.emailReducer.email,
         password: state.passwordReducer.password
     }
-  }
+}
 
 export default connect(mapStateToProps, {emailAction, passwordAction}) (SignIn)
 

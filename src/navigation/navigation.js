@@ -125,8 +125,6 @@ class Navigation extends React.Component {
   }
 
     render(){
-        // this.props.emailAction('')
-        // this.props.passwordAction('')
         return(
           <AuthContext.Provider>
               <NavigationContainer>
