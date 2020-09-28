@@ -14,7 +14,7 @@ import rootReducer from './redux/index';
 const persistConfig = {
   key:'root',
   storage: AsyncStorage,
-  whitelist:['emailReducer', 'passwordReducer']
+  whitelist:['emailReducer', 'passwordReducer', 'pointingReducer', 'listeEmailReducer']
 }
 
 const persitedReducer = persistReducer(persistConfig, rootReducer)

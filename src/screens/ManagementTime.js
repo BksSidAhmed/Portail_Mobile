@@ -1,44 +1,138 @@
 import React from 'react'
-import { StyleSheet, View, Text, StatusBar, TouchableOpacity,ActivityIndicator  } from 'react-native';
-import { Card,  } from 'react-native-paper';
+import { StyleSheet, View, Text, StatusBar, TouchableOpacity, ActivityIndicator, Image, FlatList } from 'react-native';
 import moment from 'moment';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import 'moment/locale/fr'
 import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux'
-import {postCheckToken, postActionButton} from '../api/index'
-import {requestACCESS_FINE_LOCATION} from '../permissions/index'
+import { getToken, postAction, getUser } from '../api/index'
 import Geolocation from '@react-native-community/geolocation';
-import { Overlay} from 'react-native-elements'
+import Dialog, { DialogContent, SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
+import {listeEmailAction} from '../redux/actions/listeEmailAction'
+import {pointingAction} from '../redux/actions/pointingHorsLigneAction'
 
 class ManagementTime extends React.Component { 
     constructor(props) {
         super(props)
         this.state = { 
             time: '',
-            loadingf0 : false,
-            loadingf1 : false,
-            loadingf2 : false,
-            loadingf3 : false,
-            loadingf4 : false,
-            loadingf5 : false,
+            loadingList: true,
+            loadingButtonF01: true,
+            loadingButtonF02: true,
+            loadingButtonF03: true,
+            loadingButtonF04: true,
+            loadingButtonF05: true,
+            loadingF00 : false,
+            loadingF01 : false,
+            loadingF02 : false,
+            loadingF03 : false,
+            loadingF04 : false,
+            loadingF05 : false,
             latitude: '',
             longitude : '',
-            isVisible: false,
-            disabledf0 : false,
-            disabledf1 : false,
-            disabledf2 : false,
-            disabledf3 : false,
-            disabledf4 : false,
-            disabledf5 : false,
+            visible: false,
+            disabled : false,
+            user : '',
+            currentIco: '',
+            currentLibelle: '',
+            currentText: '', 
+            compteurDelete : 0, 
+            loading : false
         }
     }
-    componentDidMount() {
-        this.clock();
+    sendPointingDeconnection() {
+        var dataPointing = this.props.pointing
+        var compteurDelete = 0
+            dataPointing.forEach(element => {   
+                if(element.email == this.props.email){
+                    this.setState({
+                        loading : true
+                    })
+                     element.pointage.forEach(pointing => {
+                         getToken(this.props.email,this.props.password).then(data => {
+                            if(data[0] == 200) {
+                                postAction(data[1].token,pointing[0],pointing[1],pointing[2],pointing[3],pointing[4],pointing[5],pointing[6]).then(data => {
+                                    console.log(data)
+                                    if(data[0] == 200) {
+                                            compteurDelete++
+                                            console.log(compteurDelete)
+                                            if(compteurDelete == element.pointage.length) {
+                                                var removeIndex = dataPointing.map(function(item) { return item.email; }).indexOf(this.props.email);
+                                                dataPointing.splice(removeIndex, 1);
+                                                this.props.pointingAction(dataPointing)
+                                                this.setState({
+                                                    loading : false
+                                                })
+                                            }
+                                    }
+                                })
+                            }
+                        })
+                    })
+                }
+            });
+    }
+    UNSAFE_componentWillMount() {
+        this.renderClock();      
+        this.sendPointingDeconnection()
+
+        getToken(this.props.email,this.props.password).then(data => {
+            if(data[0] == 200) 
+            {
+                getUser(data[1].token, this.props.email).then(response => {
+                    this.setState({
+                        loadingList: false,
+                        user: {
+                            'email': response[1].user.email,
+                            'latitude_reference': response[1].user.latitude_reference,
+                            'longitude_reference': response[1].user.longitude_reference,
+                            'marge_reference': response[1].user.marge_reference,
+                            'profil': {
+                                'action0': {
+                                    'active': response[1].user.profil.action_0.active,
+                                    'ico': response[1].user.profil.action_0.ico,
+                                    'libelle': response[1].user.profil.action_0.libelle
+                                },
+                                'action1': {
+                                    'active': response[1].user.profil.action_1.active,
+                                    'ico': response[1].user.profil.action_1.ico,
+                                    'libelle': response[1].user.profil.action_1.libelle
+                                },
+                                'action2': {
+                                    'active': response[1].user.profil.action_2.active,
+                                    'ico': response[1].user.profil.action_2.ico,
+                                    'libelle': response[1].user.profil.action_2.libelle
+                                },
+                                'action3': {
+                                    'active': response[1].user.profil.action_3.active,
+                                    'ico': response[1].user.profil.action_3.ico,
+                                    'libelle': response[1].user.profil.action_3.libelle
+                                },
+                                'action4': {
+                                    'active': response[1].user.profil.action_4.active,
+                                    'ico': response[1].user.profil.action_4.ico,
+                                    'libelle': response[1].user.profil.action_4.libelle
+                                },
+                                'action5': {
+                                    'active': response[1].user.profil.action_5.active,
+                                    'ico': response[1].user.profil.action_5.ico,
+                                    'libelle': response[1].user.profil.action_5.libelle
+                                }
+                            }
+                        }
+                    })
+                });
+            }
+        });
     }
 
     componentWillUnmount = () => {
-        clearInterval(this.clock());
+            clearInterval(this.renderClock());
+            clearInterval(this.dialogPopup())
     }
+    componentWillUnmount() {
+        console.log('management')
+    }
+
 
     getFullHeure = () => {
         var now = new moment().format("HHmmss");
@@ -50,26 +144,14 @@ class ManagementTime extends React.Component {
         return now
     }
 
-    clock = () => {
-        var today = new Date();
-        var h = today.getHours();
-        var m = today.getMinutes();
-        var s = today.getSeconds();
-        m = this.checkTime(m);
-        s = this.checkTime(s);
-        var time = h+':'+m+':'+s;
-        this.setState({
-            time: time
-        });
-        var t = setTimeout(this.clock, 1000);
+    renderClock = () => {
+        setInterval(() => {
+            this.setState({
+                time: moment().format('HH:mm:ss')
+            })
+        }, 1000);
     }
-    checkTime = (i) => {
-        if(i<10) 
-        {
-            i = "0"+i;
-        }
-        return i;
-    }
+
     geolocalisation = async () => {
         try {
             Geolocation.getCurrentPosition(info => 
@@ -82,30 +164,34 @@ class ManagementTime extends React.Component {
             console.log(err);
         }
     }
-    actionButton = (button) => {
+
+    actionButton = (button, libelle) => {
         this.setState({
             [`loading`+`${button}`] : true
         })
         this.setState({
-            [`disabled`+`${button}`] : true
+           disabled : true
         })
-        postCheckToken(this.props.email,this.props.password).then(data => {
+        getToken(this.props.email,this.props.password).then(data => {
             if(data[0] == 200) {
-                postActionButton(data[1].token,this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
-                    this.setState({
-                        [`loading`+`${button}`] : false
-                    })
+                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
                     if(data[0] == 200) {
                         this.setState({
-                            [`disabled`+`${button}`] : false
+                            [`loading`+`${button}`] : false
                         })
                         this.setState({
-                            isVisible : true
+                            disabled : false
                         })
+                        this.setState({
+                            visible : true,
+                            currentIco: data[1].ico,
+                            currentLibelle: libelle,
+                            currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                        })              
                     }
                     else {
                         this.setState({
-                            isVisible : true
+                            visible : true
                         })
                     }
                 })
@@ -113,178 +199,183 @@ class ManagementTime extends React.Component {
         })
     }
 
-    Overlay = () => {
+    dialogPopup = (ico, title, text) => {
         return(
-            <Overlay isVisible={this.state.isVisible} 
-                overlayStyle = {{backgroundColor : '#008080'}}
-                onBackdropPress={() => this.setState({ isVisible: false })} 
-                width='auto' 
-                height='auto'>
-                <FontAwesome5 
-                        name='clock' 
-                        size={50} 
-                        color='white' 
-                        style={{textAlign:'center', padding:10}}>
-                </FontAwesome5>
-                <Text style={{textAlign:'center', fontSize:15, padding:5, color : 'white'}}>
-                    Message à mettre juste ici 
-                </Text>
-            </Overlay>
+            <Dialog
+                visible={this.state.visible}
+                dialogAnimation={new SlideAnimation({
+                    zoomFrom: 'top',
+                })}
+                dialogTitle={<DialogTitle title={title} />}
+                onTouchOutside={() => {
+                    this.setState({ visible: false });
+                }}
+                style={ styles.dialog }
+            >
+                <DialogContent  style={ styles.dialog_content }>
+                    <Image style={ styles.image } source={{ uri: `data:image/png;base64,${ico}` }} />
+                    <Text style={ styles.text_dialog }>{ text }</Text>
+                </DialogContent>
+            </Dialog>
         )
     }
-    
-    render(){
+
+    buttons = (user) => {
+        let libelles =  [];
+        if( user.profil.action0.active )
+        {
+            libelles.push({ key : user.profil.action0.libelle, ico : user.profil.action0.ico, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00 });
+        }
+        if( user.profil.action1.active )
+        {
+            libelles.push({ key : user.profil.action1.libelle, ico : user.profil.action1.ico, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01 });
+        }
+        if( user.profil.action2.active )
+        {
+            libelles.push({ key : user.profil.action2.libelle, ico : user.profil.action2.ico, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02 });
+        }
+        if( user.profil.action3.active )
+        {
+            libelles.push({ key : user.profil.action3.libelle, ico : user.profil.action3.ico, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03 });
+        }
+        if( user.profil.action4.active )
+        {
+            libelles.push({ key : user.profil.action4.libelle, ico : user.profil.action4.ico, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04 });
+        }
+        if( user.profil.action5.active )
+        {
+            libelles.push({ key : user.profil.action5.libelle, ico : user.profil.action5.ico, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05 });
+        }
+            
         return(
-            <View style = {styles.main_containers}>
-                {this.Overlay()}
-                <StatusBar backgroundColor='#008080' barStyle="light-content"/>
-                <Animatable.View animation = "fadeInDown" style = {styles.header}>
-                        <View><Text style={styles.text_date}>{moment().format("dddd Do MMMM YYYY")}</Text></View>
-                        <View style = {{ justifyContent :'center', alignItems : 'center'}}>
-                            <View
-                                style={styles.card_heure}>
-                                    <Text style={styles.text_heure}>{this.state.time}</Text>
-                            </View>
-                        </View>
-                </Animatable.View>
-                <View style = {styles.button_containers}>
-                    <View style = {styles.card_button}>
-                        <Animatable.View animation = "bounceIn" style = {{flex : 1}}>
-                            <TouchableOpacity
-                                onPress={() => this.actionButton('f0')} 
-                                disabled = {this.state.disabledf0}
-                                style = {{ flex : 1, margin : 10, borderRadius : 15, backgroundColor: "#008080"}}>
-                                <View style = {{ flex : 1, alignItems : "center", justifyContent: "center"}}>
-                                    {
-                                        (this.state.loadingf0 
-                                            ? <ActivityIndicator size="large" color="#00ff00" />  
-                                            : <FontAwesome5 name="user-clock" color= "white" size={50} />        
-                                        )
-                                    }
-                                </View>
-                            </TouchableOpacity>
-                        </Animatable.View>
-                        <Animatable.View animation = "bounceIn" style = {{flex : 1}}>
+            <FlatList data={ libelles } 
+                renderItem={({item}) => 
+                    <Animatable.View animation="bounceIn" delay={ item.delay } style={ styles.container_button_animation }>
                         <TouchableOpacity 
-                                onPress={() => this.actionButton('f1')} 
-                                disabled = {this.state.disabledf1}
-                                style = {{ flex : 1, margin : 10, borderRadius : 15, backgroundColor: "#008080"}}>
-                                <View style = {{ flex : 1, alignItems : "center", justifyContent: "center"}}>
-                                    {
-                                        (this.state.loadingf1
-                                            ? <ActivityIndicator size="large" color="#00ff00" />  
-                                            : <FontAwesome5 name="clock" color= "white" size={50} />        
-                                        )
-                                    }
+                            onPress={ () => this.actionButton(item.button, item.key) } 
+                            disabled={ item.disabled } 
+                            style={ styles.button }
+                        >
+                            {
+                                (item.loading 
+                                    ? <ActivityIndicator size="large" color="#00ff00"/>  
+                                    : <View style={ styles.container_ico }>
+                                        <Image style={ styles.image } source={{ uri: `data:image/png;base64,${item.ico}` }} />
+                                        <Text>{ item.key }</Text>
+                                      </View>
+                                )
+                            }
+
+                        </TouchableOpacity>
+                    </Animatable.View>
+                }
+            ></FlatList>
+        )
+    }
+
+    render(){
+        const { loadingList, currentIco, currentLibelle, currentText, user } = this.state;
+        return(
+            <View style={ styles.container }>
+                <StatusBar backgroundColor='#008080' barStyle="light-content"/>
+                <Animatable.View animation="fadeInDown" style={ styles.container_header }>
+                    {
+                        this.state.loading ? 
+                                <Text style = {{fontSize : 20, textAlign : 'justify', color : 'white', marginTop : 40}}>Veuillez patienter les transactions réalisées hors ligne sont en cours d'acheminement ...</Text>
+                        :   <View> 
+                                <View>
+                                    <Text style={ styles.text_date }>{ moment().format("dddd Do MMMM YYYY").toUpperCase() }</Text>
                                 </View>
-                            </TouchableOpacity>
-                        </Animatable.View>
-                    </View>
-                    <View style = {styles.card_button}>
-                    <Animatable.View animation = "bounceIn" style = {{flex : 1}}>
-                            <TouchableOpacity 
-                                onPress={() => this.actionButton('f2')}
-                                disabled = {this.state.disabledf2} 
-                                style = {{ flex : 1, margin : 10, borderRadius : 15, backgroundColor: "#008080"}}>
-                                <View style = {{ flex : 1, alignItems : "center", justifyContent: "center"}}>
-                                    {
-                                        (this.state.loadingf2 
-                                            ? <ActivityIndicator size="large" color="#00ff00" />  
-                                            : <FontAwesome5 name="user-clock" color= "white" size={50} />        
-                                        )
-                                    }
+                                <View style={ styles.container_clock }>
+                                    <Text style={ styles.text_heure }>{ this.state.time }</Text>
                                 </View>
-                            </TouchableOpacity>
-                        </Animatable.View>
-                        <Animatable.View animation = "bounceIn" style = {{flex : 1}}>
-                            <TouchableOpacity 
-                                onPress={() => this.actionButton('f3')}
-                                disabled = {this.state.disabledf3} 
-                                style = {{ flex : 1, margin : 10, borderRadius : 15, backgroundColor: "#008080"}}>
-                                <View style = {{ flex : 1, alignItems : "center", justifyContent: "center"}}>
-                                {
-                                        (this.state.loadingf3 
-                                            ? <ActivityIndicator size="large" color="#00ff00" />  
-                                            : <FontAwesome5 name="user-clock" color= "white" size={50} />        
-                                        )
-                                }
-                                </View>
-                            </TouchableOpacity>
-                        </Animatable.View>
-                    </View>
-                    <View style = {styles.card_button}>
-                    <Animatable.View animation = "bounceIn" style = {{flex : 1}}>
-                            <TouchableOpacity 
-                                onPress={() => this.actionButton('f4')} 
-                                disabled = {this.state.disabledf4}
-                                style = {{ flex : 1, margin : 10, borderRadius : 15, backgroundColor: "#008080"}}>
-                                <View style = {{ flex : 1, alignItems : "center", justifyContent: "center"}}>
-                                {
-                                        (this.state.loadingf4 
-                                            ? <ActivityIndicator size="large" color="#00ff00" />  
-                                            : <FontAwesome5 name="user-clock" color= "white" size={50} />        
-                                        )
-                                }
-                                </View>
-                            </TouchableOpacity>
-                        </Animatable.View>
-                        <Animatable.View animation = "bounceIn" style = {{flex : 1}}>
-                            <TouchableOpacity 
-                                onPress={() => this.actionButton('f5')} 
-                                disabled = {this.state.disabledf5}
-                                style = {{ flex : 1, margin : 10, borderRadius : 15, backgroundColor: "#008080"}}>
-                                <View style = {{ flex : 1, alignItems : "center", justifyContent: "center"}}>
-                                    {
-                                            (this.state.loadingf5 
-                                                ? <ActivityIndicator size="large" color="#00ff00" />  
-                                                : <FontAwesome5 name="user-clock" color= "white" size={50} />        
-                                            )
-                                    }
-                                </View>
-                            </TouchableOpacity>
-                        </Animatable.View>
+                            </View>
+                    }
+
+                </Animatable.View>
+                <View style={ styles.container_all_buttons }>
+                    <View style={ styles.container_buttons }>
+                        { this.state.loading ? <ActivityIndicator size="large" color="#00ff00" style={ styles.container_loader } /> : loadingList ? <ActivityIndicator size="large" color="#00ff00" style={ styles.container_loader } /> : this.buttons(user) }
                     </View>
                 </View>
+                { this.dialogPopup(currentIco, currentLibelle, currentText) }
             </View>
         );
     }
 
 }
 const styles = StyleSheet.create({ 
-    main_containers:{
+    container:{
         flex : 1,
     },
-    time_containers: {
+    container_loader: {
+        flex: 1
+    },
+    container_clock: {
         flex : 1,
         borderBottomEndRadius : 90,
         borderBottomLeftRadius : 90, 
         paddingHorizontal: 20,
         paddingBottom: 50
     },
-    header : {
-        flex : 0.5,
+    container_header : {
+        flex : 0.35,
         backgroundColor: '#008080',
         paddingHorizontal: 20,
         paddingVertical: 30,
-        borderBottomLeftRadius : 50,
-        borderBottomRightRadius : 50
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
-    text_date:{
+    container_all_buttons: {
+        flex:1,
+    },
+    container_buttons: {
+        flex : 1 , 
+        flexDirection: 'row', 
+    },
+    container_button_animation: {
+        flex : 1 , 
+    },
+    container_ico: {
+        flex : 1, 
+        alignItems : "center", 
+        justifyContent: "center"
+    },
+
+    button:{ 
+        flex : 1,
+        backgroundColor: "#FFF",
+        paddingVertical: 20,
+        marginVertical: 2,
+        
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.24,
+        shadowRadius: 3.80,
+        elevation: 5,
+        borderRadius: 3
+    },
+
+    image: {
+        height : 50,
+        width: 50,
+        marginVertical: 10
+    },
+    
+    text_date: {
         textAlign : 'center',
         marginTop : 50,
         color : "#fff",
         fontSize : 20
-    },
-    card_heure:{
-        width : 200,
-        height : 70,
-        marginTop : 15,
-        backgroundColor : "#008080" ,
-        shadowColor: "#7F58FF",
-        shadowRadius: 50,
-        shadowOffset: {height:50},
-        shadowOpacity:1,
-        
     },
     text_heure:{
         textAlign:'center',
@@ -292,31 +383,44 @@ const styles = StyleSheet.create({
         textAlign : "center",
         color : "#fff",
     },
-    button_containers: {
-        flex:1,
-        marginTop : 20
+    text_dialog: {
+        textAlign: 'center'
     },
-    card_button : {
-        flex : 1 , 
-        flexDirection: 'row', 
-        marginBottom : 10,
+
+    dialog: {
+        textAlign: 'center'
     },
-    content_card : {
-        flex : 1, 
-        margin : 10, 
-        borderRadius : 15,
-        backgroundColor: "white"
+    dialog_content: {
+        alignItems: 'center'
     },
-    image: {
-        height : 50
+    spinnerTextStyle: {
+        color: '#FFF',
+      },
+          button1:{ 
+        flex : 0.25,
+        backgroundColor: "#FFF",
+        paddingVertical: 20,
+        marginVertical: 2,
+        
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.24,
+        shadowRadius: 3.80,
+        elevation: 5,
+        borderRadius: 3
     },
 })
 
 const mapStateToProps = (state) => {
     return {
         email: state.emailReducer.email,
-        password: state.passwordReducer.password
+        password: state.passwordReducer.password,
+        pointing: state.pointingReducer.pointing,
+        emails: state.listeEmailReducer.emails
     }
 }
 
-export default connect(mapStateToProps) (ManagementTime)
+export default connect(mapStateToProps,{listeEmailAction, pointingAction}) (ManagementTime)

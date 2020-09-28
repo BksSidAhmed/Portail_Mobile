@@ -5,7 +5,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import SignIn from '../screens/SignIn'
 import ManagementTime from '../screens/ManagementTime'
-import Splash from '../components/Splash'
+import ManagementNoConnection from '../screens/ManagementNoConnection'
+
 import Settings from '../screens/Settings'
 import Home from '../screens/Home'
 
@@ -15,6 +16,18 @@ import {emailAction} from '../redux/actions/emailAction'
 import {passwordAction} from '../redux/actions/passwordAction'
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import NetInfo from "@react-native-community/netinfo";
+
+const ManagementNoConnectionTimeStack = createStackNavigator();
+const ManagementNoConnectionStackScreen = () => (
+    <ManagementNoConnectionTimeStack.Navigator
+        headerMode="none">
+        <ManagementNoConnectionTimeStack.Screen 
+          name = "Gestion du temps hors connection" 
+          component={ManagementNoConnection}
+        />
+    </ManagementNoConnectionTimeStack.Navigator>
+)
 
 const ManagementTimeStack = createStackNavigator();
 const ManagementTimeStackScreen = () => (
@@ -60,7 +73,7 @@ const TabsScreen = () => (
             ),  
           }}
         />
-        <Tabs.Screen
+        {/* <Tabs.Screen
           name = "Home" 
           component={HomeStackScreen}
           options={{
@@ -68,7 +81,7 @@ const TabsScreen = () => (
             <FontAwesome5 name="home" color= "white" size={30} />
             ),  
           }}
-        />
+        /> */}
         <Tabs.Screen 
           name = "Settings" 
           component={SettingsStackScreen}
@@ -94,25 +107,37 @@ const AuthStackScreen = () => (
 );
 
 const RootStack = createStackNavigator();
-const RootStackScreen = ({email, password}) => (
+const RootStackScreen = ({email, password, connection}) => (
   <RootStack.Navigator headerMode="none">
-    {email && password ? (
-      <RootStack.Screen
-        name="Management Time"
-        component={TabsScreen}
-        options={{
-          animationEnabled: false
-        }}
-      />
-    ) : (
-      <RootStack.Screen
-        name="Auth"
-        component={AuthStackScreen}
-        options={{
-          animationEnabled: false
-        }}
-      />
-    )}
+    {
+      connection ? (
+        email && password ? (
+          <RootStack.Screen
+            name="Management Time"
+            component={TabsScreen}
+            options={{
+              animationEnabled: false
+            }}
+          />
+        ) : (
+          <RootStack.Screen
+            name="Auth"
+            component={AuthStackScreen}
+            options={{
+              animationEnabled: false
+            }}
+          />
+        )
+      ) : (
+          <RootStack.Screen
+            name="ManagementNoTimeConnection"
+            component={ManagementNoConnectionStackScreen}
+            options={{
+              animationEnabled: false
+            }}
+          />
+      )
+    }
   </RootStack.Navigator>
 );
 
@@ -121,14 +146,23 @@ class Navigation extends React.Component {
     super(props)
     this.state = {
         isLoading: true,
+        etatConnection : null,
     }
+  }
+  
+  UNSAFE_componentWillMount() {
+      NetInfo.addEventListener(state => {
+        this.setState({
+          etatConnection : state.isConnected
+        })
+    });
   }
 
     render(){
         return(
           <AuthContext.Provider>
               <NavigationContainer>
-                  <RootStackScreen email={this.props.email} password={this.props.password}/>
+                  <RootStackScreen email={this.props.email} password={this.props.password} connection = {this.state.etatConnection}/>
               </NavigationContainer>
           </AuthContext.Provider>
         )

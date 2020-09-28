@@ -5,9 +5,10 @@ import { View, StyleSheet, Text, TouchableOpacity, TextInput, StatusBar, Activit
 import {emailAction} from '../redux/actions/emailAction'
 import {passwordAction} from '../redux/actions/passwordAction'
 //API
-import {postCheckToken} from '../api/index'
+import { getToken, postPassword } from '../api/index'
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
+import {listeEmailAction} from '../redux/actions/listeEmailAction'
 
 class SignIn extends React.Component { 
     constructor(props) {
@@ -29,13 +30,25 @@ class SignIn extends React.Component {
         this.setState({
             loading : true
         })
-        postCheckToken(this.email,this.password).then(data => {
-            console.log(data[0])
+        getToken(this.email,this.password).then(data => {
+            console.log(this.email + this.password)
             if(data[0] == 200) {
                 this.props.emailAction(this.email)
                 this.props.passwordAction(this.password)
+                const found = this.props.emails.find(element => element == this.email) 
+                if ( found == undefined ) {
+                    this.props.listeEmailAction(this.email)
+                }
             }
         })
+    }
+    forgotPassword = () => {
+        // getToken(this.email,this.password).then(data => {
+        //     console.log(data[0])
+        //     if(data[0] == 200) {
+
+        //     }
+        // })
     }
 
     render() {
@@ -70,7 +83,7 @@ class SignIn extends React.Component {
                             // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                         />
                     </View>    
-                <Text style={styles.text_footer}>Mot de Passe</Text>
+                    <Text style={styles.text_footer}>Mot de Passe</Text>
                     <View style={styles.action}> 
                         <MaterialIcons 
                             name="vpn-key"
@@ -85,7 +98,8 @@ class SignIn extends React.Component {
                             onChangeText = {(text) => this.editPassword(text)}
                         />
                     </View>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => this.forgotPassword()}>
                         <Text style={{color: '#008080', marginTop:15}}>Mot de passe oublié ?</Text>
                     </TouchableOpacity>
                     <View style={styles.button}>
@@ -102,10 +116,8 @@ class SignIn extends React.Component {
                     </View>
             </Animatable.View>
      </View>      
-
     );
     }
-
 }
 const styles = StyleSheet.create({
     container: {
@@ -176,9 +188,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         email: state.emailReducer.email,
-        password: state.passwordReducer.password
+        password: state.passwordReducer.password,
+        emails: state.listeEmailReducer.emails
     }
 }
 
-export default connect(mapStateToProps, {emailAction, passwordAction}) (SignIn)
+export default connect(mapStateToProps, {emailAction, passwordAction, listeEmailAction}) (SignIn)
 
