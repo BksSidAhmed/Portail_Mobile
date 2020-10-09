@@ -1,14 +1,14 @@
 import React from 'react'
-import { StyleSheet, View, Text, StatusBar, TouchableOpacity, ActivityIndicator, Image, FlatList } from 'react-native';
+import { StyleSheet, View, Text, StatusBar, TouchableOpacity, ActivityIndicator, Image, FlatList, Vibration} from 'react-native';
 import moment from 'moment';
 import 'moment/locale/fr'
 import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux'
 import { getToken, postAction, getUser } from '../api/index'
 import Geolocation from '@react-native-community/geolocation';
-import Dialog, { DialogContent, SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import {listeEmailAction} from '../redux/actions/listeEmailAction'
 import {pointingAction} from '../redux/actions/pointingHorsLigneAction'
+import {Overlay} from 'react-native-elements'
 
 class ManagementTime extends React.Component { 
     constructor(props) {
@@ -39,6 +39,7 @@ class ManagementTime extends React.Component {
             loading : false
         }
     }
+
     sendPointingDeconnection() {
         var dataPointing = this.props.pointing
         var compteurDelete = 0
@@ -54,7 +55,6 @@ class ManagementTime extends React.Component {
                                     console.log(data)
                                     if(data[0] == 200) {
                                             compteurDelete++
-                                            console.log(compteurDelete)
                                             if(compteurDelete == element.pointage.length) {
                                                 var removeIndex = dataPointing.map(function(item) { return item.email; }).indexOf(this.props.email);
                                                 dataPointing.splice(removeIndex, 1);
@@ -71,10 +71,11 @@ class ManagementTime extends React.Component {
                 }
             });
     }
+
     UNSAFE_componentWillMount() {
         this.renderClock();      
         this.sendPointingDeconnection()
-
+        this.renderGeolocalisation()
         getToken(this.props.email,this.props.password).then(data => {
             if(data[0] == 200) 
             {
@@ -125,15 +126,6 @@ class ManagementTime extends React.Component {
         });
     }
 
-    componentWillUnmount = () => {
-            clearInterval(this.renderClock());
-            clearInterval(this.dialogPopup())
-    }
-    componentWillUnmount() {
-        console.log('management')
-    }
-
-
     getFullHeure = () => {
         var now = new moment().format("HHmmss");
         return now
@@ -145,11 +137,26 @@ class ManagementTime extends React.Component {
     }
 
     renderClock = () => {
-        setInterval(() => {
+        this.IntervalClock = setInterval(() => {
             this.setState({
                 time: moment().format('HH:mm:ss')
             })
         }, 1000);
+    }
+
+    renderGeolocalisation = () => {
+        this.ImmediatelGeo = setImmediate(() => {
+            this.geolocalisation()
+        }, 1000);
+        this.IntervalGeo = setInterval(() => {
+            this.geolocalisation()
+        }, 60000);
+    }
+
+    componentWillUnmount = () => {
+        clearInterval(this.IntervalClock);
+        clearInterval(this.IntervalGeo);
+        clearImmediate(this.ImmediatelGeo)
     }
 
     geolocalisation = async () => {
@@ -176,6 +183,9 @@ class ManagementTime extends React.Component {
             if(data[0] == 200) {
                 postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
                     if(data[0] == 200) {
+                        if(button == 'F00') {
+                            Vibration.vibrate(500)
+                        }
                         this.setState({
                             [`loading`+`${button}`] : false
                         })
@@ -195,28 +205,35 @@ class ManagementTime extends React.Component {
                         })
                     }
                 })
-            }
+            } 
         })
     }
 
     dialogPopup = (ico, title, text) => {
         return(
-            <Dialog
-                visible={this.state.visible}
-                dialogAnimation={new SlideAnimation({
-                    zoomFrom: 'top',
-                })}
-                dialogTitle={<DialogTitle title={title} />}
-                onTouchOutside={() => {
-                    this.setState({ visible: false });
-                }}
-                style={ styles.dialog }
-            >
-                <DialogContent  style={ styles.dialog_content }>
-                    <Image style={ styles.image } source={{ uri: `data:image/png;base64,${ico}` }} />
-                    <Text style={ styles.text_dialog }>{ text }</Text>
-                </DialogContent>
-            </Dialog>
+            <Overlay 
+                isVisible={this.state.visible} 
+                onBackdropPress={() => this.setState({ visible: false })}
+                overlayStyle = {{height : 'auto', width: '100%', padding : 0}}>
+                <View>
+                    <View style= {{alignItems : 'center',justifyContent : 'center', borderBottomWidth : 1, backgroundColor : '#008080', height : 60}}>
+                        <Text style= {{fontSize : 20, fontWeight : "bold", color : 'white'}}>{title}</Text>
+                    </View>
+                    <View style = {{alignItems : 'center', justifyContent : 'center',}}>
+                            <Text style={ styles.text_dialog }>{text}</Text>
+                    </View>
+                    <View style = {{alignItems : 'center', justifyContent : 'center', marginLeft: 5, marginBottom : 10, marginRight: 5}}>
+                            <Image style={ styles.image } source={{ uri: `data:image/png;base64,${ico}` }} />
+                    </View>
+                    <TouchableOpacity 
+                            onPress={ () => this.setState({ visible: false }) } 
+                            style = {{borderTopWidth : 1, width : '100%', alignItems : 'center', justifyContent: 'center', paddingTop : 15, paddingBottom : 15, backgroundColor : '#EDEDED'}}>
+                            <Text style = {{fontSize : 20}}>
+                                OK
+                            </Text>
+                    </TouchableOpacity>
+                </View>
+            </Overlay>
         )
     }
 
@@ -347,7 +364,6 @@ const styles = StyleSheet.create({
         alignItems : "center", 
         justifyContent: "center"
     },
-
     button:{ 
         flex : 1,
         backgroundColor: "#FFF",
@@ -364,13 +380,11 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius: 3
     },
-
     image: {
         height : 50,
         width: 50,
         marginVertical: 10
     },
-    
     text_date: {
         textAlign : 'center',
         marginTop : 50,
@@ -386,7 +400,6 @@ const styles = StyleSheet.create({
     text_dialog: {
         textAlign: 'center'
     },
-
     dialog: {
         textAlign: 'center'
     },
@@ -396,7 +409,7 @@ const styles = StyleSheet.create({
     spinnerTextStyle: {
         color: '#FFF',
       },
-          button1:{ 
+    button1:{ 
         flex : 0.25,
         backgroundColor: "#FFF",
         paddingVertical: 20,
@@ -411,6 +424,10 @@ const styles = StyleSheet.create({
         shadowRadius: 3.80,
         elevation: 5,
         borderRadius: 3
+    },
+    text_dialog: {
+        textAlign: 'center',
+        fontSize : 20
     },
 })
 

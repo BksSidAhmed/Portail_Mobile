@@ -25,7 +25,6 @@ class SignIn extends React.Component {
     editPassword = (text) => {
         this.password = text
     }
-
     connexion = () => {
         this.setState({
             loading : true

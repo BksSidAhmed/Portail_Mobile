@@ -15,6 +15,8 @@ target 'Portail_Mobile' do
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
 
 
+  pod 'RNSound', :path => '../node_modules/react-native-sound'
+
   target 'Portail_MobileTests' do
     inherit! :complete
     # Pods for testing
