@@ -39,8 +39,8 @@ class ManagementNoConnection extends React.Component {
     componentWillUnmount = () => {
         clearInterval(this.IntervalClock);
         clearInterval(this.clockCall);
-        // this.setState({ visible: false })    
     }
+    
     startTimer = () => {
         this.clockCall = setInterval(() => {
             this.decrementClock();
