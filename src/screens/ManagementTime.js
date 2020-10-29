@@ -1,16 +1,16 @@
-import React from 'react'
-import { StyleSheet, View, Text, StatusBar, TouchableOpacity, ActivityIndicator, Image, FlatList, Vibration, AppRegistry, BackHandler, DeviceEventEmitter} from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, StatusBar, TouchableOpacity, ActivityIndicator, Image, FlatList, Vibration, DeviceEventEmitter} from 'react-native';
 import moment from 'moment';
-import 'moment/locale/fr'
+import 'moment/locale/fr';
 import * as Animatable from 'react-native-animatable';
-import { connect } from 'react-redux'
-import { getToken, postAction, getUser } from '../api/index'
+import { connect } from 'react-redux';
+import { getToken, postAction, getUser } from '../api/index';
 import Geolocation from '@react-native-community/geolocation';
-import {listeEmailAction} from '../redux/actions/listeEmailAction'
-import {pointingAction} from '../redux/actions/pointingHorsLigneAction'
-import {Overlay} from 'react-native-elements'
+import {listeEmailAction} from '../redux/actions/listeEmailAction';
+import {pointingAction} from '../redux/actions/pointingHorsLigneAction';
+import {Overlay} from 'react-native-elements';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
-import {requestACCESSFINELOCATIONPermission} from '../permissions/Permissions_Location'
+import {requestACCESSFINELOCATIONPermission} from '../permissions/Permissions_Location';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 class ManagementTime extends React.Component { 
@@ -289,7 +289,6 @@ class ManagementTime extends React.Component {
                 this.checkLocalisation()
             }
         }
-        
     }
 
     dialogPopup = (ico, title, text) => {
@@ -303,17 +302,17 @@ class ManagementTime extends React.Component {
                         <Text style= {{fontSize : 20, fontWeight : "bold", color : 'white'}}>{title}</Text>
                     </View>
                     <View style = {{alignItems : 'center', justifyContent : 'center',}}>
-                            <Text style={ styles.text_dialog }>{text}</Text>
+                        <Text style={ styles.text_dialog }>{text}</Text>
                     </View>
                     <View style = {{alignItems : 'center', justifyContent : 'center', marginLeft: 5, marginBottom : 10, marginRight: 5}}>
-                            <Image style={ styles.image } source={{ uri: `data:image/png;base64,${ico}` }} />
+                        <Image style={ styles.image } source={{ uri: `data:image/png;base64,${ico}` }} />
                     </View>
                     <TouchableOpacity 
-                            onPress={ () => this.setState({ visible: false }) } 
-                            style = {{borderTopWidth : 1, width : '100%', alignItems : 'center', justifyContent: 'center', paddingTop : 15, paddingBottom : 15, backgroundColor : '#EDEDED'}}>
-                            <Text style = {{fontSize : 20}}>
-                                OK
-                            </Text>
+                        onPress={ () => this.setState({ visible: false }) } 
+                        style = {{borderTopWidth : 1, width : '100%', alignItems : 'center', justifyContent: 'center', paddingTop : 15, paddingBottom : 15, backgroundColor : '#EDEDED'}}>
+                        <Text style = {{fontSize : 20}}>
+                            OK
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </Overlay>
