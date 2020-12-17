@@ -41,7 +41,8 @@ class ManagementTime extends React.Component {
             currentText: '', 
             compteurDelete : 0, 
             loading : false, 
-            etatgeolocalisation : 1
+            etatgeolocalisation : 1,
+            activeGeolocalisation : null
         }
     }
     
@@ -52,8 +53,8 @@ class ManagementTime extends React.Component {
     }
 
     componentDidMount(){
-        this.checkLocalisation();
-        this.permissions();
+        // this.checkLocalisation();
+        // this.permissions();
     }
 
     componentWillUnmount = () => {
@@ -61,29 +62,6 @@ class ManagementTime extends React.Component {
         LocationServicesDialogBox.stopListener();
     }
 
-    permissions = async () => {
-        if(this.state.etatgeolocalisation == 1) {
-            check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
-            .then((result) => {
-                switch (result) {
-                case RESULTS.UNAVAILABLE:
-                    requestACCESSFINELOCATIONPermission()
-                    break;
-                case RESULTS.DENIED:
-                    requestACCESSFINELOCATIONPermission()
-                    break;
-                case RESULTS.GRANTED:
-                    break;
-                case RESULTS.BLOCKED:
-                    requestACCESSFINELOCATIONPermission()
-                    break;
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-            });
-        }
-    }
     sendPointingDeconnection() {
         var dataPointing = this.props.pointing
         var compteurDelete = 0
@@ -93,9 +71,13 @@ class ManagementTime extends React.Component {
                         loading : true
                     })
                      element.pointage.forEach(pointing => {
-                         getToken(this.props.email,this.props.password).then(data => {
+                        console.log('pointing')
+                        console.log(pointing)
+                        getToken(this.props.email,this.props.password).then(data => {
                             if(data[0] == 200) {
                                 postAction(data[1].token,pointing[0],pointing[1],pointing[2],pointing[3],pointing[4],pointing[5],pointing[6]).then(data => {
+                                    console.log('data')
+                                    console.log(data)
                                     if(data[0] == 200) {
                                             compteurDelete++
                                             if(compteurDelete == element.pointage.length) {
@@ -116,17 +98,35 @@ class ManagementTime extends React.Component {
     }
 
     getDataCust() {
-        getToken(this.props.email,this.props.password).then(data => {
+        getToken(this.props.email, this.props.password).then(data => {
             if(data[0] == 200) 
             {
                 getUser(data[1].token, this.props.email).then(response => {
+                    // console.log('response')
+                    // console.log(response[1].user.activeLocalisation)
+                    this.setState({
+                        activeGeolocalisation : response[1].user.activeLocalisation
+                    })
+                    {
+                        response[1].user.client.activeBadge == false && response[1].user.activeBadge == false ?
+                            (
+                                response[1].user.profil.action_0.active = false
+
+                            ) : (
+                                
+                                response[1].user.client.activeBadge == false || response[1].user.activeBadge == false ? 
+                                        (
+                                            response[1].user.profil.action_0.active = false
+
+                                        ) : (
+                                        null
+                                        )
+                                )
+                    }
                     this.setState({
                         loadingList: false,
                         user: {
                             'email': response[1].user.email,
-                            'latitude_reference': response[1].user.latitude_reference,
-                            'longitude_reference': response[1].user.longitude_reference,
-                            'marge_reference': response[1].user.marge_reference,
                             'profil': {
                                 'action0': {
                                     'active': response[1].user.profil.action_0.active,
@@ -215,12 +215,39 @@ class ManagementTime extends React.Component {
         }
     }
 
+    permissions = async () => {
+        if(this.state.etatgeolocalisation == 1) {
+            check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
+            .then((result) => {
+                switch (result) {
+                case RESULTS.UNAVAILABLE:
+                    requestACCESSFINELOCATIONPermission()
+                    break;
+                case RESULTS.DENIED:
+                    requestACCESSFINELOCATIONPermission()
+                    break;
+                case RESULTS.GRANTED:
+                    break;
+                case RESULTS.BLOCKED:
+                    requestACCESSFINELOCATIONPermission()
+                    break;
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            });
+        }
+    }
+
     actionButton = async (button, libelle) => {
-        if(this.state.etatgeolocalisation == 0) {
+        console.log(this.state.activeGeolocalisation)
+        var tata = true
+        if ( tata == false ) {
+            console.log("pas besoin d'etre geolocalisé")
             this.setState({
                 [`loading`+`${button}`] : true,
                 disabled : true
-            })
+            }),
             getToken(this.props.email,this.props.password).then(data => {
                 if(data[0] == 200) {
                     postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
@@ -246,47 +273,83 @@ class ManagementTime extends React.Component {
                 } 
             })
         }
-        else if(this.state.etatgeolocalisation == 1) {
-            requestACCESSFINELOCATIONPermission()
-            if(this.state.initialPosition == 'enabled') {
-                Geolocation.getCurrentPosition(info => 
+        else {
+            if(this.state.etatgeolocalisation == 0) {
+                    console.log("besoin d'etre geo mais il est deja authentifié")
                     this.setState({
-                        latitude : info.coords.latitude.toString(),
-                        longitude : info.coords.longitude.toString(),
-                    }, () => {
-                        this.setState({
-                            [`loading`+`${button}`] : true,
-                            disabled : true
-                        })
-                        getToken(this.props.email,this.props.password).then(data => {
-                            if(data[0] == 200) {
-                                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
-                                    if(data[0] == 200) {
-                                        if(button == 'F00') {
-                                            Vibration.vibrate(500)
-                                        }
-                                        this.setState({
-                                            [`loading`+`${button}`] : false,
-                                            disabled : false,
-                                            visible : true,
-                                            currentIco: data[1].ico,
-                                            currentLibelle: libelle,
-                                            currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                        })              
+                        [`loading`+`${button}`] : true,
+                        disabled : true
+                    }),
+                    getToken(this.props.email,this.props.password).then(data => {
+                        if(data[0] == 200) {
+                            postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
+                                if(data[0] == 200) {
+                                    if(button == 'F00') {
+                                        Vibration.vibrate(500)
                                     }
-                                    else {
-                                        this.setState({
-                                            visible : true
-                                        })
-                                    }
-                                })
-                            } 
-                        })
+                                    this.setState({
+                                        [`loading`+`${button}`] : false,
+                                        disabled : false,
+                                        visible : true,
+                                        currentIco: data[1].ico,
+                                        currentLibelle: libelle,
+                                        currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                    })              
+                                }
+                                else {
+                                    this.setState({
+                                        visible : true
+                                    })
+                                }
+                            })
+                        } 
                     })
-                )
             }
             else {
-                this.checkLocalisation()
+                console.log("besoin geo et a etre authorisé")
+                requestACCESSFINELOCATIONPermission()
+                if(this.state.initialPosition == 'enabled') {
+                    Geolocation.getCurrentPosition(info => 
+                        this.setState({
+                            latitude : info.coords.latitude.toString(),
+                            longitude : info.coords.longitude.toString(),
+                        }, () => {
+                            this.setState({
+                                [`loading`+`${button}`] : true,
+                                disabled : true
+                            })
+                            getToken(this.props.email,this.props.password).then(data => {
+                                console.log(data)
+                                if(data[0] == 200) {
+                                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
+                                        console.log(data)
+                                        if(data[0] == 200) {
+                                            if(button == 'F00') {
+                                                Vibration.vibrate(500)
+                                            }
+                                            this.setState({
+                                                [`loading`+`${button}`] : false,
+                                                disabled : false,
+                                                visible : true,
+                                                currentIco: data[1].ico,
+                                                currentLibelle: libelle,
+                                                currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                            })              
+                                        }
+                                        else {
+                                            this.setState({
+                                                visible : true
+                                            })
+                                        }
+                                    })
+                                } 
+                            })
+                        }
+                    ))
+                }
+                else {
+                    this.checkLocalisation()
+                }
             }
         }
     }
