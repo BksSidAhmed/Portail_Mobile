@@ -51,6 +51,39 @@ export const postAction = async (token,indicateurTemps,email,date,heure,button,l
         return console.error(err);
     }
 }
+// // Faire une action pointage demander ses congés etc.. 
+// export const postActionVPN = async (host,indicateurTemps,email,date,heure,button,lat,lng,userAS400,passwordAS400,program,ip) => {
+//     const url = 'https://'+host+'/nivamobile/mobile/serveur';
+//     try 
+//     {
+//         const response = await fetch(url, {
+//             method: 'POST',
+//             headers: {
+//                 Accept : "application/json",
+//                 'Content-Type' : "application/json",
+//             },
+//             body: JSON.stringify({
+//                 indicateurTemps : indicateurTemps,
+//                 email : email,
+// 	            date: date,
+//                 heure: heure,
+//                 button : button,
+//                 lat : lat,
+//                 lng : lng,
+//                 userAS400 : userAS400,
+//                 passwordAS400 : passwordAS400,
+//                 program : program,
+//                 ip : ip
+//             })
+//         });
+//         const statusCode = response.status;
+//         return await Promise.all([statusCode,response.json()]);
+//     } 
+//     catch(err) 
+//     {
+//         return console.error(err);
+//     }
+// }
 
 export const getUser = async (token, email) => {
     const url = 'https://test.portail-e-rh.niva.tm.fr/api/getUser';

@@ -31,6 +31,7 @@ class SignIn extends React.Component {
         })
         getToken(this.email,this.password).then(data => {
             console.log(this.email + this.password)
+            console.log(data)
             if(data[0] == 200) {
                 this.props.emailAction(this.email)
                 this.props.passwordAction(this.password)
