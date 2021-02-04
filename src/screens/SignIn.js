@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { View, StyleSheet, Text, TouchableOpacity, TextInput, StatusBar, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, TextInput, StatusBar, ActivityIndicator, Alert } from 'react-native';
 import {emailAction} from '../redux/actions/emailAction'
 import {passwordAction} from '../redux/actions/passwordAction'
 //API
@@ -26,19 +26,33 @@ class SignIn extends React.Component {
         this.password = text
     }
     connexion = () => {
-        this.setState({
-            loading : true
-        })
         getToken(this.email,this.password).then(data => {
             console.log(this.email + this.password)
             console.log(data)
             if(data[0] == 200) {
+                this.setState({
+                    loading : true
+                })
                 this.props.emailAction(this.email)
                 this.props.passwordAction(this.password)
                 const found = this.props.emails.find(element => element == this.email) 
                 if ( found == undefined ) {
                     this.props.listeEmailAction(this.email)
                 }
+            }
+            if(data[0] == 401) {
+                this.setState({
+                    loading : false
+                })
+                Alert.alert(
+                    'Erreur',
+                    "Le nom d'utilisateur et/ou le mot de passe est incorrect",
+                    [
+                        {
+                            text: 'ok',
+                        },
+                    ] 
+                );
             }
         })
     }

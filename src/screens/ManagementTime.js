@@ -51,7 +51,10 @@ class ManagementTime extends React.Component {
             ip : null,
             program : null,
             userAS400 : null,
-            passwordAS400 : null
+            passwordAS400 : null,
+            statutIco : null,
+            icoPresent : null,
+            icoAbsent : null
         }
     }
     
@@ -68,7 +71,6 @@ class ManagementTime extends React.Component {
 
 // Envoie le pointage de déconnexion 
     sendPointingDeconnection() {
-        console.log('test')
         var dataPointing = this.props.pointing
         var compteurDelete = 0
             dataPointing.forEach(element => {   
@@ -105,11 +107,11 @@ class ManagementTime extends React.Component {
             if(data[0] == 200) 
             {
                 getUser(data[1].token, this.props.email).then(response => {
-                    console.log(response)
-                    console.log(response[1].user.profil)
                     this.setState({
                         activeGeolocalisation : response[1].user.activeLocalisation, 
                         lieuxGeolocalisation : response[1].user.lieux,
+                        statutIco : response[1].user.statut,
+
                     })
                     {
                         response[1].user.client.activeBadge == false && response[1].user.activeBadge == false ?
@@ -195,9 +197,6 @@ class ManagementTime extends React.Component {
     }
 
     actionButton = async (button, libelle, localisation) => {
-        var tutu = true
-        console.log(localisation)
-        console.log(this.state.activeGeolocalisation)
         if ( this.state.activeGeolocalisation == false ) {
             this.setState({
                 [`loading`+`${button}`] : true,
@@ -214,7 +213,7 @@ class ManagementTime extends React.Component {
                                 [`loading`+`${button}`] : false,
                                 disabled : false,
                                 visible : true,
-                                currentIco: data[1].ico,
+                                currentIco: (this.state.statutIco ? (this.state.icoPresent): (this.state.icoAbsent)),
                                 currentLibelle: libelle,
                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                             })           
@@ -252,28 +251,23 @@ class ManagementTime extends React.Component {
                                     longitude : info.coords.longitude.toString(),
                                 }, () => {
                                     var test = false
-                                    console.log(this.state.lieuxGeolocalisation)
                                     this.state.lieuxGeolocalisation.forEach(pointing => {
                                         var dis = getDistance(
                                             { latitude: this.state.latitude , longitude: this.state.longitude },
                                             { latitude: pointing.latitude, longitude: pointing.longitude }
                                         );
-                                        console.log(dis)
                                         if(dis <= pointing.marge) {
                                             test = true
                                         }
                                     })
-                                    console.log(test)
                                     if(test == true) {                                
                                         this.setState({
                                             [`loading`+`${button}`] : true,
                                             disabled : true
                                         })
                                         getToken(this.props.email,this.props.password).then(data => {
-                                            console.log(data)
                                             if(data[0] == 200) {
                                                 postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
-                                                    console.log(data)
                                                     if(data[0] == 200) {
                                                         if(button == 'F00') {
                                                             Vibration.vibrate(500)
@@ -296,17 +290,15 @@ class ManagementTime extends React.Component {
                                             } 
                                         })
                                         } 
-                                        else {        
-                                            console.log("E01")                              
+                                        else {    
+                                            console.log("E01")    
                                             this.setState({
                                                 [`loading`+`${button}`] : true,
                                                 disabled : true
                                             })
                                             getToken(this.props.email,this.props.password).then(data => {
-                                                console.log(data)
                                                 if(data[0] == 200) {
                                                     postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude).then(data => {
-                                                        console.log(data)
                                                         if(data[0] == 200) {
                                                             if(button == 'F00') {
                                                                 Vibration.vibrate(500)
@@ -315,7 +307,7 @@ class ManagementTime extends React.Component {
                                                                 [`loading`+`${button}`] : false,
                                                                 disabled : false,
                                                                 visible : true,
-                                                                currentIco: data[1].ico,
+                                                                currentIco: (this.state.statutIco ? (this.state.icoPresent): (this.state.icoAbsent)),
                                                                 currentLibelle: libelle,
                                                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                                                             })              
@@ -363,6 +355,7 @@ class ManagementTime extends React.Component {
                             })
                         });
                       } else {
+                        console.log("E00")
                         this.setState({
                             [`loading`+`${button}`] : true,
                             disabled : true
