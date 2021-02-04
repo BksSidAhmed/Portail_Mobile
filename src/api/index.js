@@ -1,5 +1,5 @@
 export const getToken = async (email,password) => {
-    const url = 'https://test.portail-e-rh.niva.tm.fr/api/login_check';
+    const url = 'https://portail-e-rh.niva.tm.fr/api/login_check';
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -23,7 +23,7 @@ export const getToken = async (email,password) => {
 }
 
 export const postAction = async (token,indicateurTemps,email,date,heure,button,lat,lng) => {
-    const url = 'https://test.portail-e-rh.niva.tm.fr/api/action';
+    const url = 'https://portail-e-rh.niva.tm.fr/api/action';
     try 
     {
         const response = await fetch(url, {
@@ -86,7 +86,7 @@ export const postAction = async (token,indicateurTemps,email,date,heure,button,l
 // }
 
 export const getUser = async (token, email) => {
-    const url = 'https://test.portail-e-rh.niva.tm.fr/api/getUser';
+    const url = 'https://portail-e-rh.niva.tm.fr/api/getUser';
     try 
     {
         const response = await fetch(url, {
@@ -110,7 +110,7 @@ export const getUser = async (token, email) => {
 }
 
 export const getIco = async (token,ico) => {
-    const url = 'https://test.portail-e-rh.niva.tm.fr/api/images/'+ico+'.png';
+    const url = 'https://portail-e-rh.niva.tm.fr/api/images/'+ico+'.png';
     try 
     {   
         const response = await fetch(url, {
@@ -130,7 +130,7 @@ export const getIco = async (token,ico) => {
 }
 
 export const postPassword = async (token,email) => {
-    const url = 'https://test.portail-e-rh.niva.tm.fr/api/edit/password';
+    const url = 'https://portail-e-rh.niva.tm.fr/api/edit/password';
     try 
     {   
         const response = await fetch(url, {

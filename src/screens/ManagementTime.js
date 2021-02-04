@@ -68,6 +68,7 @@ class ManagementTime extends React.Component {
 
 // Envoie le pointage de déconnexion 
     sendPointingDeconnection() {
+        console.log('test')
         var dataPointing = this.props.pointing
         var compteurDelete = 0
             dataPointing.forEach(element => {   
@@ -78,7 +79,7 @@ class ManagementTime extends React.Component {
                      element.pointage.forEach(pointing => {
                         getToken(this.props.email,this.props.password).then(data => {
                             if(data[0] == 200) {
-                                postAction(data[1].token,pointing[0],pointing[1],pointing[2],pointing[3],pointing[4],pointing[5],pointing[6]).then(data => {
+                                postAction(data[1].token,pointing[0],pointing[1],pointing[2],pointing[3],pointing[4],null,null).then(data => {
                                     if(data[0] == 200) {
                                             compteurDelete++
                                             if(compteurDelete == element.pointage.length) {
@@ -105,20 +106,10 @@ class ManagementTime extends React.Component {
             {
                 getUser(data[1].token, this.props.email).then(response => {
                     console.log(response)
-                    // console.log(response[1].user.host)
-                    // console.log(response[1].user.userAS400)
-                    console.log(response[1].user.program)
-                    // console.log(response[1].user.passwordAS400)
-                    console.log(response[1].user.ip)
-
+                    console.log(response[1].user.profil)
                     this.setState({
                         activeGeolocalisation : response[1].user.activeLocalisation, 
                         lieuxGeolocalisation : response[1].user.lieux,
-                        userAS400 : response[1].user.userAS400,
-                        passwordAS400 : response[1].user.passwordAS400,
-                        host : response[1].user.host,
-                        ip : response[1].user.ip,
-                        program : response[1].user.program
                     })
                     {
                         response[1].user.client.activeBadge == false && response[1].user.activeBadge == false ?
@@ -144,32 +135,38 @@ class ManagementTime extends React.Component {
                                 'action0': {
                                     'active': response[1].user.profil.action_0.active,
                                     'ico': response[1].user.profil.action_0.ico,
-                                    'libelle': response[1].user.profil.action_0.libelle
+                                    'libelle': response[1].user.profil.action_0.libelle,
+                                    'localisation' : response[1].user.profil.action_0.localisation 
                                 },
                                 'action1': {
                                     'active': response[1].user.profil.action_1.active,
                                     'ico': response[1].user.profil.action_1.ico,
-                                    'libelle': response[1].user.profil.action_1.libelle
+                                    'libelle': response[1].user.profil.action_1.libelle,
+                                    'localisation' : response[1].user.profil.action_1.localisation 
                                 },
                                 'action2': {
                                     'active': response[1].user.profil.action_2.active,
                                     'ico': response[1].user.profil.action_2.ico,
-                                    'libelle': response[1].user.profil.action_2.libelle
+                                    'libelle': response[1].user.profil.action_2.libelle,
+                                    'localisation' : response[1].user.profil.action_2.localisation 
                                 },
                                 'action3': {
                                     'active': response[1].user.profil.action_3.active,
                                     'ico': response[1].user.profil.action_3.ico,
-                                    'libelle': response[1].user.profil.action_3.libelle
+                                    'libelle': response[1].user.profil.action_3.libelle,
+                                    'localisation' : response[1].user.profil.action_3.localisation 
                                 },
                                 'action4': {
                                     'active': response[1].user.profil.action_4.active,
                                     'ico': response[1].user.profil.action_4.ico,
-                                    'libelle': response[1].user.profil.action_4.libelle
+                                    'libelle': response[1].user.profil.action_4.libelle,
+                                    'localisation' : response[1].user.profil.action_4.localisation 
                                 },
                                 'action5': {
                                     'active': response[1].user.profil.action_5.active,
                                     'ico': response[1].user.profil.action_5.ico,
-                                    'libelle': response[1].user.profil.action_5.libelle
+                                    'libelle': response[1].user.profil.action_5.libelle,
+                                    'localisation' : response[1].user.profil.action_5.localisation 
                                 }
                             }
                         }
@@ -197,38 +194,11 @@ class ManagementTime extends React.Component {
         }, 1000);
     }
 
-    // checkLocalisation() {
-    //         const self = this   
-    //         LocationServicesDialogBox.checkLocationServicesIsEnabled({
-    //             message: "<h2>Utiliser la localisation ?</h2>Afin que votre application fonctionne correctement, activez la localisation de l'appareil :<br/><br/>Utiliser le GPS pour la localiation ? <br/>",           
-    //             ok: "OK",
-    //             cancel: "NON, MERCI",
-    //             enableHighAccuracy: true,
-    //             showDialog: true,
-    //             openLocationServices: true,
-    //             preventOutSideTouch: false,
-    //             preventBackClick: false,
-    //             providerListener: true
-    //         }).then(function(success) {
-    //             self.setState({
-    //                 initialPosition : 'enabled'
-    //             }) 
-    //             }.bind(this)
-    //         ).catch((error) => {
-    //             self.setState({
-    //                 initialPosition : error.message
-    //             }) 
-    //         });
-    //         DeviceEventEmitter.addListener('locationProviderStatusChange', function(status) {
-    //             self.setState({
-    //                 initialPosition : status.status
-    //             })
-    //         });
-    // }
-
-    actionButton = async (button, libelle) => {
-        var tutu = false
-        if ( tutu == false ) {
+    actionButton = async (button, libelle, localisation) => {
+        var tutu = true
+        console.log(localisation)
+        console.log(this.state.activeGeolocalisation)
+        if ( this.state.activeGeolocalisation == false ) {
             this.setState({
                 [`loading`+`${button}`] : true,
                 disabled : true
@@ -259,71 +229,42 @@ class ManagementTime extends React.Component {
             })
         }
         else {
-            try {
-                const granted = await PermissionsAndroid.request(
-                  PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-                );
-                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                    LocationServicesDialogBox.checkLocationServicesIsEnabled({
-                        message: "<h2>Utiliser la localisation ?</h2>Afin que votre application fonctionne correctement, activez la localisation de l'appareil :<br/><br/>Utiliser le GPS pour la localiation ? <br/>",           
-                        ok: "OK",
-                        cancel: "NON, MERCI",
-                        enableHighAccuracy: true,
-                        showDialog: true,
-                        openLocationServices: true,
-                        preventOutSideTouch: false,
-                        preventBackClick: false,
-                        providerListener: true
-                    }).then(function(success) {
-                        Geolocation.getCurrentPosition(info => 
-                            this.setState({
-                                latitude : info.coords.latitude.toString(),
-                                longitude : info.coords.longitude.toString(),
-                            }, () => {
-                                var test = false
-                                this.state.lieuxGeolocalisation.forEach(pointing => {
-                                    var dis = getDistance(
-                                        { latitude: this.state.latitude , longitude: this.state.longitude },
-                                        { latitude: pointing.latitude, longitude: pointing.longitude }
-                                    );
-                                    if(dis >= pointing.marge) {
-                                        test = true
-                                    }
-                                })
-                                console.log(test)
-                                if(test == true) {                                
-                                    this.setState({
-                                        [`loading`+`${button}`] : true,
-                                        disabled : true
+            if(localisation) {
+                try {
+                    const granted = await PermissionsAndroid.request(
+                      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    );
+                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                        LocationServicesDialogBox.checkLocationServicesIsEnabled({
+                            message: "<h2>Utiliser la localisation ?</h2>Afin que votre application fonctionne correctement, activez la localisation de l'appareil :<br/><br/>Utiliser le GPS pour la localiation ? <br/>",           
+                            ok: "OK",
+                            cancel: "NON, MERCI",
+                            enableHighAccuracy: true,
+                            showDialog: true,
+                            openLocationServices: true,
+                            preventOutSideTouch: false,
+                            preventBackClick: false,
+                            providerListener: true
+                        }).then(function(success) {
+                            Geolocation.getCurrentPosition(info => 
+                                this.setState({
+                                    latitude : info.coords.latitude.toString(),
+                                    longitude : info.coords.longitude.toString(),
+                                }, () => {
+                                    var test = false
+                                    console.log(this.state.lieuxGeolocalisation)
+                                    this.state.lieuxGeolocalisation.forEach(pointing => {
+                                        var dis = getDistance(
+                                            { latitude: this.state.latitude , longitude: this.state.longitude },
+                                            { latitude: pointing.latitude, longitude: pointing.longitude }
+                                        );
+                                        console.log(dis)
+                                        if(dis <= pointing.marge) {
+                                            test = true
+                                        }
                                     })
-                                    getToken(this.props.email,this.props.password).then(data => {
-                                        console.log(data)
-                                        if(data[0] == 200) {
-                                            postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
-                                                console.log(data)
-                                                if(data[0] == 200) {
-                                                    if(button == 'F00') {
-                                                        Vibration.vibrate(500)
-                                                    }
-                                                    this.setState({
-                                                        [`loading`+`${button}`] : false,
-                                                        disabled : false,
-                                                        visible : true,
-                                                        currentIco: data[1].ico,
-                                                        currentLibelle: libelle,
-                                                        currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                                    })              
-                                                }
-                                                else {
-                                                    this.setState({
-                                                        visible : true
-                                                    })
-                                                }
-                                            })
-                                        } 
-                                    })
-                                    } 
-                                    else {                                      
+                                    console.log(test)
+                                    if(test == true) {                                
                                         this.setState({
                                             [`loading`+`${button}`] : true,
                                             disabled : true
@@ -331,7 +272,7 @@ class ManagementTime extends React.Component {
                                         getToken(this.props.email,this.props.password).then(data => {
                                             console.log(data)
                                             if(data[0] == 200) {
-                                                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude).then(data => {
+                                                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
                                                     console.log(data)
                                                     if(data[0] == 200) {
                                                         if(button == 'F00') {
@@ -354,11 +295,74 @@ class ManagementTime extends React.Component {
                                                 })
                                             } 
                                         })
+                                        } 
+                                        else {        
+                                            console.log("E01")                              
+                                            this.setState({
+                                                [`loading`+`${button}`] : true,
+                                                disabled : true
+                                            })
+                                            getToken(this.props.email,this.props.password).then(data => {
+                                                console.log(data)
+                                                if(data[0] == 200) {
+                                                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude).then(data => {
+                                                        console.log(data)
+                                                        if(data[0] == 200) {
+                                                            if(button == 'F00') {
+                                                                Vibration.vibrate(500)
+                                                            }
+                                                            this.setState({
+                                                                [`loading`+`${button}`] : false,
+                                                                disabled : false,
+                                                                visible : true,
+                                                                currentIco: data[1].ico,
+                                                                currentLibelle: libelle,
+                                                                currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                                            })              
+                                                        }
+                                                        else {
+                                                            this.setState({
+                                                                visible : true
+                                                            })
+                                                        }
+                                                    })
+                                                } 
+                                            })
+                                        }
                                     }
-                                }
-                        ))
-                    }.bind(this)
-                    ).catch((error) => {
+                            ))
+                        }.bind(this)
+                        ).catch((error) => {
+                            this.setState({
+                                [`loading`+`${button}`] : true,
+                                disabled : true
+                            }),
+                            getToken(this.props.email,this.props.password).then(data => {
+                                if(data[0] == 200) {
+                                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null).then(data => {
+                                        if(data[0] == 200) {
+                                            if(button == 'F00') {
+                                                Vibration.vibrate(500)
+                                            }
+                                            this.setState({
+                                                [`loading`+`${button}`] : false,
+                                                disabled : false,
+                                                visible : true,
+                                                currentIco: data[1].ico,
+                                                currentLibelle: libelle,
+                                                currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                            })              
+                                        }
+                                        else {
+                                            this.setState({
+                                                visible : true
+                                            })
+                                        }
+                                    })
+                                } 
+                            })
+                        });
+                      } else {
                         this.setState({
                             [`loading`+`${button}`] : true,
                             disabled : true
@@ -387,41 +391,42 @@ class ManagementTime extends React.Component {
                                 })
                             } 
                         })
-                    });
-                  } else {
-                    this.setState({
-                        [`loading`+`${button}`] : true,
-                        disabled : true
-                    }),
-                    getToken(this.props.email,this.props.password).then(data => {
-                        if(data[0] == 200) {
-                            postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null).then(data => {
-                                if(data[0] == 200) {
-                                    if(button == 'F00') {
-                                        Vibration.vibrate(500)
-                                    }
-                                    this.setState({
-                                        [`loading`+`${button}`] : false,
-                                        disabled : false,
-                                        visible : true,
-                                        currentIco: data[1].ico,
-                                        currentLibelle: libelle,
-                                        currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                    })              
-                                }
-                                else {
-                                    this.setState({
-                                        visible : true
-                                    })
-                                }
-                            })
-                        } 
-                    })
-                  }
+                      }
+                    } 
+                    catch (err) {
+                    console.warn(err);
                 } 
-                catch (err) {
-                console.warn(err);
-            }            
+            }
+            else {
+                this.setState({
+                    [`loading`+`${button}`] : true,
+                    disabled : true
+                }),
+                getToken(this.props.email,this.props.password).then(data => {
+                    if(data[0] == 200) {
+                        postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,null,null).then(data => {
+                            if(data[0] == 200) {
+                                if(button == 'F00') {
+                                    Vibration.vibrate(500)
+                                }
+                                this.setState({
+                                    [`loading`+`${button}`] : false,
+                                    disabled : false,
+                                    visible : true,
+                                    currentIco: data[1].ico,
+                                    currentLibelle: libelle,
+                                    currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                })           
+                            }
+                            else {
+                                this.setState({
+                                    visible : true
+                                })
+                            }
+                        })
+                    }
+                })
+            }           
         }
     }
 
@@ -457,27 +462,27 @@ class ManagementTime extends React.Component {
         let libelles =  [];
         if( user.profil.action0.active )
         {
-            libelles.push({ key : user.profil.action0.libelle, ico : user.profil.action0.ico, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00 });
+            libelles.push({ key : user.profil.action0.libelle, ico : user.profil.action0.ico, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation });
         }
         if( user.profil.action1.active )
         {
-            libelles.push({ key : user.profil.action1.libelle, ico : user.profil.action1.ico, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01 });
+            libelles.push({ key : user.profil.action1.libelle, ico : user.profil.action1.ico, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation});
         }
         if( user.profil.action2.active )
         {
-            libelles.push({ key : user.profil.action2.libelle, ico : user.profil.action2.ico, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02 });
+            libelles.push({ key : user.profil.action2.libelle, ico : user.profil.action2.ico, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation});
         }
         if( user.profil.action3.active )
         {
-            libelles.push({ key : user.profil.action3.libelle, ico : user.profil.action3.ico, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03 });
+            libelles.push({ key : user.profil.action3.libelle, ico : user.profil.action3.ico, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation});
         }
         if( user.profil.action4.active )
         {
-            libelles.push({ key : user.profil.action4.libelle, ico : user.profil.action4.ico, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04 });
+            libelles.push({ key : user.profil.action4.libelle, ico : user.profil.action4.ico, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation});
         }
         if( user.profil.action5.active )
         {
-            libelles.push({ key : user.profil.action5.libelle, ico : user.profil.action5.ico, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05 });
+            libelles.push({ key : user.profil.action5.libelle, ico : user.profil.action5.ico, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation });
         }
             
         return(
@@ -485,7 +490,7 @@ class ManagementTime extends React.Component {
                 renderItem={({item}) => 
                     <Animatable.View animation="bounceIn" delay={ item.delay } style={ styles.container_button_animation }>
                         <TouchableOpacity 
-                            onPress={ () => this.actionButton(item.button, item.key) } 
+                            onPress={ () => this.actionButton(item.button, item.key, item.localisation) } 
                             disabled={ item.disabled } 
                             style={ styles.button }
                         >
