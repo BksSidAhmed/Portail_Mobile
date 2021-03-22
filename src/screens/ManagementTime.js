@@ -213,10 +213,11 @@ class ManagementTime extends React.Component {
                                 [`loading`+`${button}`] : false,
                                 disabled : false,
                                 visible : true,
-                                currentIco: (this.state.statutIco ? (this.state.icoPresent): (this.state.icoAbsent)),
+                                currentIco: data[1].ico,
                                 currentLibelle: libelle,
                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                            })           
+                            })    
+       
                         }
                         else {
                             this.setState({
@@ -279,7 +280,7 @@ class ManagementTime extends React.Component {
                                                             currentIco: data[1].ico,
                                                             currentLibelle: libelle,
                                                             currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                                        })              
+                                                        }) 
                                                     }
                                                     else {
                                                         this.setState({
@@ -291,7 +292,6 @@ class ManagementTime extends React.Component {
                                         })
                                         } 
                                         else {    
-                                            console.log("E01")    
                                             this.setState({
                                                 [`loading`+`${button}`] : true,
                                                 disabled : true
@@ -307,7 +307,7 @@ class ManagementTime extends React.Component {
                                                                 [`loading`+`${button}`] : false,
                                                                 disabled : false,
                                                                 visible : true,
-                                                                currentIco: (this.state.statutIco ? (this.state.icoPresent): (this.state.icoAbsent)),
+                                                                currentIco: data[1].ico,
                                                                 currentLibelle: libelle,
                                                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                                                             })              
@@ -355,7 +355,6 @@ class ManagementTime extends React.Component {
                             })
                         });
                       } else {
-                        console.log("E00")
                         this.setState({
                             [`loading`+`${button}`] : true,
                             disabled : true

@@ -50,7 +50,7 @@ class Settings extends React.Component {
                     </View>
                 </View>
                 <ScrollView style={ styles.container_body }>
-                    <View style={ styles.container_button_logoutModif }>
+                    {/* <View style={ styles.container_button_logoutModif }>
                         <TouchableOpacity onPress={ () => this.changePassword() }>
                             <LinearGradient
                                 colors={ ["#008080", "#008080"] }
@@ -58,7 +58,7 @@ class Settings extends React.Component {
                                 <Text style={ styles.text_logout }>Modifier Password</Text>
                             </LinearGradient>
                         </TouchableOpacity>  
-                    </View>
+                    </View> */}
                     <View style={ styles.container_button_logout }>
                         <TouchableOpacity onPress={ () => this.exitAlertShow() }>
                             <LinearGradient

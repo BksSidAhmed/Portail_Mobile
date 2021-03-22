@@ -56,14 +56,14 @@ class SignIn extends React.Component {
             }
         })
     }
-    forgotPassword = () => {
-        // getToken(this.email,this.password).then(data => {
-        //     console.log(data[0])
-        //     if(data[0] == 200) {
+    // forgotPassword = () => {
+    //     // getToken(this.email,this.password).then(data => {
+    //     //     console.log(data[0])
+    //     //     if(data[0] == 200) {
 
-        //     }
-        // })
-    }
+    //     //     }
+    //     // })
+    // }
 
     render() {
         if(this.state.loading) {
@@ -85,7 +85,7 @@ class SignIn extends React.Component {
                     <View style={styles.action}>
                         <MaterialIcons 
                             name="person"
-                            size={22}
+                            size={25}
                         />
                         <TextInput 
                             placeholder="Veuillez entrer votre email"
@@ -94,6 +94,7 @@ class SignIn extends React.Component {
                             keyboardType = "email-address"
                             autoCapitalize="none"
                             onChangeText = {(text) => this.editemail(text)}
+                            fontSize = {18}
                             // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
                         />
                     </View>    
@@ -101,21 +102,22 @@ class SignIn extends React.Component {
                     <View style={styles.action}> 
                         <MaterialIcons 
                             name="vpn-key"
-                            size={22}
+                            size={25}
                         />
                         <TextInput 
                             placeholder="Veuillez entrer votre mot de passe"
                             placeholderTextColor="#666666"
                             secureTextEntry= {true}
                             style={styles.textInput}
+                            fontSize = {18}
                             autoCapitalize="none"
                             onChangeText = {(text) => this.editPassword(text)}
                         />
                     </View>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={() => this.forgotPassword()}>
                         <Text style={{color: '#008080', marginTop:15}}>Mot de passe oublié ?</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <View style={styles.button}>
                         <TouchableOpacity
                             style={styles.signIn}
@@ -160,14 +162,14 @@ const styles = StyleSheet.create({
     text_footer: {
         color: '#05375a',
         fontSize: 22, 
-        marginTop : 10
+        marginTop : 20
     },
     action: {
         flexDirection: 'row',
         marginTop: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#f2f2f2',
-        paddingBottom: 5
+        paddingTop : 5
     },
     actionError: {
         flexDirection: 'row',
@@ -184,17 +186,18 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        marginTop: 30
+        marginTop: 40,
+        marginBottom : 10
     },
     signIn: {
         width: '100%',
-        height: 50,
+        height: 60,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10
     },
     textSign: {
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: 'bold', 
         color : "white"
     }
