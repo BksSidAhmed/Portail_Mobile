@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
         flex : 0.35,
         backgroundColor: '#008080',
         paddingHorizontal: 20,
-        paddingVertical: 30,
+        paddingVertical: 10,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

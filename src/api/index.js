@@ -129,8 +129,8 @@ export const getIco = async (token,ico) => {
     }
 }
 
-export const postPassword = async (token,email) => {
-    const url = 'https://portail-e-rh.niva.tm.fr/api/edit/password';
+export const postLostPassword = async (token,email) => {
+    const url = 'https://portail-e-rh.niva.tm.fr/api/lost/password';
     try 
     {   
         const response = await fetch(url, {
@@ -141,6 +141,31 @@ export const postPassword = async (token,email) => {
             },
             body: JSON.stringify({
                 email : email,
+            })
+        });
+        const statusCode = response.status;
+        return Promise.all([statusCode,response.json()]);
+    }
+    catch(err)
+    {
+        return console.error(err);
+    }
+}
+
+export const postEditPassword = async (token,email,newPassword,oldPassword) => {
+    const url = 'https://portail-e-rh.niva.tm.fr/api/password/edit';
+    try 
+    {   
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type' : "application/json",
+                'Authorization': 'Bearer ' + token,
+            },
+            body: JSON.stringify({
+                email : email,
+                new : newPassword,
+                old : oldPassword
             })
         });
         const statusCode = response.status;
