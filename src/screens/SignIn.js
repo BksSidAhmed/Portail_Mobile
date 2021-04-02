@@ -9,6 +9,7 @@ import { getToken, postPassword } from '../api/index'
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import {listeEmailAction} from '../redux/actions/listeEmailAction'
+import { ScrollView } from 'react-native';
 
 class SignIn extends React.Component { 
     constructor(props) {
@@ -132,7 +133,7 @@ class SignIn extends React.Component {
                         </TouchableOpacity>
                     </View>
             </Animatable.View>
-     </View>      
+     </View>     
     );
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, StatusBar, TouchableOpacity, ActivityIndicator, Image, FlatList, Vibration, DeviceEventEmitter} from 'react-native';
+import { StyleSheet, View, Text, StatusBar, TouchableOpacity, ActivityIndicator, Image, FlatList, Vibration} from 'react-native';
 import moment from 'moment';
 import 'moment/locale/fr';
 import * as Animatable from 'react-native-animatable';
@@ -111,8 +111,14 @@ class ManagementTime extends React.Component {
                         activeGeolocalisation : response[1].user.activeLocalisation, 
                         lieuxGeolocalisation : response[1].user.lieux,
                         statutIco : response[1].user.statut,
+                        icoAbsent : response[1].user.icoAbsent,
+                        icoPresent : response[1].user.icoPresent
 
                     })
+                    console.log(response[1].user.icoAbsent)
+                    console.log(response[1].user.icoPresent)
+                    console.log(response[1].user.statut)
+
                     {
                         response[1].user.client.activeBadge == false && response[1].user.activeBadge == false ?
                             (
@@ -129,50 +135,98 @@ class ManagementTime extends React.Component {
                                         )
                                 )
                     }
-                    this.setState({
-                        loadingList: false,
-                        user: {
-                            'email': response[1].user.email,
-                            'profil': {
-                                'action0': {
-                                    'active': response[1].user.profil.action_0.active,
-                                    'ico': response[1].user.profil.action_0.ico,
-                                    'libelle': response[1].user.profil.action_0.libelle,
-                                    'localisation' : response[1].user.profil.action_0.localisation 
-                                },
-                                'action1': {
-                                    'active': response[1].user.profil.action_1.active,
-                                    'ico': response[1].user.profil.action_1.ico,
-                                    'libelle': response[1].user.profil.action_1.libelle,
-                                    'localisation' : response[1].user.profil.action_1.localisation 
-                                },
-                                'action2': {
-                                    'active': response[1].user.profil.action_2.active,
-                                    'ico': response[1].user.profil.action_2.ico,
-                                    'libelle': response[1].user.profil.action_2.libelle,
-                                    'localisation' : response[1].user.profil.action_2.localisation 
-                                },
-                                'action3': {
-                                    'active': response[1].user.profil.action_3.active,
-                                    'ico': response[1].user.profil.action_3.ico,
-                                    'libelle': response[1].user.profil.action_3.libelle,
-                                    'localisation' : response[1].user.profil.action_3.localisation 
-                                },
-                                'action4': {
-                                    'active': response[1].user.profil.action_4.active,
-                                    'ico': response[1].user.profil.action_4.ico,
-                                    'libelle': response[1].user.profil.action_4.libelle,
-                                    'localisation' : response[1].user.profil.action_4.localisation 
-                                },
-                                'action5': {
-                                    'active': response[1].user.profil.action_5.active,
-                                    'ico': response[1].user.profil.action_5.ico,
-                                    'libelle': response[1].user.profil.action_5.libelle,
-                                    'localisation' : response[1].user.profil.action_5.localisation 
+                    if( response[1].user.statut == true ) {
+                        this.setState({
+                            loadingList: false,
+                            user: {
+                                'email': response[1].user.email,
+                                'profil': {
+                                    'action0': {
+                                        'active': response[1].user.icoPresent ,
+                                        'ico': response[1].user.icoAbsent,
+                                        'libelle': response[1].user.profil.action_0.libelle,
+                                        'localisation' : response[1].user.profil.action_0.localisation 
+                                    },
+                                    'action1': {
+                                        'active': response[1].user.profil.action_1.active,
+                                        'ico': response[1].user.profil.action_1.ico,
+                                        'libelle': response[1].user.profil.action_1.libelle,
+                                        'localisation' : response[1].user.profil.action_1.localisation 
+                                    },
+                                    'action2': {
+                                        'active': response[1].user.profil.action_2.active,
+                                        'ico': response[1].user.profil.action_2.ico,
+                                        'libelle': response[1].user.profil.action_2.libelle,
+                                        'localisation' : response[1].user.profil.action_2.localisation 
+                                    },
+                                    'action3': {
+                                        'active': response[1].user.profil.action_3.active,
+                                        'ico': response[1].user.profil.action_3.ico,
+                                        'libelle': response[1].user.profil.action_3.libelle,
+                                        'localisation' : response[1].user.profil.action_3.localisation 
+                                    },
+                                    'action4': {
+                                        'active': response[1].user.profil.action_4.active,
+                                        'ico': response[1].user.profil.action_4.ico,
+                                        'libelle': response[1].user.profil.action_4.libelle,
+                                        'localisation' : response[1].user.profil.action_4.localisation 
+                                    },
+                                    'action5': {
+                                        'active': response[1].user.profil.action_5.active,
+                                        'ico': response[1].user.profil.action_5.ico,
+                                        'libelle': response[1].user.profil.action_5.libelle,
+                                        'localisation' : response[1].user.profil.action_5.localisation 
+                                    }
                                 }
                             }
-                        }
-                    })
+                        })
+                    } else {
+                        this.setState({
+                            loadingList: false,
+                            user: {
+                                'email': response[1].user.email,
+                                'profil': {
+                                    'action0': {
+                                        'active': response[1].user.profil.action_0.active ,
+                                        'ico': response[1].user.icoPresent,
+                                        'libelle': response[1].user.profil.action_0.libelle,
+                                        'localisation' : response[1].user.profil.action_0.localisation 
+                                    },
+                                    'action1': {
+                                        'active': response[1].user.profil.action_1.active,
+                                        'ico': response[1].user.profil.action_1.ico,
+                                        'libelle': response[1].user.profil.action_1.libelle,
+                                        'localisation' : response[1].user.profil.action_1.localisation 
+                                    },
+                                    'action2': {
+                                        'active': response[1].user.profil.action_2.active,
+                                        'ico': response[1].user.profil.action_2.ico,
+                                        'libelle': response[1].user.profil.action_2.libelle,
+                                        'localisation' : response[1].user.profil.action_2.localisation 
+                                    },
+                                    'action3': {
+                                        'active': response[1].user.profil.action_3.active,
+                                        'ico': response[1].user.profil.action_3.ico,
+                                        'libelle': response[1].user.profil.action_3.libelle,
+                                        'localisation' : response[1].user.profil.action_3.localisation 
+                                    },
+                                    'action4': {
+                                        'active': response[1].user.profil.action_4.active,
+                                        'ico': response[1].user.profil.action_4.ico,
+                                        'libelle': response[1].user.profil.action_4.libelle,
+                                        'localisation' : response[1].user.profil.action_4.localisation 
+                                    },
+                                    'action5': {
+                                        'active': response[1].user.profil.action_5.active,
+                                        'ico': response[1].user.profil.action_5.ico,
+                                        'libelle': response[1].user.profil.action_5.libelle,
+                                        'localisation' : response[1].user.profil.action_5.localisation 
+                                    }
+                                }
+                            }
+                        })
+                    }
+
                 });
             }
         });
@@ -216,8 +270,12 @@ class ManagementTime extends React.Component {
                                 currentIco: data[1].ico,
                                 currentLibelle: libelle,
                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                            })    
-       
+                            })
+                            if( data[1].ico !== ''){
+                                this.setState(prevState => ({
+                                    statutIco : !prevState.statutIco,
+                                }))
+                            }
                         }
                         else {
                             this.setState({
@@ -281,6 +339,11 @@ class ManagementTime extends React.Component {
                                                             currentLibelle: libelle,
                                                             currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                                                         }) 
+                                                        if( data[1].ico !== ''){
+                                                            this.setState(prevState => ({
+                                                                statutIco : !prevState.statutIco,
+                                                            }))
+                                                        }
                                                     }
                                                     else {
                                                         this.setState({
@@ -310,7 +373,12 @@ class ManagementTime extends React.Component {
                                                                 currentIco: data[1].ico,
                                                                 currentLibelle: libelle,
                                                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                                            })              
+                                                            })    
+                                                            if( data[1].ico !== ''){
+                                                                this.setState(prevState => ({
+                                                                    statutIco : !prevState.statutIco,
+                                                                }))
+                                                            }          
                                                         }
                                                         else {
                                                             this.setState({
@@ -343,7 +411,12 @@ class ManagementTime extends React.Component {
                                                 currentIco: data[1].ico,
                                                 currentLibelle: libelle,
                                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                            })              
+                                            })  
+                                            if( data[1].ico !== ''){
+                                                this.setState(prevState => ({
+                                                    statutIco : !prevState.statutIco,
+                                                }))
+                                            }            
                                         }
                                         else {
                                             this.setState({
@@ -373,7 +446,12 @@ class ManagementTime extends React.Component {
                                             currentIco: data[1].ico,
                                             currentLibelle: libelle,
                                             currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                        })              
+                                        }) 
+                                        if( data[1].ico !== ''){
+                                            this.setState(prevState => ({
+                                                statutIco : !prevState.statutIco,
+                                            }))
+                                        }             
                                     }
                                     else {
                                         this.setState({
@@ -408,7 +486,12 @@ class ManagementTime extends React.Component {
                                     currentIco: data[1].ico,
                                     currentLibelle: libelle,
                                     currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                })           
+                                })     
+                                if( data[1].ico !== ''){
+                                    this.setState(prevState => ({
+                                        statutIco : !prevState.statutIco,
+                                    }))
+                                }      
                             }
                             else {
                                 this.setState({
@@ -454,7 +537,11 @@ class ManagementTime extends React.Component {
         let libelles =  [];
         if( user.profil.action0.active )
         {
-            libelles.push({ key : user.profil.action0.libelle, ico : user.profil.action0.ico, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation });
+            if( this.state.statutIco == true ) {
+                libelles.push({ key : user.profil.action0.libelle, ico : this.state.icoAbsent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation });
+            }else {
+                libelles.push({ key : user.profil.action0.libelle, ico : this.state.icoPresent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation });
+            }
         }
         if( user.profil.action1.active )
         {
@@ -476,7 +563,6 @@ class ManagementTime extends React.Component {
         {
             libelles.push({ key : user.profil.action5.libelle, ico : user.profil.action5.ico, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation });
         }
-            
         return(
             <FlatList data={ libelles } 
                 renderItem={({item}) => 
