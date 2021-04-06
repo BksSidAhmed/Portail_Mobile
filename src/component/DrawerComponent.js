@@ -31,7 +31,7 @@ class DrawerComponent extends React.Component {
                             <Text style = {{fontSize : 15, margin : 10, fontWeight : 'bold'}}> Menu </Text>
                             <Drawer.Section style={styles.drawerSection}>
                                 <DrawerItem 
-                                    label="Gestion des temps"
+                                    label="Gestion du temps"
                                     labelStyle = {{
                                         fontSize : 15,
                                     }}
@@ -40,7 +40,7 @@ class DrawerComponent extends React.Component {
                             </Drawer.Section>
                             <Drawer.Section style={styles.drawerSection}>
                                 <DrawerItem 
-                                    label="Sécurité"
+                                    label="Paramètres"
                                     labelStyle = {{
                                         fontSize : 15,
                                     }}

@@ -40,7 +40,8 @@ export const postAction = async (token,indicateurTemps,email,date,heure,button,l
                 heure: heure,
                 button : button,
                 lat : lat,
-                lng : lng
+                lng : lng,
+                activite : null
             })
         });
         const statusCode = response.status;

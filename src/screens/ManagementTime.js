@@ -12,6 +12,7 @@ import {Overlay} from 'react-native-elements';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import {PermissionsAndroid} from 'react-native';
 import { getDistance } from 'geolib';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const geolib = require('geolib');
 
@@ -54,7 +55,8 @@ class ManagementTime extends React.Component {
             passwordAS400 : null,
             statutIco : null,
             icoPresent : null,
-            icoAbsent : null
+            icoAbsent : null,
+            erroServeur : false
         }
     }
     
@@ -81,7 +83,7 @@ class ManagementTime extends React.Component {
                      element.pointage.forEach(pointing => {
                         getToken(this.props.email,this.props.password).then(data => {
                             if(data[0] == 200) {
-                                postAction(data[1].token,pointing[0],pointing[1],pointing[2],pointing[3],pointing[4],null,null).then(data => {
+                                postAction(data[1].token,pointing[0],pointing[1],pointing[2],pointing[3],pointing[4],pointing[5],pointing[6]).then(data => {
                                     if(data[0] == 200) {
                                             compteurDelete++
                                             if(compteurDelete == element.pointage.length) {
@@ -92,6 +94,16 @@ class ManagementTime extends React.Component {
                                                     loading : false
                                                 })
                                             }
+                                    }else {
+                                        this.setState({
+                                            loading : false,
+                                            erroServeur : true,
+                                            visible : true,
+                                            currentIco: null,
+                                            currentLibelle: 'Erreur serveur',
+                                            currentText: "Nous sommes désolés, nos serveurs sont momentanément indisponibles. Néanmoins toute action Entrée/Sortie sera traitée avec succès. \n\nL'EQUIPE NIVA"
+
+                                        })
                                     }
                                 })
                             }
@@ -112,8 +124,7 @@ class ManagementTime extends React.Component {
                         lieuxGeolocalisation : response[1].user.lieux,
                         statutIco : response[1].user.statut,
                         icoAbsent : response[1].user.icoAbsent,
-                        icoPresent : response[1].user.icoPresent
-
+                        icoPresent : response[1].user.icoPresent,
                     })
                     console.log(response[1].user.icoAbsent)
                     console.log(response[1].user.icoPresent)
@@ -145,7 +156,7 @@ class ManagementTime extends React.Component {
                                         'active': response[1].user.icoPresent ,
                                         'ico': response[1].user.icoAbsent,
                                         'libelle': response[1].user.profil.action_0.libelle,
-                                        'localisation' : response[1].user.profil.action_0.localisation 
+                                        'localisation' : response[1].user.profil.action_0.localisation,
                                     },
                                     'action1': {
                                         'active': response[1].user.profil.action_1.active,
@@ -190,13 +201,14 @@ class ManagementTime extends React.Component {
                                         'active': response[1].user.profil.action_0.active ,
                                         'ico': response[1].user.icoPresent,
                                         'libelle': response[1].user.profil.action_0.libelle,
-                                        'localisation' : response[1].user.profil.action_0.localisation 
+                                        'localisation' : response[1].user.profil.action_0.localisation, 
                                     },
                                     'action1': {
                                         'active': response[1].user.profil.action_1.active,
                                         'ico': response[1].user.profil.action_1.ico,
                                         'libelle': response[1].user.profil.action_1.libelle,
-                                        'localisation' : response[1].user.profil.action_1.localisation 
+                                        'localisation' : response[1].user.profil.action_1.localisation,
+
                                     },
                                     'action2': {
                                         'active': response[1].user.profil.action_2.active,
@@ -257,8 +269,11 @@ class ManagementTime extends React.Component {
                 disabled : true
             }),
             getToken(this.props.email,this.props.password).then(data => {
+                console.log(this.props.pointing)
+                console.log(data)  
                 if(data[0] == 200) {
                     postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
+                        console.log(data)
                         if(data[0] == 200) {
                             if(button == 'F00') {
                                 Vibration.vibrate(500)
@@ -283,6 +298,57 @@ class ManagementTime extends React.Component {
                             })
                         }
                     })
+                }
+                if(data[0] !== 200) {
+                    console.log('nop 200')
+                    if(button == 'F00') {
+                        var dataPointing = this.props.pointing
+                        var compteurTrouve = 0;  
+                        for(var i = 0; i<dataPointing.length; i++) {
+                            if(dataPointing[i]['email'] == this.props.email) {
+                                dataPointing[i]['pointage'].push(['1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude])
+                                compteurTrouve++;
+                                this.props.pointingAction(dataPointing)
+                                this.setState({
+                                    [`loading`+`${button}`] : false,
+                                disabled : false,
+                                visible : true,
+                                currentIco: null,
+                                currentLibelle: 'Erreur serveur',
+                                currentText: "Malgré nos serveurs momentanément indisponibles.\nVotre transaction a été prise en compte.\nToute future action Entrée/Sortie sera traitée avec succès.\n\n L'EQUIPE NIVA"                                   
+                                })
+                                Vibration.vibrate(500)
+                            }
+                        }
+                        if(compteurTrouve == 0){
+                            dataPointing.push(
+                                {
+                                    'email' : this.props.email,
+                                    'pointage': [['1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude]]       
+                                }
+                            )
+                            this.props.pointingAction(dataPointing)
+                            this.setState({
+                                [`loading`+`${button}`] : false,
+                                disabled : false,
+                                visible : true,
+                                currentIco: null,
+                                currentLibelle: 'Erreur serveur',
+                                currentText: "Malgré nos serveurs momentanément indisponibles.\nVotre transaction a été prise en compte.\nToute future action Entrée/Sortie sera traitée avec succès.\n\n L'EQUIPE NIVA"                                   
+                            })
+                            Vibration.vibrate(500)
+                        }
+                    }else {
+                        this.setState({
+                            [`loading`+`${button}`] : false,
+                            disabled : false,
+                            visible : true,
+                            currentIco: null,
+                            currentLibelle: 'Erreur serveur',
+                            currentText: "Nous sommes désolés.\n Votre transaction ne peut avoir lieu pour le moment.\nVeuillez réessailler ultérieurement.\n\nL'EQUIPE NIVA"                                   
+                        })                    
+                    }
+                    
                 }
             })
         }
@@ -510,21 +576,32 @@ class ManagementTime extends React.Component {
             <Overlay 
                 isVisible={this.state.visible} 
                 onBackdropPress={() => this.setState({ visible: false })}
-                overlayStyle = {{height : 'auto', width: '100%', padding : 0}}>
-                <View>
+                overlayStyle = {{height : '100%', width: '100%', padding : 0}}
+                animationType = 'slide'>
+                <View style = {{flex : 1}}>
                     <View style= {{alignItems : 'center',justifyContent : 'center', borderBottomWidth : 1, backgroundColor : '#008080', height : 60}}>
                         <Text style= {{fontSize : 20, fontWeight : "bold", color : 'white'}}>{title}</Text>
                     </View>
-                    <View style = {{alignItems : 'center', justifyContent : 'center',}}>
-                        <Text style={ styles.text_dialog }>{text}</Text>
+                    <View style = {{alignItems : 'center', justifyContent : 'center', marginLeft: 5, marginBottom : 20, marginTop : 20,marginRight: 5, flex :0.4}}>
+                         {
+                             this.state.erroServeur ? (              
+                                <FontAwesome5 
+                                    name="exclamation-triangle" 
+                                    color= "red" 
+                                    size={70} 
+                                />
+                            ) : (                        
+                                 <Image style={ styles.imageOverlay } source={{ uri: `data:image/png;base64,${ico}` }} />
+                             )
+                         }
                     </View>
-                    <View style = {{alignItems : 'center', justifyContent : 'center', marginLeft: 5, marginBottom : 10, marginRight: 5}}>
-                        <Image style={ styles.image } source={{ uri: `data:image/png;base64,${ico}` }} />
+                    <View style = {{alignItems :'center', justifyContent : 'flex-start',flex :1}}>
+                        <Text style={ styles.text_dialog }>{text}</Text>
                     </View>
                     <TouchableOpacity 
                         onPress={ () => this.setState({ visible: false }) } 
-                        style = {{borderTopWidth : 1, width : '100%', alignItems : 'center', justifyContent: 'center', paddingTop : 15, paddingBottom : 15, backgroundColor : '#EDEDED'}}>
-                        <Text style = {{fontSize : 20}}>
+                        style = {{flex :0.2,borderWidth : 1, borderColor : 'white',width : '100%', alignItems : 'center', justifyContent: 'center', backgroundColor : '#008080', marginBottom : 15}}>
+                        <Text style = {{fontSize : 20, color : 'white'}}>
                             OK
                         </Text>
                     </TouchableOpacity>
@@ -599,6 +676,10 @@ class ManagementTime extends React.Component {
                         this.state.loading ? 
                                 <Text style = {{fontSize : 20, textAlign : 'justify', color : 'white', marginTop : 40}}>Veuillez patienter les transactions réalisées hors ligne sont en cours d'acheminement ...</Text>
                         :   <View> 
+                            { this.state.erroServeur ? <Text style = {styles.text_erroServeur}>Serveur momentanément Indisponible</Text>  
+
+                                : (null)
+                            }
                                 <View>
                                     <Text style={ styles.text_date }>{ moment().format("dddd Do MMMM YYYY").toUpperCase() }</Text>
                                 </View>
@@ -684,11 +765,21 @@ const styles = StyleSheet.create({
         width: 50,
         marginVertical: 10
     },
+    imageOverlay : {
+        height : 100,
+        width: 100,
+        marginVertical: 10
+    },
     text_date: {
         textAlign : 'center',
-        marginTop : 50,
+        marginTop : 20,
         color : "#fff",
         fontSize : 20
+    },
+    text_erroServeur: {
+        textAlign : 'center',
+        color : "#F25431",
+        fontSize : 18
     },
     text_heure:{
         textAlign:'center',
