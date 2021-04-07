@@ -130,7 +130,7 @@ export const getIco = async (token,ico) => {
     }
 }
 
-export const postLostPassword = async (token,email) => {
+export const postLostPassword = async (email) => {
     const url = 'https://portail-e-rh.niva.tm.fr/api/lost/password';
     try 
     {   
@@ -138,10 +138,10 @@ export const postLostPassword = async (token,email) => {
             method: 'POST',
             headers: {
                 'Content-Type' : "application/json",
-                'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify({
                 email : email,
+                code: 'AlphasysAPIMobileLostPasswordApi@69'
             })
         });
         const statusCode = response.status;

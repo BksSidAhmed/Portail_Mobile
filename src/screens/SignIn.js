@@ -5,7 +5,7 @@ import { KeyboardAvoidingView ,ScrollView, View, StyleSheet, Text, TouchableOpac
 import {emailAction} from '../redux/actions/emailAction'
 import {passwordAction} from '../redux/actions/passwordAction'
 //API
-import { getToken, postPassword } from '../api/index'
+import { getToken, postLostPassword } from '../api/index'
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import {listeEmailAction} from '../redux/actions/listeEmailAction'
@@ -18,12 +18,21 @@ class SignIn extends React.Component {
         this.password = "",
         this.state = {
             loading: false,
-            visible: false,
+            visibleError: false,
+            visibleLostPassword: false,
+            visibleLostPasswordResponse: false,
+            loaderLostPassword: false,
+            responseLostPassword: '',
+            emailLostPassword: null,
         }
     }
 
-    editemail = (text) => {
+    editEmail = (text) => {
         this.email = text
+    }
+
+    editEmailLostPassword = (text) => {
+        this.emailLostPassword = text
     }
 
     editPassword = (text) => {
@@ -47,33 +56,87 @@ class SignIn extends React.Component {
             }
             if(data[0] == 401) {
                 this.setState({
-                    loading : false
+                    loading : false,
+                    visibleError: true
                 })
-                // Alert.alert(
-                //     'Erreur',
-                //     "Le nom d'utilisateur et/ou le mot de passe est incorrect",
-                //     [
-                //         {
-                //             text: 'ok',
-                //         },
-                //     ] 
-                // );
-                this.setState({visible: true});
             }
         })
     }
-    // forgotPassword = () => {
-    //     // getToken(this.email,this.password).then(data => {
-    //     //     console.log(data[0])
-    //     //     if(data[0] == 200) {
+    
+    forgotPassword = () => {
+        this.setState({
+            loaderLostPassword: true,
+            visibleLostPasswordResponse: true
+        });
+        this.toggleOverlay('lost-password');
+        this.toggleOverlay('response-lost-password');
+        if(this.emailLostPassword != null) {
+            postLostPassword(this.emailLostPassword).then(data => {
+                this.setState({
+                    loaderLostPassword: false,
+                    responseLostPassword: data[1]
+                });
+            });
+        } else {
+            this.setState({
+                loaderLostPassword: false,
+                responseLostPassword: { success: false, message: 'Aucun email renseigné.' }
+            });
+        }
+    }
 
-    //     //     }
-    //     // })
-    // }
-
-    toggleOverlay = () => {
-        this.setState({visible: !this.state.visible});
+    toggleOverlay = (selector) => {
+        if(selector == 'error') {
+            this.setState({visibleError: !this.state.visibleError});
+        }
+        if(selector == 'lost-password') {
+            this.setState({visibleLostPassword: !this.state.visibleLostPassword});
+        }
+        if(selector == 'response-lost-password') {
+            this.setState({visibleLostPasswordResponse: !this.state.visibleLostPasswordResponse})
+        }
     };
+
+    contentLostPassword = () => {
+        return (
+            <View style = { styles.view_overlay }>
+                <View>
+                    <Text style = { styles.text_overlay }>Entrez votre email. Un lien vous permettant de renouveler votre mot de passe vous sera envoyé.</Text>
+                    <Input 
+                        placeholder = "Email"
+                        rightIcon = {{ type: 'font-awesome', name: 'envelope' }}
+                        style = { styles.text_input }
+                        keyboardType = "email-address"
+                        autoCapitalize = "none"
+                        onChangeText = { (text) => this.editEmailLostPassword(text) }
+                    />
+                </View>
+                <View style = { styles.view_button_overlay }>
+                    <Button buttonStyle = { styles.button_overlay_accept } title = "Envoyer" onPress = { () => this.forgotPassword() }/>
+                    <Button buttonStyle = { styles.button_overlay_refuse } title = "Annuler" onPress = { () => this.toggleOverlay('lost-password') }/>
+                </View>
+            </View>
+        )
+    }
+    
+    contentLostPasswordResponse = (data) => {
+        return (
+            <View style = { styles.view_overlay }>
+                <Text style = { styles.text_overlay }>{ data.message }</Text>
+                <View style = { styles.view_button_overlay }>
+                    <Button buttonStyle = { styles.button_overlay_accept } title = "OK" onPress = { () => this.toggleOverlay('response-lost-password') }/>
+                </View>
+            </View>
+        )
+    }
+
+    loader = () => {
+        return (
+            <View style = { styles.view_overlay }>
+                <ActivityIndicator size = "large" color = "#00ff00"/>
+            </View>
+        )
+    }
 
     render() {
 
@@ -101,7 +164,7 @@ class SignIn extends React.Component {
                                     style = { styles.text_input }
                                     keyboardType = "email-address"
                                     autoCapitalize = "none"
-                                    onChangeText = { (text) => this.editemail(text) }
+                                    onChangeText = { (text) => this.editEmail(text) }
                                 />
                                 <Input 
                                     placeholder = "Mot de Passe"
@@ -113,17 +176,25 @@ class SignIn extends React.Component {
                                 />
                             </View>
                             <View style = { styles.view_button }>
-                                <Button containerStyle = { styles.button_container} buttonStyle = { styles.button_style } title = "Connexion" onPress = {() => this.connexion()}/>
-                                <Button containerStyle = { styles.button_container} buttonStyle = { styles.button_style } title = "Mot de passe oublié ?" onPress = {() => this.forgotPassword()}/>
+                                <Button containerStyle = { styles.button_container} buttonStyle = { styles.button_style } title = "Connexion" onPress = { () => this.connexion() }/>
+                                <Button containerStyle = { styles.button_container} buttonStyle = { styles.button_style } title = "Mot de passe oublié ?" onPress = { () => this.toggleOverlay('lost-password') }/>
                             </View>
                         </Animatable.View>
                     </ScrollView>
                 </View>
-                <Overlay isVisible = { this.state.visible } onBackdropPress = { () => this.toggleOverlay() }>
+                <Overlay isVisible = { this.state.visibleError } onBackdropPress = { () => this.toggleOverlay('error') }>
                     <View style = { styles.view_overlay }>
                         <Text style = { styles.text_overlay }>Le nom d'utilisateur et/ou le mot de passe est incorrect.</Text>
-                        <Button buttonStyle = { styles.button_overlay } title = "OK" onPress = { () => this.toggleOverlay() }/>
+                        <View style = { styles.view_button_overlay }>
+                            <Button buttonStyle = { styles.button_overlay_accept } title = "OK" onPress = { () => this.toggleOverlay('error') }/>
+                        </View>
                     </View>
+                </Overlay>
+                <Overlay isVisible = { this.state.visibleLostPassword } onBackdropPress = { () => this.toggleOverlay('lost-password') }>
+                    { this.contentLostPassword() }
+                </Overlay>
+                <Overlay isVisible = { this.state.visibleLostPasswordResponse } onBackdropPress = { () => this.toggleOverlay('response-lost-password') }>
+                    { this.state.loaderLostPassword ? this.loader() : this.contentLostPasswordResponse(this.state.responseLostPassword) }
                 </Overlay>
             </View> 
         );
@@ -158,6 +229,10 @@ const styles = StyleSheet.create({
     view_overlay: {
         padding: 20
     },  
+    view_button_overlay: {
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
     text_title: {
         color: '#fff',
         fontWeight: 'bold',
@@ -189,9 +264,19 @@ const styles = StyleSheet.create({
     button_container: {
         width: '100%'
     },
-    button_overlay: {
+    button_overlay_accept: {
         borderRadius: 50,
-        backgroundColor: '#008080'
+        backgroundColor: '#008080',
+        marginVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 20
+    },
+    button_overlay_refuse: {
+        borderRadius: 50,
+        backgroundColor: '#b22222',
+        marginVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 20
     }
 });
 
