@@ -8,12 +8,11 @@ import { getToken, postAction, getUser } from '../api/index';
 import Geolocation from '@react-native-community/geolocation';
 import {listeEmailAction} from '../redux/actions/listeEmailAction';
 import {pointingAction} from '../redux/actions/pointingHorsLigneAction';
-import {Overlay} from 'react-native-elements';
+import { Button, Overlay} from 'react-native-elements';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import {PermissionsAndroid} from 'react-native';
 import { getDistance } from 'geolib';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { Button } from 'react-native-paper';
 
 const geolib = require('geolib');
 
@@ -38,7 +37,7 @@ class ManagementTime extends React.Component {
             latitude: '',
             longitude : '',
             visible: false,
-            visibleList: false,
+            visibleListActivites: false,
             disabled : false,
             user : '',
             currentIco: '',
@@ -949,7 +948,7 @@ class ManagementTime extends React.Component {
                         <Text style={ styles.text_dialog }>{text}</Text>
                     </View>
                     <TouchableOpacity 
-                        onPress={ () => this.setState({ visible: false, visibleList : false }) } 
+                        onPress={ () => this.setState({ visible: false, visibleListActivites : false }) } 
                         style = {{flex :0.2,borderWidth : 1, borderColor : 'white',width : '100%', alignItems : 'center', justifyContent: 'center', backgroundColor : '#008080', marginBottom : 15}}>
                         <Text style = {{fontSize : 20, color : 'white'}}>
                             OK
@@ -1019,7 +1018,7 @@ class ManagementTime extends React.Component {
 
     showActiviteList = (button, libelle, localisation) => {
         this.setState({
-            visibleList: true,
+            visibleListActivites: true,
             activitesButton: button,
             activitesLibelle: libelle,
             activitesLocalisation: localisation
@@ -1029,42 +1028,27 @@ class ManagementTime extends React.Component {
     activitesList = (button, libelle, localisation, activites) => {
         return(
             <Overlay 
-                isVisible={ this.state.visibleList } 
-                overlayStyle = {{ height : '100%', width: '100%', padding : 0 }}
+                isVisible={ this.state.visibleListActivites } 
+                overlayStyle = {{ padding : 0 }}
+                fullScreen = { true }
                 animationType = 'slide'>
-                <View style = {{flex :1}}>
-                <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60}}>
-                    <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white'}}>Activités disponibles</Text>
-                </View>
-                <FlatList data={ activites } 
-                    renderItem={({ item }) => 
-                        <Animatable.View animation="bounceIn" style={ styles.container_button_animation }>
-                            <TouchableOpacity 
-                                onPress={ () => this.actionButton(button, libelle, localisation, item.code) } 
-                                disabled={ item.disabled } 
-                                style={ styles.button }
-                            >
-                                {
-                                    (item.loading 
-                                        ? <ActivityIndicator size="large" color="#00ff00"/>  
-                                        : <View style={ styles.container_ico }>
-                                            <Text>{ item.nom }</Text>
-                                        </View>
-                                    )
-                                }
-
-                            </TouchableOpacity>
-                        </Animatable.View>
-                    }
-                    keyExtractor = {item => item.code}
-                ></FlatList>
-                <TouchableOpacity 
-                    onPress={ () => this.setState({ visibleList: false }) } 
-                    style = {{ flex :0.2,borderWidth : 1, borderColor : 'white',width : '100%', alignItems : 'center', justifyContent: 'center', backgroundColor : '#008080', marginBottom : 15 }}>
-                    <Text style = {{ fontSize : 20, color : 'white' }}>
-                        Retour
-                    </Text>
-                </TouchableOpacity>
+                <View style = {{ flex :1 }}>
+                    <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60, marginBottom: 1}}>
+                        <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white' }}>Activités disponibles</Text>
+                    </View>
+                    <FlatList data={ activites } 
+                        renderItem={({ item, index }) => 
+                            <Animatable.View animation = "bounceIn" delay = { index * 300 } style = { styles.container_button_animation }>
+                                <Button 
+                                    onPress={ () => this.actionButton(button, libelle, localisation, item.code) } 
+                                    buttonStyle= { styles.buttons_list_activites }
+                                    title = { item.nom }
+                                />
+                            </Animatable.View>
+                        }
+                        keyExtractor = { item => item.code }
+                    ></FlatList>
+                    <Button buttonStyle = { styles.button_overlay_accept } title = "Retour" onPress={ () => this.setState({ visibleListActivites: false }) }/>
                 </View>
             </Overlay>
         )
@@ -1074,8 +1058,8 @@ class ManagementTime extends React.Component {
         const { loadingList, currentIco, currentLibelle, currentText, user, activites, activitesButton, activitesLibelle, activitesLocalisation } = this.state;
         return(
             <View style = { styles.container }>
-                <StatusBar backgroundColor='#008080' barStyle="light-content"/>
-                <Animatable.View animation="fadeInDown" style={ styles.container_header }>
+                <StatusBar backgroundColor = '#008080' barStyle = "light-content"/>
+                <Animatable.View animation = "fadeInDown" style = { styles.container_header }>
                     {
                         this.state.loading ? 
                                 <Text style = {{fontSize : 20, textAlign : 'justify', color : 'white', marginTop : 40}}>Veuillez patienter les transactions réalisées hors ligne sont en cours d'acheminement ...</Text>
@@ -1224,6 +1208,19 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize : 20
     },
+    buttons_list_activites: {
+        borderRadius: 0,
+        marginVertical: 2,
+        backgroundColor: '#16A085',
+        paddingVertical: 20
+    },  
+    button_overlay_accept: {
+        borderRadius: 50,
+        backgroundColor: '#008080',
+        marginVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 20
+    }
 })
 
 const mapStateToProps = (state) => {

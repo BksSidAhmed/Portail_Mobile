@@ -8,8 +8,8 @@ class About extends React.Component {
 
     render(){
         const text_about_1 = 'NIVA® version V1.0 2021';
-        const text_about_2 = 'Cette application a été réalisée par ALPHASYS - Lyon - France';
-        const text_about_3 = 'NIVA est une marque déposée par ALPHASYS - Lyon - France';
+        const text_about_2 = 'Cette application a été réalisée par ALPHASYS - Lyon - France.';
+        const text_about_3 = 'NIVA est une marque déposée par ALPHASYS - Lyon - France.';
         const text_about_4 = 'Cette application a pour objectif de : ';
         const list_objectifs =  [
             { key : 1, objectif: 'Récupérer les mouvements de début, fin ou changement d\'activité' },
@@ -23,7 +23,7 @@ class About extends React.Component {
                 <Text style = { styles.text_about }>{ text_about_2 }</Text>
                 <Text style = { styles.text_about }>{ text_about_3 }</Text>
                 <Text style = { styles.text_about }>{ text_about_4 }</Text>
-                <FlatList data = { list_objectifs } renderItem = { ({ item }) => <Text style = { styles.text_about }>- { item.objectif } -</Text>} />
+                <FlatList data = { list_objectifs } renderItem = { ({ item }) => <Text style = { styles.text_about }>  -  { item.objectif }</Text>} />
             </View>
         );
     }
@@ -33,11 +33,9 @@ class About extends React.Component {
 const styles = StyleSheet.create({
     container : {
         flex : 1,
-        justifyContent : 'center',
         paddingVertical: 10
     },
     text_about : {
-        textAlign:'center',
         padding: 5
     },
 });

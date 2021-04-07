@@ -22,11 +22,9 @@ class Confidential extends React.Component {
 const styles = StyleSheet.create({
     container : {
         flex : 1,
-        justifyContent : 'center',
         paddingVertical: 10
     },
     text_confidential : {
-        textAlign:'center',
         padding: 5
     },
 });

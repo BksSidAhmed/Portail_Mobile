@@ -142,7 +142,7 @@ class SignIn extends React.Component {
 
         if(this.state.loading) {
             return(
-                <View style = {{flex: 1,justifyContent: "center"}}>
+                <View style = {{ flex: 1, justifyContent: "center" }}>
                     <ActivityIndicator size = "large" color = "#00ff00" />
                 </View>
             )
@@ -213,8 +213,8 @@ const styles = StyleSheet.create({
     view_form: {
         flex: 2,
         backgroundColor: '#fff',
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
         paddingHorizontal: 20,
         paddingVertical: 20
     },
