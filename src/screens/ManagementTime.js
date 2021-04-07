@@ -37,6 +37,7 @@ class ManagementTime extends React.Component {
             latitude: '',
             longitude : '',
             visible: false,
+            visibleList: false,
             disabled : false,
             user : '',
             currentIco: '',
@@ -56,7 +57,12 @@ class ManagementTime extends React.Component {
             statutIco : null,
             icoPresent : null,
             icoAbsent : null,
-            erroServeur : false
+            erroServeur : false,
+            activite : null,
+            activites : null,
+            activitesButton: null,
+            activitesLibelle: null,
+            activitesLocalisation: null,
         }
     }
     
@@ -83,7 +89,7 @@ class ManagementTime extends React.Component {
                      element.pointage.forEach(pointing => {
                         getToken(this.props.email,this.props.password).then(data => {
                             if(data[0] == 200) {
-                                postAction(data[1].token,pointing[0],pointing[1],pointing[2],pointing[3],pointing[4],pointing[5],pointing[6]).then(data => {
+                                postAction(data[1].token,pointing[0],pointing[1],pointing[2],pointing[3],pointing[4],pointing[5],pointing[6],null).then(data => {
                                     if(data[0] == 200) {
                                             compteurDelete++
                                             if(compteurDelete == element.pointage.length) {
@@ -122,11 +128,12 @@ class ManagementTime extends React.Component {
                     this.setState({
                         activeGeolocalisation : response[1].user.activeLocalisation, 
                         lieuxGeolocalisation : response[1].user.lieux,
+                        activites : response[1].user.activites,
                         statutIco : response[1].user.statut,
                         icoAbsent : response[1].user.icoAbsent,
                         icoPresent : response[1].user.icoPresent,
                     })
-                    console.log(response[1].user.icoAbsent)
+                    console.log(response[1].user.activites)
                     console.log(response[1].user.icoPresent)
                     console.log(response[1].user.statut)
 
@@ -157,36 +164,42 @@ class ManagementTime extends React.Component {
                                         'ico': response[1].user.icoAbsent,
                                         'libelle': response[1].user.profil.action_0.libelle,
                                         'localisation' : response[1].user.profil.action_0.localisation,
+                                        'activite' : response[1].user.profil.action_0.activite
                                     },
                                     'action1': {
                                         'active': response[1].user.profil.action_1.active,
                                         'ico': response[1].user.profil.action_1.ico,
                                         'libelle': response[1].user.profil.action_1.libelle,
-                                        'localisation' : response[1].user.profil.action_1.localisation 
+                                        'localisation' : response[1].user.profil.action_1.localisation, 
+                                        'activite' : response[1].user.profil.action_1.activite
                                     },
                                     'action2': {
                                         'active': response[1].user.profil.action_2.active,
                                         'ico': response[1].user.profil.action_2.ico,
                                         'libelle': response[1].user.profil.action_2.libelle,
-                                        'localisation' : response[1].user.profil.action_2.localisation 
+                                        'localisation' : response[1].user.profil.action_2.localisation, 
+                                        'activite' : response[1].user.profil.action_2.activite
                                     },
                                     'action3': {
                                         'active': response[1].user.profil.action_3.active,
                                         'ico': response[1].user.profil.action_3.ico,
                                         'libelle': response[1].user.profil.action_3.libelle,
-                                        'localisation' : response[1].user.profil.action_3.localisation 
+                                        'localisation' : response[1].user.profil.action_3.localisation, 
+                                        'activite' : response[1].user.profil.action_3.activite
                                     },
                                     'action4': {
                                         'active': response[1].user.profil.action_4.active,
                                         'ico': response[1].user.profil.action_4.ico,
                                         'libelle': response[1].user.profil.action_4.libelle,
-                                        'localisation' : response[1].user.profil.action_4.localisation 
+                                        'localisation' : response[1].user.profil.action_4.localisation, 
+                                        'activite' : response[1].user.profil.action_4.activite
                                     },
                                     'action5': {
                                         'active': response[1].user.profil.action_5.active,
                                         'ico': response[1].user.profil.action_5.ico,
                                         'libelle': response[1].user.profil.action_5.libelle,
-                                        'localisation' : response[1].user.profil.action_5.localisation 
+                                        'localisation' : response[1].user.profil.action_5.localisation,
+                                        'activite' : response[1].user.profil.action_5.activite
                                     }
                                 }
                             }
@@ -202,37 +215,42 @@ class ManagementTime extends React.Component {
                                         'ico': response[1].user.icoPresent,
                                         'libelle': response[1].user.profil.action_0.libelle,
                                         'localisation' : response[1].user.profil.action_0.localisation, 
+                                        'activite' : response[1].user.profil.action_0.activite
                                     },
                                     'action1': {
                                         'active': response[1].user.profil.action_1.active,
                                         'ico': response[1].user.profil.action_1.ico,
                                         'libelle': response[1].user.profil.action_1.libelle,
                                         'localisation' : response[1].user.profil.action_1.localisation,
-
+                                        'activite' : response[1].user.profil.action_1.activite
                                     },
                                     'action2': {
                                         'active': response[1].user.profil.action_2.active,
                                         'ico': response[1].user.profil.action_2.ico,
                                         'libelle': response[1].user.profil.action_2.libelle,
-                                        'localisation' : response[1].user.profil.action_2.localisation 
+                                        'localisation' : response[1].user.profil.action_2.localisation, 
+                                        'activite' : response[1].user.profil.action_2.activite
                                     },
                                     'action3': {
                                         'active': response[1].user.profil.action_3.active,
                                         'ico': response[1].user.profil.action_3.ico,
                                         'libelle': response[1].user.profil.action_3.libelle,
-                                        'localisation' : response[1].user.profil.action_3.localisation 
+                                        'localisation' : response[1].user.profil.action_3.localisation,
+                                        'activite' : response[1].user.profil.action_3.activite
                                     },
                                     'action4': {
                                         'active': response[1].user.profil.action_4.active,
                                         'ico': response[1].user.profil.action_4.ico,
                                         'libelle': response[1].user.profil.action_4.libelle,
-                                        'localisation' : response[1].user.profil.action_4.localisation 
+                                        'localisation' : response[1].user.profil.action_4.localisation, 
+                                        'activite' : response[1].user.profil.action_4.activite
                                     },
                                     'action5': {
                                         'active': response[1].user.profil.action_5.active,
                                         'ico': response[1].user.profil.action_5.ico,
                                         'libelle': response[1].user.profil.action_5.libelle,
-                                        'localisation' : response[1].user.profil.action_5.localisation 
+                                        'localisation' : response[1].user.profil.action_5.localisation,
+                                        'activite' : response[1].user.profil.action_5.activite 
                                     }
                                 }
                             }
@@ -262,7 +280,7 @@ class ManagementTime extends React.Component {
         }, 1000);
     }
 
-    actionButton = async (button, libelle, localisation) => {
+    actionButton = async (button, libelle, localisation, activite) => {
         if ( this.state.activeGeolocalisation == false ) {
             this.setState({
                 [`loading`+`${button}`] : true,
@@ -272,7 +290,7 @@ class ManagementTime extends React.Component {
                 console.log(this.props.pointing)
                 console.log(data)  
                 if(data[0] == 200) {
-                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
+                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude,activite).then(data => {
                         console.log(data)
                         if(data[0] == 200) {
                             if(button == 'F00') {
@@ -392,7 +410,7 @@ class ManagementTime extends React.Component {
                                         })
                                         getToken(this.props.email,this.props.password).then(data => {
                                             if(data[0] == 200) {
-                                                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude).then(data => {
+                                                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude,activite).then(data => {
                                                     if(data[0] == 200) {
                                                         if(button == 'F00') {
                                                             Vibration.vibrate(500)
@@ -427,7 +445,7 @@ class ManagementTime extends React.Component {
                                             })
                                             getToken(this.props.email,this.props.password).then(data => {
                                                 if(data[0] == 200) {
-                                                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude).then(data => {
+                                                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite).then(data => {
                                                         if(data[0] == 200) {
                                                             if(button == 'F00') {
                                                                 Vibration.vibrate(500)
@@ -465,7 +483,7 @@ class ManagementTime extends React.Component {
                             }),
                             getToken(this.props.email,this.props.password).then(data => {
                                 if(data[0] == 200) {
-                                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null).then(data => {
+                                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null).then(data => {
                                         if(data[0] == 200) {
                                             if(button == 'F00') {
                                                 Vibration.vibrate(500)
@@ -500,7 +518,7 @@ class ManagementTime extends React.Component {
                         }),
                         getToken(this.props.email,this.props.password).then(data => {
                             if(data[0] == 200) {
-                                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null).then(data => {
+                                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null).then(data => {
                                     if(data[0] == 200) {
                                         if(button == 'F00') {
                                             Vibration.vibrate(500)
@@ -540,7 +558,7 @@ class ManagementTime extends React.Component {
                 }),
                 getToken(this.props.email,this.props.password).then(data => {
                     if(data[0] == 200) {
-                        postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,null,null).then(data => {
+                        postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,null,null,activite).then(data => {
                             if(data[0] == 200) {
                                 if(button == 'F00') {
                                     Vibration.vibrate(500)
@@ -615,37 +633,37 @@ class ManagementTime extends React.Component {
         if( user.profil.action0.active )
         {
             if( this.state.statutIco == true ) {
-                libelles.push({ key : user.profil.action0.libelle, ico : this.state.icoAbsent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation });
+                libelles.push({ key : user.profil.action0.libelle, ico : this.state.icoAbsent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
             }else {
-                libelles.push({ key : user.profil.action0.libelle, ico : this.state.icoPresent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation });
+                libelles.push({ key : user.profil.action0.libelle, ico : this.state.icoPresent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
             }
         }
         if( user.profil.action1.active )
         {
-            libelles.push({ key : user.profil.action1.libelle, ico : user.profil.action1.ico, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation});
+            libelles.push({ key : user.profil.action1.libelle, ico : user.profil.action1.ico, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation, activite : user.profil.action1.activite});
         }
         if( user.profil.action2.active )
         {
-            libelles.push({ key : user.profil.action2.libelle, ico : user.profil.action2.ico, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation});
+            libelles.push({ key : user.profil.action2.libelle, ico : user.profil.action2.ico, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation, activite : user.profil.action2.activite});
         }
         if( user.profil.action3.active )
         {
-            libelles.push({ key : user.profil.action3.libelle, ico : user.profil.action3.ico, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation});
+            libelles.push({ key : user.profil.action3.libelle, ico : user.profil.action3.ico, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation, activite : user.profil.action3.activite});
         }
         if( user.profil.action4.active )
         {
-            libelles.push({ key : user.profil.action4.libelle, ico : user.profil.action4.ico, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation});
+            libelles.push({ key : user.profil.action4.libelle, ico : user.profil.action4.ico, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation, activite : user.profil.action4.activite});
         }
         if( user.profil.action5.active )
         {
-            libelles.push({ key : user.profil.action5.libelle, ico : user.profil.action5.ico, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation });
+            libelles.push({ key : user.profil.action5.libelle, ico : user.profil.action5.ico, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation, activite : user.profil.action5.activite });
         }
         return(
             <FlatList data={ libelles } 
                 renderItem={({item}) => 
                     <Animatable.View animation="bounceIn" delay={ item.delay } style={ styles.container_button_animation }>
                         <TouchableOpacity 
-                            onPress={ () => this.actionButton(item.button, item.key, item.localisation) } 
+                            onPress={ () => { if(item.activite){ this.showActiviteList(item.button, item.key, item.localisation) } else { this.actionButton(item.button, item.key, item.localisation, this.state.activite) } } } 
                             disabled={ item.disabled } 
                             style={ styles.button }
                         >
@@ -663,13 +681,65 @@ class ManagementTime extends React.Component {
                     </Animatable.View>
                 }
             ></FlatList>
+            
+        )
+    }
+
+    showActiviteList = (button, libelle, localisation) => {
+        this.setState({
+            visibleList: true,
+            activitesButton: button,
+            activitesLibelle: libelle,
+            activitesLocalisation: localisation
+        })
+    }
+
+    activitesList = (button, libelle, localisation, activites) => {
+        return(
+            <Overlay 
+                isVisible={ this.state.visibleList } 
+                overlayStyle = {{ height : '100%', width: '100%', padding : 0 }}
+                animationType = 'slide'>
+                <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60}}>
+                    <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white'}}>Activités disponibles</Text>
+                </View>
+                <FlatList data={ activites } 
+                    renderItem={({ item }) => 
+                        <Animatable.View animation="bounceIn" style={ styles.container_button_animation }>
+                            <TouchableOpacity 
+                                onPress={ () => this.actionButton(button, libelle, localisation, item.code) } 
+                                disabled={ item.disabled } 
+                                style={ styles.button }
+                            >
+                                {
+                                    (item.loading 
+                                        ? <ActivityIndicator size="large" color="#00ff00"/>  
+                                        : <View style={ styles.container_ico }>
+                                            <Text>{ item.nom }</Text>
+                                        </View>
+                                    )
+                                }
+
+                            </TouchableOpacity>
+                        </Animatable.View>
+                    }
+                    keyExtractor = {item => item.code}
+                ></FlatList>
+                <TouchableOpacity 
+                    onPress={ () => this.setState({ visibleList: false }) } 
+                    style = {{ flex :0.2,borderWidth : 1, borderColor : 'white',width : '100%', alignItems : 'center', justifyContent: 'center', backgroundColor : '#008080', marginBottom : 15 }}>
+                    <Text style = {{ fontSize : 20, color : 'white' }}>
+                        Retour
+                    </Text>
+                </TouchableOpacity>
+            </Overlay>
         )
     }
 
     render(){
-        const { loadingList, currentIco, currentLibelle, currentText, user } = this.state;
+        const { loadingList, currentIco, currentLibelle, currentText, user, activites, activitesButton, activitesLibelle, activitesLocalisation } = this.state;
         return(
-            <View style={ styles.container }>
+            <View style = { styles.container }>
                 <StatusBar backgroundColor='#008080' barStyle="light-content"/>
                 <Animatable.View animation="fadeInDown" style={ styles.container_header }>
                     {
@@ -696,6 +766,7 @@ class ManagementTime extends React.Component {
                     </View>
                 </View>
                 { this.dialogPopup(currentIco, currentLibelle, currentText) }
+                { this.activitesList(activitesButton, activitesLibelle, activitesLocalisation, activites) }
             </View>
         );
     }

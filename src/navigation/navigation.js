@@ -6,6 +6,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import SignIn from '../screens/SignIn'
 import ManagementTime from '../screens/ManagementTime'
+import About from '../screens/About'
 import ManagementNoConnection from '../screens/ManagementNoConnection'
 import DrawerComponent from '../component/DrawerComponent'
 
@@ -21,6 +22,7 @@ import {passwordAction} from '../redux/actions/passwordAction'
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import NetInfo from "@react-native-community/netinfo";
+import Confidential from "../screens/Confidential";
 
 const ManagementNoConnectionTimeStack = createStackNavigator();
 const ManagementNoConnectionStackScreen = () => (
@@ -64,6 +66,70 @@ const ManagementTimeStackScreen = ({navigation}) => (
           }}
         />
     </ManagementTimeStack.Navigator>
+)
+const AboutStack = createStackNavigator();
+const AboutStackScreen = ({navigation}) => (
+  <AboutStack.Navigator>
+      <AboutStack.Screen 
+        name = "A propos" 
+        component={About}
+        options = {{
+          title : 'Niva® - À propos',
+          headerStyle : {
+            backgroundColor : '#008080',
+          },
+          headerTintColor : '#fff',
+          headerTitleAlign : 'center',
+          headerTitleStyle : {
+            fontWeight: 'bold'
+          },
+          headerRight: () => (
+            <FontAwesome5 
+                onPress={() => navigation.toggleDrawer()}
+                name="bars" 
+                color= "white" 
+                size={23} 
+            />
+          ),
+          headerRightContainerStyle : {
+            padding : 20,
+            marginTop : 5
+          }
+        }}
+      />
+  </AboutStack.Navigator>
+)
+const ConfidentialStack = createStackNavigator();
+const ConfidentialStackScreen = ({navigation}) => (
+  <ConfidentialStack.Navigator>
+      <ConfidentialStack.Screen 
+        name = "Confidentialite" 
+        component={Confidential}
+        options = {{
+          title : 'Niva® - Confidentialite',
+          headerStyle : {
+            backgroundColor : '#008080',
+          },
+          headerTintColor : '#fff',
+          headerTitleAlign : 'center',
+          headerTitleStyle : {
+            fontWeight: 'bold'
+          },
+          headerRight: () => (
+            <FontAwesome5 
+                onPress={() => navigation.toggleDrawer()}
+                name="bars" 
+                color= "white" 
+                size={23} 
+            />
+          ),
+          headerRightContainerStyle : {
+            padding : 20,
+            marginTop : 5
+          }
+        }}
+      />
+  </ConfidentialStack.Navigator>
 )
 
 // const SettingsStack = createStackNavigator();
@@ -136,6 +202,8 @@ const Drawer = createDrawerNavigator();
 const DrawerScreen = () => (
   <Drawer.Navigator initialRouteName="Gestion du temps" drawerPosition = "right" drawerContent= { props => <DrawerComponent {...props}/>}>
     <Drawer.Screen name="Gestion du temps" component={ManagementTimeStackScreen}/>
+    <Drawer.Screen name="A propos" component={AboutStackScreen}/>
+    <Drawer.Screen name="Confidentialite" component={ConfidentialStackScreen}/>
   </Drawer.Navigator>
 ); 
 

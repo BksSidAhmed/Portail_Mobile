@@ -22,7 +22,7 @@ export const getToken = async (email,password) => {
     }
 }
 
-export const postAction = async (token,indicateurTemps,email,date,heure,button,lat,lng) => {
+export const postAction = async (token, indicateurTemps, email, date, heure, button, lat, lng, activite) => {
     const url = 'https://portail-e-rh.niva.tm.fr/api/action';
     try 
     {
@@ -41,7 +41,7 @@ export const postAction = async (token,indicateurTemps,email,date,heure,button,l
                 button : button,
                 lat : lat,
                 lng : lng,
-                activite : null
+                activite : activite
             })
         });
         const statusCode = response.status;

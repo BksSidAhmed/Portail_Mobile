@@ -28,7 +28,6 @@ class DrawerComponent extends React.Component {
                             <Text style = {{fontSize : 20, fontWeight : 'bold', }}>{ this.props.email } </Text>
                         </View>
                         <View style = {{flex : 1}}>
-                            <Text style = {{fontSize : 15, margin : 10, fontWeight : 'bold'}}> Menu </Text>
                             <Drawer.Section style={styles.drawerSection}>
                                 <DrawerItem 
                                     label="Gestion du temps"
@@ -49,11 +48,20 @@ class DrawerComponent extends React.Component {
                             </Drawer.Section>
                             <Drawer.Section style={styles.drawerSection}>
                                 <DrawerItem 
-                                    label="A propos"
+                                    label="Confidentialité"
                                     labelStyle = {{
                                         fontSize : 15,
                                     }}
-                                    onPress={() => {this.props.navigation.navigate('Gestion du temps')}}
+                                    onPress={() => {this.props.navigation.navigate('Confidentialite')}}
+                                />
+                            </Drawer.Section>
+                            <Drawer.Section style={styles.drawerSection}>
+                                <DrawerItem 
+                                    label="À propos"
+                                    labelStyle = {{
+                                        fontSize : 15,
+                                    }}
+                                    onPress={() => {this.props.navigation.navigate('A propos')}}
                                 />
                             </Drawer.Section>
                         </View>
@@ -94,7 +102,8 @@ const styles = StyleSheet.create({
     },
     drawerSection: {
         borderColor: '#f4f4f4',
-        borderWidth: 3,
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
     },
     bottomDrawerSectionDeco: {
         marginBottom: 15,
