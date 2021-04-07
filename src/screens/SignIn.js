@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { View, StyleSheet, Text, TouchableOpacity, TextInput, StatusBar, ActivityIndicator, Alert } from 'react-native';
+import { KeyboardAvoidingView ,ScrollView, View, StyleSheet, Text, TouchableOpacity, TextInput, StatusBar, ActivityIndicator, Alert } from 'react-native';
 import {emailAction} from '../redux/actions/emailAction'
 import {passwordAction} from '../redux/actions/passwordAction'
 //API
@@ -9,23 +9,27 @@ import { getToken, postPassword } from '../api/index'
 import LinearGradient from 'react-native-linear-gradient';
 import * as Animatable from 'react-native-animatable';
 import {listeEmailAction} from '../redux/actions/listeEmailAction'
-import { ScrollView } from 'react-native';
+import { Button, Input, Overlay } from 'react-native-elements'
 
 class SignIn extends React.Component { 
     constructor(props) {
         super(props)
         this.email = "",
-        this.password = ""
+        this.password = "",
         this.state = {
-            loading : false
+            loading: false,
+            visible: false,
         }
     }
+
     editemail = (text) => {
         this.email = text
     }
+
     editPassword = (text) => {
         this.password = text
     }
+
     connexion = () => {
         getToken(this.email,this.password).then(data => {
             console.log(this.email + this.password)
@@ -45,15 +49,16 @@ class SignIn extends React.Component {
                 this.setState({
                     loading : false
                 })
-                Alert.alert(
-                    'Erreur',
-                    "Le nom d'utilisateur et/ou le mot de passe est incorrect",
-                    [
-                        {
-                            text: 'ok',
-                        },
-                    ] 
-                );
+                // Alert.alert(
+                //     'Erreur',
+                //     "Le nom d'utilisateur et/ou le mot de passe est incorrect",
+                //     [
+                //         {
+                //             text: 'ok',
+                //         },
+                //     ] 
+                // );
+                this.setState({visible: true});
             }
         })
     }
@@ -66,75 +71,62 @@ class SignIn extends React.Component {
     //     // })
     // }
 
+    toggleOverlay = () => {
+        this.setState({visible: !this.state.visible});
+    };
+
     render() {
 
         if(this.state.loading) {
             return(
-                <View style={{flex: 1,justifyContent: "center"}}>
-                    <ActivityIndicator size="large" color="#00ff00" />
+                <View style = {{flex: 1,justifyContent: "center"}}>
+                    <ActivityIndicator size = "large" color = "#00ff00" />
                 </View>
             )
         }
+
         return(
-        <View style={styles.container}>
-            <StatusBar backgroundColor='#008080' barStyle="light-content"/>
-                <View style={styles.header}>
-                    <Animatable.Text animation = "fadeInLeftBig" style={styles.text_header}>NIVA-RH</Animatable.Text>
+            <View style = { styles.container }> 
+                <StatusBar backgroundColor = "#008080" barStyle = "light-content"/>
+                <View style = { styles.view_title }>
+                    <Animatable.Text animation = "fadeInDown" style={ styles.text_title }>NIVA</Animatable.Text>
                 </View>
-            <Animatable.View style={styles.footer}
-                animation="fadeInUp">
-                <Text style={styles.text_footer}>Email</Text>
-                    <View style={styles.action}>
-                        <MaterialIcons 
-                            name="person"
-                            size={25}
-                        />
-                        <TextInput 
-                            placeholder="Veuillez entrer votre email"
-                            placeholderTextColor="#666666"
-                            style={styles.textInput}
-                            keyboardType = "email-address"
-                            autoCapitalize="none"
-                            onChangeText = {(text) => this.editemail(text)}
-                            fontSize = {18}
-                            // onEndEditing={(e)=>handleValidUser(e.nativeEvent.text)}
-                        />
-                    </View>    
-                    <Text style={styles.text_footer}>Mot de Passe</Text>
-                    <View style={styles.action}> 
-                        <MaterialIcons 
-                            name="vpn-key"
-                            size={25}
-                        />
-                        <TextInput 
-                            placeholder="Veuillez entrer votre mot de passe"
-                            placeholderTextColor="#666666"
-                            secureTextEntry= {true}
-                            style={styles.textInput}
-                            fontSize = {18}
-                            autoCapitalize="none"
-                            onChangeText = {(text) => this.editPassword(text)}
-                        />
+                <View style = { styles.view_form }>
+                    <ScrollView>
+                        <Animatable.View animation = "fadeInUp">
+                            <View style = { styles.view_input }>
+                                <Input 
+                                    placeholder = "Email"
+                                    rightIcon = {{ type: 'font-awesome', name: 'envelope' }}
+                                    style = { styles.text_input }
+                                    keyboardType = "email-address"
+                                    autoCapitalize = "none"
+                                    onChangeText = { (text) => this.editemail(text) }
+                                />
+                                <Input 
+                                    placeholder = "Mot de Passe"
+                                    rightIcon = {{ type: 'font-awesome', name: 'lock' }}
+                                    style = { styles.text_input }
+                                    secureTextEntry = { true }
+                                    autoCapitalize = "none"
+                                    onChangeText = { (text) => this.editPassword(text) }
+                                />
+                            </View>
+                            <View style = { styles.view_button }>
+                                <Button containerStyle = { styles.button_container} buttonStyle = { styles.button_style } title = "Connexion" onPress = {() => this.connexion()}/>
+                                <Button containerStyle = { styles.button_container} buttonStyle = { styles.button_style } title = "Mot de passe oublié ?" onPress = {() => this.forgotPassword()}/>
+                            </View>
+                        </Animatable.View>
+                    </ScrollView>
+                </View>
+                <Overlay isVisible = { this.state.visible } onBackdropPress = { () => this.toggleOverlay() }>
+                    <View style = { styles.view_overlay }>
+                        <Text style = { styles.text_overlay }>Le nom d'utilisateur et/ou le mot de passe est incorrect.</Text>
+                        <Button buttonStyle = { styles.button_overlay } title = "OK" onPress = { () => this.toggleOverlay() }/>
                     </View>
-                    {/* <TouchableOpacity
-                        onPress={() => this.forgotPassword()}>
-                        <Text style={{color: '#008080', marginTop:15}}>Mot de passe oublié ?</Text>
-                    </TouchableOpacity> */}
-                    <View style={styles.button}>
-                        <TouchableOpacity
-                            style={styles.signIn}
-                            onPress={() => this.connexion()}
-                        >
-                            <LinearGradient
-                                colors={['#08d4c4', '#01ab9d']}
-                                style={styles.signIn}>
-                                <Text style={styles.textSign}>Connexion</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-                    </View>
-            </Animatable.View>
-     </View>     
-    );
+                </Overlay>
+            </View> 
+        );
     }
 }
 const styles = StyleSheet.create({
@@ -142,21 +134,31 @@ const styles = StyleSheet.create({
       flex: 1, 
       backgroundColor: '#008080'
     },
-    header: {
+    view_title: {
         flex: 1,
-        justifyContent: 'flex-end',
-        paddingHorizontal: 20,
-        paddingBottom: 50
+        justifyContent: 'center',
+        alignItems: 'center'
     },
-    footer: {
+    view_form: {
         flex: 2,
         backgroundColor: '#fff',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         paddingHorizontal: 20,
-        paddingVertical: 30,
+        paddingVertical: 20
     },
-    text_header: {
+    view_input: {
+        marginTop: 20,
+        paddingTop : 10
+    },
+    view_button: {
+        alignItems: 'center',
+        marginVertical: 10
+    },
+    view_overlay: {
+        padding: 20
+    },  
+    text_title: {
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 60
@@ -166,44 +168,33 @@ const styles = StyleSheet.create({
         fontSize: 22, 
         marginTop : 20
     },
-    action: {
-        flexDirection: 'row',
-        marginTop: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f2f2f2',
-        paddingTop : 5
-    },
-    actionError: {
-        flexDirection: 'row',
-        marginTop: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#FF0000',
-        paddingBottom: 5
-    },
-    textInput: {
-        flex: 1,
-        marginTop: Platform.OS === 'ios' ? 0 : -12,
-        paddingLeft: 10,
-        color: '#05375a',
-    },
-    button: {
-        alignItems: 'center',
-        marginTop: 40,
-        marginBottom : 10
-    },
-    signIn: {
-        width: '100%',
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10
-    },
-    textSign: {
+    text_button: {
         fontSize: 22,
         fontWeight: 'bold', 
         color : "white"
+    },
+    text_input: {
+        color: '#05375a'
+    },
+    text_overlay: {
+        marginBottom: 20,
+        fontSize: 15 
+    },  
+    button_style: {
+        padding: 15,
+        marginVertical: 5,
+        borderRadius: 50,
+        backgroundColor: '#008080'
+    },
+    button_container: {
+        width: '100%'
+    },
+    button_overlay: {
+        borderRadius: 50,
+        backgroundColor: '#008080'
     }
-  });
+});
+
 const mapStateToProps = (state) => {
     return {
         email: state.emailReducer.email,
