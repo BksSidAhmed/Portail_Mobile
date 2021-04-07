@@ -13,6 +13,7 @@ import LocationServicesDialogBox from "react-native-android-location-services-di
 import {PermissionsAndroid} from 'react-native';
 import { getDistance } from 'geolib';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { Button } from 'react-native-paper';
 
 const geolib = require('geolib');
 
@@ -97,7 +98,8 @@ class ManagementTime extends React.Component {
                                                 dataPointing.splice(removeIndex, 1);
                                                 this.props.pointingAction(dataPointing)
                                                 this.setState({
-                                                    loading : false
+                                                    loading : false,
+                                                    erroServeur : false,
                                                 })
                                             }
                                     }else {
@@ -107,10 +109,20 @@ class ManagementTime extends React.Component {
                                             visible : true,
                                             currentIco: null,
                                             currentLibelle: 'Erreur serveur',
-                                            currentText: "Nous sommes désolés, nos serveurs sont momentanément indisponibles. Néanmoins toute action Entrée/Sortie sera traitée avec succès. \n\nL'EQUIPE NIVA"
+                                            currentText: "Serveur Indisponible"
 
                                         })
                                     }
+                                })
+                            }else {
+                                this.setState({
+                                    loading : false,
+                                    erroServeur : true,
+                                    visible : true,
+                                    currentIco: null,
+                                    currentLibelle: 'Erreur serveur',
+                                    currentText: "Serveur Indisponible"
+
                                 })
                             }
                         })
@@ -133,10 +145,6 @@ class ManagementTime extends React.Component {
                         icoAbsent : response[1].user.icoAbsent,
                         icoPresent : response[1].user.icoPresent,
                     })
-                    console.log(response[1].user.activites)
-                    console.log(response[1].user.icoPresent)
-                    console.log(response[1].user.statut)
-
                     {
                         response[1].user.client.activeBadge == false && response[1].user.activeBadge == false ?
                             (
@@ -279,6 +287,60 @@ class ManagementTime extends React.Component {
             })
         }, 1000);
     }
+    errorServeur = async (buttonError,lat,long,activite) => {
+        this.setState({
+            erroServeur : true,
+        })
+        if(buttonError == 'F00') {
+            var dataPointing = this.props.pointing
+            var compteurTrouve = 0;  
+            for(var i = 0; i<dataPointing.length; i++) {
+                if(dataPointing[i]['email'] == this.props.email) {
+                    dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),buttonError,lat,long,activite])
+                    compteurTrouve++;
+                    this.props.pointingAction(dataPointing)
+                    this.setState(prevState => ({
+                    [`loading`+`${buttonError}`] : false,
+                    disabled : false,
+                    statutIco : !prevState.statutIco,
+                    visible : true,
+                    currentIco: null,
+                    currentLibelle: 'Erreur serveur',
+                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                    }))
+                    Vibration.vibrate(500)
+                }
+            }
+            if(compteurTrouve == 0){
+                dataPointing.push(
+                    {
+                        'email' : this.props.email,
+                        'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),buttonError,lat,long,activite]]       
+                    }
+                )
+                this.props.pointingAction(dataPointing)
+                this.setState(prevState => ({
+                    [`loading`+`${buttonError}`] : false,
+                    disabled : false,
+                    statutIco : !prevState.statutIco,
+                    visible : true,
+                    currentIco: null,
+                    currentLibelle: 'Erreur serveur',
+                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                }))
+                Vibration.vibrate(500)
+            }
+        }else {
+            this.setState({
+                [`loading`+`${buttonError}`] : false,
+                disabled : false,
+                visible : true,
+                currentIco: null,
+                currentLibelle: 'Erreur serveur',
+                currentText: "Serveur Indisponible"                                   
+            })                    
+        }
+    }
 
     actionButton = async (button, libelle, localisation, activite) => {
         if ( this.state.activeGeolocalisation == false ) {
@@ -287,15 +349,12 @@ class ManagementTime extends React.Component {
                 disabled : true
             }),
             getToken(this.props.email,this.props.password).then(data => {
-                console.log(this.props.pointing)
-                console.log(data)  
                 if(data[0] == 200) {
                     postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude,activite).then(data => {
-                        console.log(data)
                         if(data[0] == 200) {
                             if(button == 'F00') {
                                 Vibration.vibrate(500)
-                            }
+                            }                              
                             this.setState({
                                 [`loading`+`${button}`] : false,
                                 disabled : false,
@@ -304,68 +363,19 @@ class ManagementTime extends React.Component {
                                 currentLibelle: libelle,
                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                             })
-                            if( data[1].ico !== ''){
+                            if( data[1].ico !== '' && button == 'F00'){
                                 this.setState(prevState => ({
                                     statutIco : !prevState.statutIco,
                                 }))
                             }
                         }
                         else {
-                            this.setState({
-                                visible : true
-                            })
+                            this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
                         }
                     })
                 }
-                if(data[0] !== 200) {
-                    console.log('nop 200')
-                    if(button == 'F00') {
-                        var dataPointing = this.props.pointing
-                        var compteurTrouve = 0;  
-                        for(var i = 0; i<dataPointing.length; i++) {
-                            if(dataPointing[i]['email'] == this.props.email) {
-                                dataPointing[i]['pointage'].push(['1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude])
-                                compteurTrouve++;
-                                this.props.pointingAction(dataPointing)
-                                this.setState({
-                                    [`loading`+`${button}`] : false,
-                                disabled : false,
-                                visible : true,
-                                currentIco: null,
-                                currentLibelle: 'Erreur serveur',
-                                currentText: "Malgré nos serveurs momentanément indisponibles.\nVotre transaction a été prise en compte.\nToute future action Entrée/Sortie sera traitée avec succès.\n\n L'EQUIPE NIVA"                                   
-                                })
-                                Vibration.vibrate(500)
-                            }
-                        }
-                        if(compteurTrouve == 0){
-                            dataPointing.push(
-                                {
-                                    'email' : this.props.email,
-                                    'pointage': [['1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude]]       
-                                }
-                            )
-                            this.props.pointingAction(dataPointing)
-                            this.setState({
-                                [`loading`+`${button}`] : false,
-                                disabled : false,
-                                visible : true,
-                                currentIco: null,
-                                currentLibelle: 'Erreur serveur',
-                                currentText: "Malgré nos serveurs momentanément indisponibles.\nVotre transaction a été prise en compte.\nToute future action Entrée/Sortie sera traitée avec succès.\n\n L'EQUIPE NIVA"                                   
-                            })
-                            Vibration.vibrate(500)
-                        }
-                    }else {
-                        this.setState({
-                            [`loading`+`${button}`] : false,
-                            disabled : false,
-                            visible : true,
-                            currentIco: null,
-                            currentLibelle: 'Erreur serveur',
-                            currentText: "Nous sommes désolés.\n Votre transaction ne peut avoir lieu pour le moment.\nVeuillez réessailler ultérieurement.\n\nL'EQUIPE NIVA"                                   
-                        })                    
-                    }
+                else {               
+                    this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
                     
                 }
             })
@@ -423,18 +433,20 @@ class ManagementTime extends React.Component {
                                                             currentLibelle: libelle,
                                                             currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                                                         }) 
-                                                        if( data[1].ico !== ''){
+                                                        if( data[1].ico !== '' && button == 'F00'){
                                                             this.setState(prevState => ({
                                                                 statutIco : !prevState.statutIco,
                                                             }))
                                                         }
                                                     }
                                                     else {
-                                                        this.setState({
-                                                            visible : true
-                                                        })
+                                                        
+                                                        this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
+     
                                                     }
                                                 })
+                                            }else {
+                                                this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
                                             } 
                                         })
                                         } 
@@ -458,19 +470,126 @@ class ManagementTime extends React.Component {
                                                                 currentLibelle: libelle,
                                                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                                                             })    
-                                                            if( data[1].ico !== ''){
+                                                            if(  data[1].ico !== '' && button == 'F00' ){
                                                                 this.setState(prevState => ({
                                                                     statutIco : !prevState.statutIco,
                                                                 }))
                                                             }          
                                                         }
                                                         else {
+                                                            // this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
                                                             this.setState({
-                                                                visible : true
+                                                                erroServeur : true,
                                                             })
+                                                            if(button == 'F00') {
+                                                                var dataPointing = this.props.pointing
+                                                                var compteurTrouve = 0;  
+                                                                for(var i = 0; i<dataPointing.length; i++) {
+                                                                    if(dataPointing[i]['email'] == this.props.email) {
+                                                                        dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite])
+                                                                        compteurTrouve++;
+                                                                        this.props.pointingAction(dataPointing)
+                                                                        this.setState(prevState => ({
+                                                                        [`loading`+`${button}`] : false,
+                                                                        disabled : false,
+                                                                        statutIco : !prevState.statutIco,
+                                                                        visible : true,
+                                                                        currentIco: null,
+                                                                        currentLibelle: 'Erreur serveur',
+                                                                        currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                                        }))
+                                                                        Vibration.vibrate(500)
+                                                                    }
+                                                                }
+                                                                if(compteurTrouve == 0){
+                                                                    dataPointing.push(
+                                                                        {
+                                                                            'email' : this.props.email,
+                                                                            'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite]]       
+                                                                        }
+                                                                    )
+                                                                    this.props.pointingAction(dataPointing)
+                                                                    this.setState(prevState => ({
+                                                                        [`loading`+`${button}`] : false,
+                                                                        disabled : false,
+                                                                        statutIco : !prevState.statutIco,
+                                                                        visible : true,
+                                                                        currentIco: null,
+                                                                        currentLibelle: 'Erreur serveur',
+                                                                        currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                                    }))
+                                                                    Vibration.vibrate(500)
+                                                                }
+                                                            }else {
+                                                                this.setState({
+                                                                    [`loading`+`${button}`] : false,
+                                                                    disabled : false,
+                                                                    visible : true,
+                                                                    currentIco: null,
+                                                                    currentLibelle: 'Erreur serveur',
+                                                                    currentText: "Serveur Indisponible"                                   
+                                                                })                    
+                                                            }
+                                                            //////////////////////////////////////////
                                                         }
                                                     })
                                                 } 
+                                                else {
+                                                    /////////////////////////////////////
+                                                    this.setState({
+                                                        erroServeur : true,
+                                                    })
+                                                    if(button == 'F00') {
+                                                        var dataPointing = this.props.pointing
+                                                        var compteurTrouve = 0;  
+                                                        for(var i = 0; i<dataPointing.length; i++) {
+                                                            if(dataPointing[i]['email'] == this.props.email) {
+                                                                dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite])
+                                                                compteurTrouve++;
+                                                                this.props.pointingAction(dataPointing)
+                                                                this.setState(prevState => ({
+                                                                [`loading`+`${button}`] : false,
+                                                                disabled : false,
+                                                                statutIco : !prevState.statutIco,
+                                                                visible : true,
+                                                                currentIco: null,
+                                                                currentLibelle: 'Erreur serveur',
+                                                                currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                                }))
+                                                                Vibration.vibrate(500)
+                                                            }
+                                                        }
+                                                        if(compteurTrouve == 0){
+                                                            dataPointing.push(
+                                                                {
+                                                                    'email' : this.props.email,
+                                                                    'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite]]       
+                                                                }
+                                                            )
+                                                            this.props.pointingAction(dataPointing)
+                                                            this.setState(prevState => ({
+                                                                [`loading`+`${button}`] : false,
+                                                                disabled : false,
+                                                                statutIco : !prevState.statutIco,
+                                                                visible : true,
+                                                                currentIco: null,
+                                                                currentLibelle: 'Erreur serveur',
+                                                                currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                            }))
+                                                            Vibration.vibrate(500)
+                                                        }
+                                                    }else {
+                                                        this.setState({
+                                                            [`loading`+`${button}`] : false,
+                                                            disabled : false,
+                                                            visible : true,
+                                                            currentIco: null,
+                                                            currentLibelle: 'Erreur serveur',
+                                                            currentText: "Serveur Indisponible"                                   
+                                                        })                    
+                                                    }
+                                                    ///////////////////////////////////
+                                                }
                                             })
                                         }
                                     }
@@ -496,18 +615,125 @@ class ManagementTime extends React.Component {
                                                 currentLibelle: libelle,
                                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                                             })  
-                                            if( data[1].ico !== ''){
+                                            if(data[1].ico !== '' && button == 'F00'){
                                                 this.setState(prevState => ({
                                                     statutIco : !prevState.statutIco,
                                                 }))
                                             }            
                                         }
                                         else {
+                                        ////////////////////////////////////////////
+                                        this.setState({
+                                            erroServeur : true,
+                                        })
+                                        if(button == 'F00') {
+                                            var dataPointing = this.props.pointing
+                                            var compteurTrouve = 0;  
+                                            for(var i = 0; i<dataPointing.length; i++) {
+                                                if(dataPointing[i]['email'] == this.props.email) {
+                                                    dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
+                                                    compteurTrouve++;
+                                                    this.props.pointingAction(dataPointing)
+                                                    this.setState(prevState => ({
+                                                    [`loading`+`${button}`] : false,
+                                                    disabled : false,
+                                                    statutIco : !prevState.statutIco,
+                                                    visible : true,
+                                                    currentIco: null,
+                                                    currentLibelle: 'Erreur serveur',
+                                                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                    }))
+                                                    Vibration.vibrate(500)
+                                                }
+                                            }
+                                            if(compteurTrouve == 0){
+                                                dataPointing.push(
+                                                    {
+                                                        'email' : this.props.email,
+                                                        'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
+                                                    }
+                                                )
+                                                this.props.pointingAction(dataPointing)
+                                                this.setState(prevState => ({
+                                                    [`loading`+`${button}`] : false,
+                                                    disabled : false,
+                                                    statutIco : !prevState.statutIco,
+                                                    visible : true,
+                                                    currentIco: null,
+                                                    currentLibelle: 'Erreur serveur',
+                                                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                }))
+                                                Vibration.vibrate(500)
+                                            }
+                                        }else {
                                             this.setState({
-                                                visible : true
-                                            })
+                                                [`loading`+`${button}`] : false,
+                                                disabled : false,
+                                                visible : true,
+                                                currentIco: null,
+                                                currentLibelle: 'Erreur serveur',
+                                                currentText: "Serveur Indisponible"                                   
+                                            })                    
+                                        }
+                                        ////////////////////////////////////////////
                                         }
                                     })
+                                }
+                                else {
+                                    /////////////////////////////////////
+                                    this.setState({
+                                        erroServeur : true,
+                                    })
+                                    if(button == 'F00') {
+                                        var dataPointing = this.props.pointing
+                                        var compteurTrouve = 0;  
+                                        for(var i = 0; i<dataPointing.length; i++) {
+                                            if(dataPointing[i]['email'] == this.props.email) {
+                                                dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
+                                                compteurTrouve++;
+                                                this.props.pointingAction(dataPointing)
+                                                this.setState(prevState => ({
+                                                [`loading`+`${button}`] : false,
+                                                disabled : false,
+                                                statutIco : !prevState.statutIco,
+                                                visible : true,
+                                                currentIco: null,
+                                                currentLibelle: 'Erreur serveur',
+                                                currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                }))
+                                                Vibration.vibrate(500)
+                                            }
+                                        }
+                                        if(compteurTrouve == 0){
+                                            dataPointing.push(
+                                                {
+                                                    'email' : this.props.email,
+                                                    'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
+                                                }
+                                            )
+                                            this.props.pointingAction(dataPointing)
+                                            this.setState(prevState => ({
+                                                [`loading`+`${button}`] : false,
+                                                disabled : false,
+                                                statutIco : !prevState.statutIco,
+                                                visible : true,
+                                                currentIco: null,
+                                                currentLibelle: 'Erreur serveur',
+                                                currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                            }))
+                                            Vibration.vibrate(500)
+                                        }
+                                    }else {
+                                        this.setState({
+                                            [`loading`+`${button}`] : false,
+                                            disabled : false,
+                                            visible : true,
+                                            currentIco: null,
+                                            currentLibelle: 'Erreur serveur',
+                                            currentText: "Serveur Indisponible"                                   
+                                        })                    
+                                    }
+                                    /////////////////////////////////////
                                 } 
                             })
                         });
@@ -531,19 +757,125 @@ class ManagementTime extends React.Component {
                                             currentLibelle: libelle,
                                             currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                                         }) 
-                                        if( data[1].ico !== ''){
+                                        if(  data[1].ico !== '' && button == 'F00'){
                                             this.setState(prevState => ({
                                                 statutIco : !prevState.statutIco,
                                             }))
                                         }             
                                     }
                                     else {
+                                        ///////////////////////////////////////////
                                         this.setState({
-                                            visible : true
+                                            erroServeur : true,
                                         })
+                                        if(button == 'F00') {
+                                            var dataPointing = this.props.pointing
+                                            var compteurTrouve = 0;  
+                                            for(var i = 0; i<dataPointing.length; i++) {
+                                                if(dataPointing[i]['email'] == this.props.email) {
+                                                    dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
+                                                    compteurTrouve++;
+                                                    this.props.pointingAction(dataPointing)
+                                                    this.setState(prevState => ({
+                                                    [`loading`+`${button}`] : false,
+                                                    disabled : false,
+                                                    statutIco : !prevState.statutIco,
+                                                    visible : true,
+                                                    currentIco: null,
+                                                    currentLibelle: 'Erreur serveur',
+                                                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                    }))
+                                                    Vibration.vibrate(500)
+                                                }
+                                            }
+                                            if(compteurTrouve == 0){
+                                                dataPointing.push(
+                                                    {
+                                                        'email' : this.props.email,
+                                                        'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
+                                                    }
+                                                )
+                                                this.props.pointingAction(dataPointing)
+                                                this.setState(prevState => ({
+                                                    [`loading`+`${button}`] : false,
+                                                    disabled : false,
+                                                    statutIco : !prevState.statutIco,
+                                                    visible : true,
+                                                    currentIco: null,
+                                                    currentLibelle: 'Erreur serveur',
+                                                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                }))
+                                                Vibration.vibrate(500)
+                                            }
+                                        }else {
+                                            this.setState({
+                                                [`loading`+`${button}`] : false,
+                                                disabled : false,
+                                                visible : true,
+                                                currentIco: null,
+                                                currentLibelle: 'Erreur serveur',
+                                                currentText: "Serveur Indisponible"                                   
+                                            })                    
+                                        }
+                                        ////////////////////////////////////////////
                                     }
                                 })
-                            } 
+                            } else {
+                                //////////////////////////////////////////
+                                this.setState({
+                                    erroServeur : true,
+                                })
+                                if(button == 'F00') {
+                                    var dataPointing = this.props.pointing
+                                    var compteurTrouve = 0;  
+                                    for(var i = 0; i<dataPointing.length; i++) {
+                                        if(dataPointing[i]['email'] == this.props.email) {
+                                            dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
+                                            compteurTrouve++;
+                                            this.props.pointingAction(dataPointing)
+                                            this.setState(prevState => ({
+                                            [`loading`+`${button}`] : false,
+                                            disabled : false,
+                                            statutIco : !prevState.statutIco,
+                                            visible : true,
+                                            currentIco: null,
+                                            currentLibelle: 'Erreur serveur',
+                                            currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                            }))
+                                            Vibration.vibrate(500)
+                                        }
+                                    }
+                                    if(compteurTrouve == 0){
+                                        dataPointing.push(
+                                            {
+                                                'email' : this.props.email,
+                                                'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
+                                            }
+                                        )
+                                        this.props.pointingAction(dataPointing)
+                                        this.setState(prevState => ({
+                                            [`loading`+`${button}`] : false,
+                                            disabled : false,
+                                            statutIco : !prevState.statutIco,
+                                            visible : true,
+                                            currentIco: null,
+                                            currentLibelle: 'Erreur serveur',
+                                            currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                        }))
+                                        Vibration.vibrate(500)
+                                    }
+                                }else {
+                                    this.setState({
+                                        [`loading`+`${button}`] : false,
+                                        disabled : false,
+                                        visible : true,
+                                        currentIco: null,
+                                        currentLibelle: 'Erreur serveur',
+                                        currentText: "Serveur Indisponible"                                   
+                                    })                    
+                                }
+                                /////////////////////////////////////////
+                            }
                         })
                       }
                     } 
@@ -571,18 +903,18 @@ class ManagementTime extends React.Component {
                                     currentLibelle: libelle,
                                     currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
                                 })     
-                                if( data[1].ico !== ''){
+                                if(  data[1].ico !== '' && button == 'F00'){
                                     this.setState(prevState => ({
                                         statutIco : !prevState.statutIco,
                                     }))
                                 }      
                             }
                             else {
-                                this.setState({
-                                    visible : true
-                                })
+                                this.errorServeur(button,null,null,activite)
                             }
                         })
+                    }else {
+                        this.errorServeur(button,null,null,activite)
                     }
                 })
             }           
@@ -617,7 +949,7 @@ class ManagementTime extends React.Component {
                         <Text style={ styles.text_dialog }>{text}</Text>
                     </View>
                     <TouchableOpacity 
-                        onPress={ () => this.setState({ visible: false }) } 
+                        onPress={ () => this.setState({ visible: false, visibleList : false }) } 
                         style = {{flex :0.2,borderWidth : 1, borderColor : 'white',width : '100%', alignItems : 'center', justifyContent: 'center', backgroundColor : '#008080', marginBottom : 15}}>
                         <Text style = {{fontSize : 20, color : 'white'}}>
                             OK
@@ -700,6 +1032,8 @@ class ManagementTime extends React.Component {
                 isVisible={ this.state.visibleList } 
                 overlayStyle = {{ height : '100%', width: '100%', padding : 0 }}
                 animationType = 'slide'>
+<<<<<<< HEAD
+                <View style = {{flex :1}}>
                 <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60}}>
                     <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white'}}>Activités disponibles</Text>
                 </View>
@@ -732,6 +1066,42 @@ class ManagementTime extends React.Component {
                         Retour
                     </Text>
                 </TouchableOpacity>
+                </View>
+=======
+                <View style = {{ flex : 1 }}>
+                    <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60}}>
+                        <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white'}}>Activités disponibles</Text>
+                    </View>
+                    <FlatList data={ activites } 
+                        renderItem={({ item }) => 
+                            <Animatable.View animation="bounceIn" style = { styles.container_button_animation }>
+                                <TouchableOpacity 
+                                    onPress={ () => this.actionButton(button, libelle, localisation, item.code) } 
+                                    disabled={ item.disabled } 
+                                    style={ styles.button }
+                                >
+                                    {
+                                        (item.loading 
+                                            ? <ActivityIndicator size="large" color="#00ff00"/>  
+                                            : <View style={ styles.container_ico }>
+                                                <Text>{ item.nom }</Text>
+                                            </View>
+                                        )
+                                    }
+                                </TouchableOpacity>
+                            </Animatable.View>
+                        }
+                        keyExtractor = { item => item.code }
+                    ></FlatList>
+                    <TouchableOpacity 
+                        onPress={ () => this.setState({ visibleList: false }) } 
+                        style = {{ flex :0.2,borderWidth : 1, borderColor : 'white',width : '100%', alignItems : 'center', justifyContent: 'center', backgroundColor : '#008080', marginBottom : 15 }}>
+                        <Text style = {{ fontSize : 20, color : 'white' }}>
+                            Retour
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+>>>>>>> 242a32c25fddcc3f1cae640ac9df22070bef21f9
             </Overlay>
         )
     }
