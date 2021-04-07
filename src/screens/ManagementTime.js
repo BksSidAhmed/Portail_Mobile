@@ -1032,7 +1032,6 @@ class ManagementTime extends React.Component {
                 isVisible={ this.state.visibleList } 
                 overlayStyle = {{ height : '100%', width: '100%', padding : 0 }}
                 animationType = 'slide'>
-<<<<<<< HEAD
                 <View style = {{flex :1}}>
                 <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60}}>
                     <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white'}}>Activités disponibles</Text>
@@ -1067,41 +1066,6 @@ class ManagementTime extends React.Component {
                     </Text>
                 </TouchableOpacity>
                 </View>
-=======
-                <View style = {{ flex : 1 }}>
-                    <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60}}>
-                        <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white'}}>Activités disponibles</Text>
-                    </View>
-                    <FlatList data={ activites } 
-                        renderItem={({ item }) => 
-                            <Animatable.View animation="bounceIn" style = { styles.container_button_animation }>
-                                <TouchableOpacity 
-                                    onPress={ () => this.actionButton(button, libelle, localisation, item.code) } 
-                                    disabled={ item.disabled } 
-                                    style={ styles.button }
-                                >
-                                    {
-                                        (item.loading 
-                                            ? <ActivityIndicator size="large" color="#00ff00"/>  
-                                            : <View style={ styles.container_ico }>
-                                                <Text>{ item.nom }</Text>
-                                            </View>
-                                        )
-                                    }
-                                </TouchableOpacity>
-                            </Animatable.View>
-                        }
-                        keyExtractor = { item => item.code }
-                    ></FlatList>
-                    <TouchableOpacity 
-                        onPress={ () => this.setState({ visibleList: false }) } 
-                        style = {{ flex :0.2,borderWidth : 1, borderColor : 'white',width : '100%', alignItems : 'center', justifyContent: 'center', backgroundColor : '#008080', marginBottom : 15 }}>
-                        <Text style = {{ fontSize : 20, color : 'white' }}>
-                            Retour
-                        </Text>
-                    </TouchableOpacity>
-                </View>
->>>>>>> 242a32c25fddcc3f1cae640ac9df22070bef21f9
             </Overlay>
         )
     }
