@@ -7,7 +7,7 @@ import { pointingAction } from '../redux/actions/pointingHorsLigneAction';
 class About extends React.Component { 
 
     render(){
-        const text_about_1 = 'NIVA version V1.0 2021';
+        const text_about_1 = 'NIVA® version V1.0 2021';
         const text_about_2 = 'Cette application a été réalisée par ALPHASYS - Lyon - France';
         const text_about_3 = 'NIVA est une marque déposée par ALPHASYS - Lyon - France';
         const text_about_4 = 'Cette application a pour objectif de : ';

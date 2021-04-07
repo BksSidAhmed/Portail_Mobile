@@ -42,7 +42,7 @@ const ManagementTimeStackScreen = ({navigation}) => (
           name = "Gestion du temps" 
           component={ManagementTime}
           options = {{
-            title : 'Niva® - Gestion du temps',
+            title : 'Niva - Gestion du temps',
             headerStyle : {
               backgroundColor : '#008080',
             },
@@ -74,7 +74,7 @@ const AboutStackScreen = ({navigation}) => (
         name = "A propos" 
         component={About}
         options = {{
-          title : 'Niva® - À propos',
+          title : 'Niva - À propos',
           headerStyle : {
             backgroundColor : '#008080',
           },
@@ -106,7 +106,7 @@ const ConfidentialStackScreen = ({navigation}) => (
         name = "Confidentialite" 
         component={Confidential}
         options = {{
-          title : 'Niva® - Confidentialite',
+          title : 'Niva - Confidentialite',
           headerStyle : {
             backgroundColor : '#008080',
           },
