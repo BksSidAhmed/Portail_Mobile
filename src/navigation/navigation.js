@@ -60,8 +60,10 @@ const ManagementTimeStackScreen = ({navigation}) => (
               />
             ),
             headerRightContainerStyle : {
-              padding : 20,
-              marginTop : 5
+              marginRight: 20,
+              marginTop: 5
+              // padding : 20,
+              // marginTop : 5
             }
           }}
         />
@@ -92,7 +94,7 @@ const AboutStackScreen = ({navigation}) => (
             />
           ),
           headerRightContainerStyle : {
-            padding : 20,
+            marginRight: 20,
             marginTop : 5
           }
         }}
@@ -124,7 +126,7 @@ const ConfidentialStackScreen = ({navigation}) => (
             />
           ),
           headerRightContainerStyle : {
-            padding : 20,
+            marginRight: 20,
             marginTop : 5
           }
         }}
