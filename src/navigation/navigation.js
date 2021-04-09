@@ -9,7 +9,8 @@ import ManagementTime from '../screens/ManagementTime'
 import About from '../screens/About'
 import ManagementNoConnection from '../screens/ManagementNoConnection'
 import DrawerComponent from '../component/DrawerComponent'
-
+import Password from '../screens/Password'
+import Location from '../screens/Location'
 // import DeletScreenComponent from '../component/DeletScreenComponent'
 
 import Settings from '../screens/Settings'
@@ -76,7 +77,7 @@ const ParamStackScreen = ({navigation}) => (
         name = "Paramètre" 
         component={Settings}
         options = {{
-          title : 'Niva® - Paramètre',
+          title : 'Niva - Paramètre',
           headerStyle : {
             backgroundColor : '#008080',
           },
@@ -95,6 +96,60 @@ const ParamStackScreen = ({navigation}) => (
           ),
           headerRightContainerStyle : {
             padding : 20,
+            marginTop : 5
+          }
+        }}
+      />
+      <ParamStack.Screen 
+        name = "Mot de passe" 
+        component={Password}
+        options = {{
+          title : 'Niva - Mot de passe',
+          headerStyle : {
+            backgroundColor : '#008080',
+          },
+          headerTintColor : '#fff',
+          headerTitleAlign : 'center',
+          headerTitleStyle : {
+            fontWeight: 'bold'
+          },
+          headerRight: () => (
+            <FontAwesome5 
+                onPress={() => navigation.toggleDrawer()}
+                name="bars" 
+                color= "white" 
+                size={23} 
+            />
+          ),
+          headerRightContainerStyle : {
+            marginRight: 20,
+            marginTop : 5
+          }
+        }}
+      />
+      <ParamStack.Screen 
+        name = "Location" 
+        component={Location}
+        options = {{
+          title : 'Niva - Localisation GPS',
+          headerStyle : {
+            backgroundColor : '#008080',
+          },
+          headerTintColor : '#fff',
+          headerTitleAlign : 'center',
+          headerTitleStyle : {
+            fontWeight: 'bold'
+          },
+          headerRight: () => (
+            <FontAwesome5 
+                onPress={() => navigation.toggleDrawer()}
+                name="bars" 
+                color= "white" 
+                size={23} 
+            />
+          ),
+          headerRightContainerStyle : {
+            marginRight: 20,
             marginTop : 5
           }
         }}

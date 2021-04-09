@@ -13,10 +13,8 @@ class Settings extends React.Component {
         super(props)
         this.state = {
             switch1Value: false,
+            isSelected : false
          }
-    }
-    changePassword = () => {
-        console.log('data')
     }
     componentWillUnmount = () => {
         LocationServicesDialogBox.stopListener();
@@ -25,44 +23,74 @@ class Settings extends React.Component {
     toggleSwitch1 = (value) => {
         this.setState({switch1Value: value})
         console.log('Switch 1 is: ' + value)
-        if (value) {
-            console.log('ici')
-            LocationServicesDialogBox.checkLocationServicesIsEnabled({
-                message: "<h3>Activer le GPS pour la localiation ?</h3>",           
-                ok: "OK",
-                cancel: "NON, MERCI",
-                enableHighAccuracy: true,
-                showDialog: true,
-                openLocationServices: true,
-                preventOutSideTouch: false,
-                preventBackClick: false,
-                providerListener: true
-            }).then(function(success) 
-            { 
-                this.setState({
-                    switch1Value : true
-                })
-            }.bind(this)
-            ).catch((error) => {
-                this.setState({
-                    switch1Value : false
-                })
-            });
-        }
+        // if (value) {
+        //     console.log('ici')
+        //     LocationServicesDialogBox.checkLocationServicesIsEnabled({
+        //         message: "<h3>Activer le GPS pour la localiation ?</h3>",           
+        //         ok: "OK",
+        //         cancel: "NON, MERCI",
+        //         enableHighAccuracy: true,
+        //         showDialog: true,
+        //         openLocationServices: true,
+        //         preventOutSideTouch: false,
+        //         preventBackClick: false,
+        //         providerListener: true
+        //     }).then(function(success) 
+        //     { 
+        //         this.setState({
+        //             switch1Value : true
+        //         })
+        //     }.bind(this)
+        //     ).catch((error) => {
+        //         this.setState({
+        //             switch1Value : false
+        //         })
+        //     });
+        // } else {
+        //     console.log('test')
+        //     LocationServicesDialogBox.checkLocationServicesIsEnabled({
+        //         message: "<h3>Desactiver le GPS pour la localiation ?</h3>",           
+        //         ok: "OK",
+        //         cancel: "NON, MERCI",
+        //         enableHighAccuracy: true,
+        //         showDialog: true,
+        //         openLocationServices: true,
+        //         preventOutSideTouch: false,
+        //         preventBackClick: false,
+        //         providerListener: true
+        //     }).then(function(success) 
+        //     { 
+        //         this.setState({
+        //             switch1Value : false
+        //         })
+        //     }.bind(this)
+        //     ).catch((error) => {
+        //         this.setState({
+        //             switch1Value : true
+        //         })
+        //     });
+        // }
 
     }
 
+    onPressPassword = () => {
+        this.props.navigation.navigate('Mot de passe')
+    }
+    onPressLocation = () => {
+        this.props.navigation.navigate('Location')
+    }
     render(){
+        const { isSelected } = this.state
         return(
             <View style={ styles.container }>
                 <View style={ styles.container_header }>     
-                    <View style={ styles.container_text_name }>
+                    {/* <View style={ styles.container_text_name }>
                         <Text style={ styles.text_name }>{ this.props.email }</Text>
-                    </View>
+                    </View> */}
                     <View style={ styles.container_logo_user }>
                         <TouchableOpacity style={ styles.button_logo_user }>
                             <FontAwesome5 
-                                name='user-alt' 
+                                name='cogs' 
                                 size={ 45 } 
                                 color='#008080'>
                             </FontAwesome5>
@@ -79,11 +107,33 @@ class Settings extends React.Component {
                             </LinearGradient>
                         </TouchableOpacity>  
                     </View> */}
-                <View>
+                {/* <View>
                     <SwitchExample
                         toggleSwitch1 = {this.toggleSwitch1}
                         switch1Value = {this.state.switch1Value}/>
-                </View>
+                </View> */}
+                    <View style = {{flex :1, padding : 10}}>
+                        <TouchableOpacity 
+                            style={styles.touchablePassword}  
+                            onPress={() => this.onPressPassword()}>
+                                <FontAwesome5 
+                                    name="key" 
+                                    color= "black" 
+                                    size={20} 
+                                />
+                                <Text style = {{fontSize : 16, marginLeft : 15}}>Mot de passe</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            style={styles.touchablePassword}  
+                            onPress={() => this.onPressLocation()}>
+                                <FontAwesome5 
+                                    name="map-marker-alt" 
+                                    color= "black" 
+                                    size={20} 
+                                />
+                                <Text style = {{fontSize : 16, marginLeft : 15}}>Localisation GPS</Text>
+                        </TouchableOpacity>
+                    </View>
                 </ScrollView>
             </View>
         );
@@ -95,21 +145,28 @@ const styles = StyleSheet.create({
         flex : 1
     },
     container_header : {
-        flex : 0.60,
+        flex : 0.25,
         backgroundColor : '#008080',
         alignItems: 'center',
         zIndex: 1,
+        elevation : 3
     },
     container_body : {
         flex : 1,
-        backgroundColor: '#fff',
-        paddingHorizontal: 20,
-        paddingVertical: 50,
         zIndex: 0,
     },
+    touchablePassword : {
+        padding: 30, 
+        backgroundColor : 'white',
+        elevation: 5,
+        borderRadius : 5,
+        flexDirection : 'row',
+        marginBottom : 10
+    }, 
     container_logo_user: {
         height: 45, 
         alignItems : "center", 
+        marginTop : 15
     },
     container_button_logout: {
         flex : 1, 
