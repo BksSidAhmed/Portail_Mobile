@@ -54,10 +54,10 @@ class ManagementTime extends React.Component {
             program : null,
             userAS400 : null,
             passwordAS400 : null,
-            statutIco : null,
+            statutUser : null,
             icoPresent : null,
             icoAbsent : null,
-            erroServeur : false,
+            errorServeur : false,
             activite : null,
             activites : null,
             activitesButton: null,
@@ -99,13 +99,13 @@ class ManagementTime extends React.Component {
                                                 this.props.pointingAction(dataPointing)
                                                 this.setState({
                                                     loading : false,
-                                                    erroServeur : false,
+                                                    errorServeur : false,
                                                 })
                                             }
                                     }else {
                                         this.setState({
                                             loading : false,
-                                            erroServeur : true,
+                                            errorServeur : true,
                                             visible : true,
                                             currentIco: null,
                                             currentLibelle: 'Erreur serveur',
@@ -117,7 +117,7 @@ class ManagementTime extends React.Component {
                             }else {
                                 this.setState({
                                     loading : false,
-                                    erroServeur : true,
+                                    errorServeur : true,
                                     visible : true,
                                     currentIco: null,
                                     currentLibelle: 'Erreur serveur',
@@ -132,138 +132,208 @@ class ManagementTime extends React.Component {
     }
 
 // Recuperer les infos de l'utilisateur 
-    getDataCust() {
+    getDataCust() 
+    {
         getToken(this.props.email, this.props.password).then(data => {
+            
             if(data[0] == 200) 
             {
                 getUser(data[1].token, this.props.email).then(response => {
                     this.setState({
-                        activeGeolocalisation : response[1].user.activeLocalisation, 
-                        lieuxGeolocalisation : response[1].user.lieux,
-                        activites : response[1].user.activites,
-                        statutIco : response[1].user.statut,
-                        icoAbsent : response[1].user.icoAbsent,
-                        icoPresent : response[1].user.icoPresent,
+                        loadingList: false,
+                        user: {
+                            email: response[1].user.email,
+                            profil: {
+                                action0: {
+                                    active: response[1].user.profil.action_0.active ,
+                                    icoPresent: response[1].user.profil.action_0.ico_present,
+                                    icoAbsent: response[1].user.profil.action_0.ico_absent,
+                                    libellePresent: response[1].user.profil.action_0.libelle_present,
+                                    libelleAbsent: response[1].user.profil.action_0.libelle_absent,
+                                    localisation: response[1].user.profil.action_0.localisation,
+                                    activite: response[1].user.profil.action_0.activite
+                                },
+                                action1: {
+                                    active: response[1].user.profil.action_1.active ,
+                                    icoPresent: response[1].user.profil.action_1.ico_present,
+                                    icoAbsent: response[1].user.profil.action_1.ico_absent,
+                                    libellePresent: response[1].user.profil.action_1.libelle_present,
+                                    libelleAbsent: response[1].user.profil.action_1.libelle_absent,
+                                    localisation: response[1].user.profil.action_1.localisation,
+                                    activite: response[1].user.profil.action_1.activite
+                                },
+                                action2: {
+                                    active: response[1].user.profil.action_2.active ,
+                                    icoPresent: response[1].user.profil.action_2.ico_present,
+                                    icoAbsent: response[1].user.profil.action_2.ico_absent,
+                                    libellePresent: response[1].user.profil.action_2.libelle_present,
+                                    libelleAbsent: response[1].user.profil.action_2.libelle_absent,
+                                    localisation: response[1].user.profil.action_2.localisation,
+                                    activite: response[1].user.profil.action_2.activite
+                                },
+                                action3: {
+                                    active: response[1].user.profil.action_3.active ,
+                                    icoPresent: response[1].user.profil.action_3.ico_present,
+                                    icoAbsent: response[1].user.profil.action_3.ico_absent,
+                                    libellePresent: response[1].user.profil.action_3.libelle_present,
+                                    libelleAbsent: response[1].user.profil.action_3.libelle_absent,
+                                    localisation: response[1].user.profil.action_3.localisation,
+                                    activite: response[1].user.profil.action_3.activite
+                                },
+                                action4: {
+                                    active: response[1].user.profil.action_4.active ,
+                                    icoPresent: response[1].user.profil.action_4.ico_present,
+                                    icoAbsent: response[1].user.profil.action_4.ico_absent,
+                                    libellePresent: response[1].user.profil.action_4.libelle_present,
+                                    libelleAbsent: response[1].user.profil.action_4.libelle_absent,
+                                    localisation: response[1].user.profil.action_4.localisation,
+                                    activite: response[1].user.profil.action_4.activite
+                                },
+                                action5: {
+                                    active: response[1].user.profil.action_5.active ,
+                                    icoPresent: response[1].user.profil.action_5.ico_present,
+                                    icoAbsent: response[1].user.profil.action_5.ico_absent,
+                                    libellePresent: response[1].user.profil.action_5.libelle_present,
+                                    libelleAbsent: response[1].user.profil.action_5.libelle_absent,
+                                    localisation: response[1].user.profil.action_5.localisation,
+                                    activite: response[1].user.profil.action_5.activite
+                                },
+                            },
+                            client: {
+                                activeBadgeClient: response[1].user.client.activeBadge,
+                                activeAbsenceClient: response[1].user.client.activeAbsence
+                            },
+                            activeBadgeUser: response[1].user.activeBadge,
+                            activeAbsenceUser: response[1].user.activeAbsence,
+                            activeGeolocalisation: response[1].user.activeLocalisation, 
+                            lieuxGeolocalisation: response[1].user.lieux,
+                            activites: response[1].user.activites,
+                        },
+                        statutUser: response[1].user.statut
+
+                        // icoAbsent : response[1].user.icoAbsent,
+                        // icoPresent : response[1].user.icoPresent,
                     })
-                    {
-                        response[1].user.client.activeBadge == false && response[1].user.activeBadge == false ?
-                            (
-                                response[1].user.profil.action_0.active = false
+                    // {
+                    //     response[1].user.client.activeBadge == false && response[1].user.activeBadge == false ?
+                    //         (
+                    //             response[1].user.profil.action_0.active = false
 
-                            ) : (
+                    //         ) : (
                                 
-                                response[1].user.client.activeBadge == false || response[1].user.activeBadge == false ? 
-                                        (
-                                            response[1].user.profil.action_0.active = false
+                    //             response[1].user.client.activeBadge == false || response[1].user.activeBadge == false ? 
+                    //                     (
+                    //                         response[1].user.profil.action_0.active = false
 
-                                        ) : (
-                                            null
-                                        )
-                                )
-                    }
-                    if( response[1].user.statut == true ) {
-                        this.setState({
-                            loadingList: false,
-                            user: {
-                                'email': response[1].user.email,
-                                'profil': {
-                                    'action0': {
-                                        'active': response[1].user.icoPresent ,
-                                        'ico': response[1].user.icoAbsent,
-                                        'libelle': response[1].user.profil.action_0.libelle,
-                                        'localisation' : response[1].user.profil.action_0.localisation,
-                                        'activite' : response[1].user.profil.action_0.activite
-                                    },
-                                    'action1': {
-                                        'active': response[1].user.profil.action_1.active,
-                                        'ico': response[1].user.profil.action_1.ico,
-                                        'libelle': response[1].user.profil.action_1.libelle,
-                                        'localisation' : response[1].user.profil.action_1.localisation, 
-                                        'activite' : response[1].user.profil.action_1.activite
-                                    },
-                                    'action2': {
-                                        'active': response[1].user.profil.action_2.active,
-                                        'ico': response[1].user.profil.action_2.ico,
-                                        'libelle': response[1].user.profil.action_2.libelle,
-                                        'localisation' : response[1].user.profil.action_2.localisation, 
-                                        'activite' : response[1].user.profil.action_2.activite
-                                    },
-                                    'action3': {
-                                        'active': response[1].user.profil.action_3.active,
-                                        'ico': response[1].user.profil.action_3.ico,
-                                        'libelle': response[1].user.profil.action_3.libelle,
-                                        'localisation' : response[1].user.profil.action_3.localisation, 
-                                        'activite' : response[1].user.profil.action_3.activite
-                                    },
-                                    'action4': {
-                                        'active': response[1].user.profil.action_4.active,
-                                        'ico': response[1].user.profil.action_4.ico,
-                                        'libelle': response[1].user.profil.action_4.libelle,
-                                        'localisation' : response[1].user.profil.action_4.localisation, 
-                                        'activite' : response[1].user.profil.action_4.activite
-                                    },
-                                    'action5': {
-                                        'active': response[1].user.profil.action_5.active,
-                                        'ico': response[1].user.profil.action_5.ico,
-                                        'libelle': response[1].user.profil.action_5.libelle,
-                                        'localisation' : response[1].user.profil.action_5.localisation,
-                                        'activite' : response[1].user.profil.action_5.activite
-                                    }
-                                }
-                            }
-                        })
-                    } else {
-                        this.setState({
-                            loadingList: false,
-                            user: {
-                                'email': response[1].user.email,
-                                'profil': {
-                                    'action0': {
-                                        'active': response[1].user.profil.action_0.active ,
-                                        'ico': response[1].user.icoPresent,
-                                        'libelle': response[1].user.profil.action_0.libelle,
-                                        'localisation' : response[1].user.profil.action_0.localisation, 
-                                        'activite' : response[1].user.profil.action_0.activite
-                                    },
-                                    'action1': {
-                                        'active': response[1].user.profil.action_1.active,
-                                        'ico': response[1].user.profil.action_1.ico,
-                                        'libelle': response[1].user.profil.action_1.libelle,
-                                        'localisation' : response[1].user.profil.action_1.localisation,
-                                        'activite' : response[1].user.profil.action_1.activite
-                                    },
-                                    'action2': {
-                                        'active': response[1].user.profil.action_2.active,
-                                        'ico': response[1].user.profil.action_2.ico,
-                                        'libelle': response[1].user.profil.action_2.libelle,
-                                        'localisation' : response[1].user.profil.action_2.localisation, 
-                                        'activite' : response[1].user.profil.action_2.activite
-                                    },
-                                    'action3': {
-                                        'active': response[1].user.profil.action_3.active,
-                                        'ico': response[1].user.profil.action_3.ico,
-                                        'libelle': response[1].user.profil.action_3.libelle,
-                                        'localisation' : response[1].user.profil.action_3.localisation,
-                                        'activite' : response[1].user.profil.action_3.activite
-                                    },
-                                    'action4': {
-                                        'active': response[1].user.profil.action_4.active,
-                                        'ico': response[1].user.profil.action_4.ico,
-                                        'libelle': response[1].user.profil.action_4.libelle,
-                                        'localisation' : response[1].user.profil.action_4.localisation, 
-                                        'activite' : response[1].user.profil.action_4.activite
-                                    },
-                                    'action5': {
-                                        'active': response[1].user.profil.action_5.active,
-                                        'ico': response[1].user.profil.action_5.ico,
-                                        'libelle': response[1].user.profil.action_5.libelle,
-                                        'localisation' : response[1].user.profil.action_5.localisation,
-                                        'activite' : response[1].user.profil.action_5.activite 
-                                    }
-                                }
-                            }
-                        })
-                    }
+                    //                     ) : (
+                    //                         null
+                    //                     )
+                    //             )
+                    // }
+                    // if( response[1].user.statut == true ) {
+                    //     this.setState({
+                    //         loadingList: false,
+                    //         user: {
+                    //             'email': response[1].user.email,
+                    //             'profil': {
+                    //                 'action0': {
+                    //                     'active': response[1].user.profil.action_0.active ,
+                    //                     'ico_present': response[1].user.profil.action_0.icoPresent,
+                    //                     'ico_absent': response[1].user.icoAbsent,
+                    //                     'libelle': response[1].user.profil.action_0.libelle,
+                    //                     'localisation' : response[1].user.profil.action_0.localisation,
+                    //                     'activite' : response[1].user.profil.action_0.activite
+                    //                 },
+                    //                 'action1': {
+                    //                     'active': response[1].user.profil.action_1.active,
+                    //                     'ico': response[1].user.profil.action_1.ico,
+                    //                     'libelle': response[1].user.profil.action_1.libelle,
+                    //                     'localisation' : response[1].user.profil.action_1.localisation, 
+                    //                     'activite' : response[1].user.profil.action_1.activite
+                    //                 },
+                    //                 'action2': {
+                    //                     'active': response[1].user.profil.action_2.active,
+                    //                     'ico': response[1].user.profil.action_2.ico,
+                    //                     'libelle': response[1].user.profil.action_2.libelle,
+                    //                     'localisation' : response[1].user.profil.action_2.localisation, 
+                    //                     'activite' : response[1].user.profil.action_2.activite
+                    //                 },
+                    //                 'action3': {
+                    //                     'active': response[1].user.profil.action_3.active,
+                    //                     'ico': response[1].user.profil.action_3.ico,
+                    //                     'libelle': response[1].user.profil.action_3.libelle,
+                    //                     'localisation' : response[1].user.profil.action_3.localisation, 
+                    //                     'activite' : response[1].user.profil.action_3.activite
+                    //                 },
+                    //                 'action4': {
+                    //                     'active': response[1].user.profil.action_4.active,
+                    //                     'ico': response[1].user.profil.action_4.ico,
+                    //                     'libelle': response[1].user.profil.action_4.libelle,
+                    //                     'localisation' : response[1].user.profil.action_4.localisation, 
+                    //                     'activite' : response[1].user.profil.action_4.activite
+                    //                 },
+                    //                 'action5': {
+                    //                     'active': response[1].user.profil.action_5.active,
+                    //                     'ico': response[1].user.profil.action_5.ico,
+                    //                     'libelle': response[1].user.profil.action_5.libelle,
+                    //                     'localisation' : response[1].user.profil.action_5.localisation,
+                    //                     'activite' : response[1].user.profil.action_5.activite
+                    //                 }
+                    //             }
+                    //         }
+                    //     })
+                    // } else {
+                    //     this.setState({
+                    //         loadingList: false,
+                    //         user: {
+                    //             'email': response[1].user.email,
+                    //             'profil': {
+                    //                 'action0': {
+                    //                     'active': response[1].user.profil.action_0.active ,
+                    //                     'ico': response[1].user.icoPresent,
+                    //                     'libelle': response[1].user.profil.action_0.libelle,
+                    //                     'localisation' : response[1].user.profil.action_0.localisation, 
+                    //                     'activite' : response[1].user.profil.action_0.activite
+                    //                 },
+                    //                 'action1': {
+                    //                     'active': response[1].user.profil.action_1.active,
+                    //                     'ico': response[1].user.profil.action_1.ico,
+                    //                     'libelle': response[1].user.profil.action_1.libelle,
+                    //                     'localisation' : response[1].user.profil.action_1.localisation,
+                    //                     'activite' : response[1].user.profil.action_1.activite
+                    //                 },
+                    //                 'action2': {
+                    //                     'active': response[1].user.profil.action_2.active,
+                    //                     'ico': response[1].user.profil.action_2.ico,
+                    //                     'libelle': response[1].user.profil.action_2.libelle,
+                    //                     'localisation' : response[1].user.profil.action_2.localisation, 
+                    //                     'activite' : response[1].user.profil.action_2.activite
+                    //                 },
+                    //                 'action3': {
+                    //                     'active': response[1].user.profil.action_3.active,
+                    //                     'ico': response[1].user.profil.action_3.ico,
+                    //                     'libelle': response[1].user.profil.action_3.libelle,
+                    //                     'localisation' : response[1].user.profil.action_3.localisation,
+                    //                     'activite' : response[1].user.profil.action_3.activite
+                    //                 },
+                    //                 'action4': {
+                    //                     'active': response[1].user.profil.action_4.active,
+                    //                     'ico': response[1].user.profil.action_4.ico,
+                    //                     'libelle': response[1].user.profil.action_4.libelle,
+                    //                     'localisation' : response[1].user.profil.action_4.localisation, 
+                    //                     'activite' : response[1].user.profil.action_4.activite
+                    //                 },
+                    //                 'action5': {
+                    //                     'active': response[1].user.profil.action_5.active,
+                    //                     'ico': response[1].user.profil.action_5.ico,
+                    //                     'libelle': response[1].user.profil.action_5.libelle,
+                    //                     'localisation' : response[1].user.profil.action_5.localisation,
+                    //                     'activite' : response[1].user.profil.action_5.activite 
+                    //                 }
+                    //             }
+                    //         }
+                    //     })
+                    // }
 
                 });
             }
@@ -287,31 +357,37 @@ class ManagementTime extends React.Component {
             })
         }, 1000);
     }
+
     errorServeur = async (buttonError,lat,long,activite) => {
         this.setState({
-            erroServeur : true,
-        })
-        if(buttonError == 'F00') {
+            errorServeur : true,
+        });
+
+        if(buttonError == 'F00') 
+        {
             var dataPointing = this.props.pointing
             var compteurTrouve = 0;  
-            for(var i = 0; i<dataPointing.length; i++) {
-                if(dataPointing[i]['email'] == this.props.email) {
+            for(var i = 0; i < dataPointing.length; i++) 
+            {
+                if(dataPointing[i]['email'] == this.props.email) 
+                {
                     dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),buttonError,lat,long,activite])
                     compteurTrouve++;
                     this.props.pointingAction(dataPointing)
-                    this.setState(prevState => ({
-                    [`loading`+`${buttonError}`] : false,
-                    disabled : false,
-                    statutIco : !prevState.statutIco,
-                    visible : true,
-                    currentIco: null,
-                    currentLibelle: 'Erreur serveur',
-                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                    }))
+                    this.setState({
+                        loadingList: false,
+                        loaderOverlayResponse: false,
+                        currentIco: null,
+                        currentLibelle: 'Erreur serveur',
+                        currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                    });
+
                     Vibration.vibrate(500)
                 }
             }
-            if(compteurTrouve == 0){
+
+            if(compteurTrouve == 0)
+            {
                 dataPointing.push(
                     {
                         'email' : this.props.email,
@@ -319,22 +395,23 @@ class ManagementTime extends React.Component {
                     }
                 )
                 this.props.pointingAction(dataPointing)
-                this.setState(prevState => ({
-                    [`loading`+`${buttonError}`] : false,
-                    disabled : false,
-                    statutIco : !prevState.statutIco,
-                    visible : true,
+                this.setState({
+                    loadingList: false,
+                    loaderOverlayResponse: false,
                     currentIco: null,
                     currentLibelle: 'Erreur serveur',
                     currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                }))
+                });
+
                 Vibration.vibrate(500)
             }
-        }else {
+
+        }
+        else 
+        {
             this.setState({
-                [`loading`+`${buttonError}`] : false,
-                disabled : false,
-                visible : true,
+                loadingList: false,
+                loaderOverlayResponse: false,
                 currentIco: null,
                 currentLibelle: 'Erreur serveur',
                 currentText: "Serveur Indisponible"                                   
@@ -343,55 +420,64 @@ class ManagementTime extends React.Component {
     }
 
     actionButton = async (button, libelle, localisation, activite) => {
-        if ( this.state.activeGeolocalisation == false ) {
-            this.setState({
-                [`loading`+`${button}`] : true,
-                disabled : true,
-                visible : true,
-                loaderOverlayResponse: true,
-            }),
-            getToken(this.props.email,this.props.password).then(data => {
-                if(data[0] == 200) {
-                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude,activite).then(data => {
-                        if(data[0] == 200) {
-                            if(button == 'F00') {
-                                Vibration.vibrate(500)
-                            }                              
+
+        this.setState({
+            loadingList: true,
+            visible: true,
+            loaderOverlayResponse: true,
+        });
+
+        if(this.state.user.activeGeolocalisation == false) 
+        {
+            getToken(this.props.email, this.props.password).then(data => {
+                
+                if(data[0] == 200) 
+                {
+                    postAction(data[1].token, '1', this.props.email, this.getFullDate(), this.getFullHeure(), button, this.state.latitude, this.state.longitude, activite).then(data => {
+                        
+                        if(data[0] == 200) 
+                        {
+                            if(button == 'F00') 
+                            {
+                                Vibration.vibrate(500);
+                            }   
+
                             this.setState({
-                                [`loading`+`${button}`] : false,
-                                disabled : false,
-                                // visible : true,
+                                loadingList: false,
                                 loaderOverlayResponse: false,
+                                statutUser: data[1].statut,
                                 currentIco: data[1].ico,
                                 currentLibelle: libelle,
                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                            })
-                            if( data[1].ico !== '' && button == 'F00'){
-                                this.setState(prevState => ({
-                                    statutIco : !prevState.statutIco,
-                                }))
-                            }
+                            });
                         }
-                        else {
-                            this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
+                        else 
+                        {
+                            this.errorServeur(button,this.state.latitude,this.state.longitude,activite);
                         }
+
                     })
                 }
-                else {               
-                    this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
-                    
+                else 
+                {               
+                    this.errorServeur(button,this.state.latitude,this.state.longitude,activite);
                 }
             })
         }
-        else {
-            if(localisation) {
-                try {
+        else 
+        {
+            if(localisation) 
+            {
+                try 
+                {
                     const granted = await PermissionsAndroid.request(
-                      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
                     );
-                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+
+                    if (granted === PermissionsAndroid.RESULTS.GRANTED) 
+                    {
                         LocationServicesDialogBox.checkLocationServicesIsEnabled({
-                            message: "<h2>Utiliser la localisation ?</h2>Afin que votre application fonctionne correctement, activez la localisation de l'appareil :<br/><br/>Utiliser le GPS pour la localiation ? <br/>",           
+                            message: "<h2>Authoriser la localisation ?</h2>L'application à besoin d'accéder à vos données de localisation pour fonctionner.<br/>",           
                             ok: "OK",
                             cancel: "NON, MERCI",
                             enableHighAccuracy: true,
@@ -407,7 +493,7 @@ class ManagementTime extends React.Component {
                                     longitude : info.coords.longitude.toString(),
                                 }, () => {
                                     var test = false
-                                    this.state.lieuxGeolocalisation.forEach(pointing => {
+                                    this.state.user.lieuxGeolocalisation.forEach(pointing => {
                                         var dis = getDistance(
                                             { latitude: this.state.latitude , longitude: this.state.longitude },
                                             { latitude: pointing.latitude, longitude: pointing.longitude }
@@ -416,541 +502,550 @@ class ManagementTime extends React.Component {
                                             test = true
                                         }
                                     })
-                                    if(test == true) {                                
-                                        this.setState({
-                                            [`loading`+`${button}`] : true,
-                                            disabled : true,
-                                            visible : true,
-                                            loaderOverlayResponse: true,
-                                        })
+
+                                    if(test == true) 
+                                    {                                
                                         getToken(this.props.email,this.props.password).then(data => {
-                                            if(data[0] == 200) {
+                                            
+                                            if(data[0] == 200) 
+                                            {
                                                 postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude,activite).then(data => {
-                                                    if(data[0] == 200) {
-                                                        if(button == 'F00') {
+                                                    
+                                                    if(data[0] == 200) 
+                                                    {
+                                                        if(button == 'F00') 
+                                                        {
                                                             Vibration.vibrate(500)
                                                         }
+
                                                         this.setState({
-                                                            [`loading`+`${button}`] : false,
-                                                            disabled : false,
-                                                            // visible : true,
+                                                            loadingList: false,
                                                             loaderOverlayResponse: false,
+                                                            statutUser: data[1].statut,
                                                             currentIco: data[1].ico,
                                                             currentLibelle: libelle,
                                                             currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                                        }) 
-                                                        if( data[1].ico !== '' && button == 'F00'){
-                                                            this.setState(prevState => ({
-                                                                statutIco : !prevState.statutIco,
-                                                            }))
-                                                        }
+                                                        }); 
                                                     }
-                                                    else {
-                                                        
+                                                    else 
+                                                    {
                                                         this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
-     
                                                     }
                                                 })
-                                            }else {
+                                            }
+                                            else 
+                                            {
                                                 this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
                                             } 
                                         })
-                                        } 
-                                        else {    
-                                            this.setState({
-                                                [`loading`+`${button}`] : true,
-                                                disabled : true,
-                                                visible : true,
-                                                loaderOverlayResponse: true,
-                                            })
-                                            getToken(this.props.email,this.props.password).then(data => {
-                                                if(data[0] == 200) {
-                                                    postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite).then(data => {
-                                                        if(data[0] == 200) {
-                                                            if(button == 'F00') {
-                                                                Vibration.vibrate(500)
-                                                            }
-                                                            this.setState({
-                                                                [`loading`+`${button}`] : false,
-                                                                disabled : false,
-                                                                // visible : true,
-                                                                loaderOverlayResponse: false,
-                                                                currentIco: data[1].ico,
-                                                                currentLibelle: libelle,
-                                                                currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                                            })    
-                                                            if(  data[1].ico !== '' && button == 'F00' ){
-                                                                this.setState(prevState => ({
-                                                                    statutIco : !prevState.statutIco,
-                                                                }))
-                                                            }          
-                                                        }
-                                                        else {
-                                                            // this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
-                                                            this.setState({
-                                                                erroServeur : true,
-                                                                visible : true,
-                                                            })
-                                                            if(button == 'F00') {
-                                                                var dataPointing = this.props.pointing
-                                                                var compteurTrouve = 0;  
-                                                                for(var i = 0; i<dataPointing.length; i++) {
-                                                                    if(dataPointing[i]['email'] == this.props.email) {
-                                                                        dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite])
-                                                                        compteurTrouve++;
-                                                                        this.props.pointingAction(dataPointing)
-                                                                        this.setState(prevState => ({
-                                                                        [`loading`+`${button}`] : false,
-                                                                        disabled : false,
-                                                                        statutIco : !prevState.statutIco,
-                                                                        // visible : true,
-                                                                        loaderOverlayResponse: false,
-                                                                        currentIco: null,
-                                                                        currentLibelle: 'Erreur serveur',
-                                                                        currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                                                        }))
-                                                                        Vibration.vibrate(500)
-                                                                    }
-                                                                }
-                                                                if(compteurTrouve == 0){
-                                                                    dataPointing.push(
-                                                                        {
-                                                                            'email' : this.props.email,
-                                                                            'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite]]       
-                                                                        }
-                                                                    )
-                                                                    this.props.pointingAction(dataPointing)
-                                                                    this.setState(prevState => ({
-                                                                        [`loading`+`${button}`] : false,
-                                                                        disabled : false,
-                                                                        statutIco : !prevState.statutIco,
-                                                                        // visible : true,
-                                                                        loaderOverlayResponse: false,
-                                                                        currentIco: null,
-                                                                        currentLibelle: 'Erreur serveur',
-                                                                        currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                                                    }))
-                                                                    Vibration.vibrate(500)
-                                                                }
-                                                            }else {
-                                                                this.setState({
-                                                                    [`loading`+`${button}`] : false,
-                                                                    disabled : false,
-                                                                    // visible : true,
-                                                                    loaderOverlayResponse: false,
-                                                                    currentIco: null,
-                                                                    currentLibelle: 'Erreur serveur',
-                                                                    currentText: "Serveur Indisponible"                                   
-                                                                })                    
-                                                            }
-                                                            //////////////////////////////////////////
-                                                        }
-                                                    })
-                                                } 
-                                                else {
-                                                    /////////////////////////////////////
-                                                    this.setState({
-                                                        erroServeur : true,
-                                                    })
-                                                    if(button == 'F00') {
-                                                        var dataPointing = this.props.pointing
-                                                        var compteurTrouve = 0;  
-                                                        for(var i = 0; i<dataPointing.length; i++) {
-                                                            if(dataPointing[i]['email'] == this.props.email) {
-                                                                dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite])
-                                                                compteurTrouve++;
-                                                                this.props.pointingAction(dataPointing)
-                                                                this.setState(prevState => ({
-                                                                [`loading`+`${button}`] : false,
-                                                                disabled : false,
-                                                                statutIco : !prevState.statutIco,
-                                                                loaderOverlayResponse: false,
-                                                                // visible : true,
-                                                                currentIco: null,
-                                                                currentLibelle: 'Erreur serveur',
-                                                                currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                                                }))
-                                                                Vibration.vibrate(500)
-                                                            }
-                                                        }
-                                                        if(compteurTrouve == 0){
-                                                            dataPointing.push(
-                                                                {
-                                                                    'email' : this.props.email,
-                                                                    'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite]]       
-                                                                }
-                                                            )
-                                                            this.props.pointingAction(dataPointing)
-                                                            this.setState(prevState => ({
-                                                                [`loading`+`${button}`] : false,
-                                                                disabled : false,
-                                                                statutIco : !prevState.statutIco,
-                                                                loaderOverlayResponse: false,
-                                                                // visible : true,
-                                                                currentIco: null,
-                                                                currentLibelle: 'Erreur serveur',
-                                                                currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                                            }))
+                                    } 
+                                    else 
+                                    {    
+                                        getToken(this.props.email,this.props.password).then(data => {
+
+                                            if(data[0] == 200) 
+                                            {
+                                                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite).then(data => {
+                                                        
+                                                    if(data[0] == 200) 
+                                                    {
+                                                        if(button == 'F00') 
+                                                        {
                                                             Vibration.vibrate(500)
                                                         }
-                                                    }else {
+
                                                         this.setState({
-                                                            [`loading`+`${button}`] : false,
-                                                            disabled : false,
-                                                            // visible : true,
+                                                            loadingList: false,
                                                             loaderOverlayResponse: false,
-                                                            currentIco: null,
-                                                            currentLibelle: 'Erreur serveur',
-                                                            currentText: "Serveur Indisponible"                                   
-                                                        })                    
+                                                            statutUser: data[1].statut,
+                                                            currentIco: data[1].ico,
+                                                            currentLibelle: libelle,
+                                                            currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                                        });           
                                                     }
+                                                    else 
+                                                    {
+                                                        this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
+                                                            // this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
+                                                        // this.setState({
+                                                        //     errorServeur : true,
+                                                        //         // visible : true,
+                                                        // })
+                                                            // if(button == 'F00') {
+                                                            //     var dataPointing = this.props.pointing
+                                                            //     var compteurTrouve = 0;  
+                                                            //     for(var i = 0; i<dataPointing.length; i++) {
+                                                            //         if(dataPointing[i]['email'] == this.props.email) {
+                                                            //             dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite])
+                                                            //             compteurTrouve++;
+                                                            //             this.props.pointingAction(dataPointing)
+                                                            //             this.setState(prevState => ({
+                                                            //             // [`loading`+`${button}`] : false,
+                                                            //             // disabled : false,
+                                                            //             // statutIco : !prevState.statutIco,
+                                                            //             loadingList: false,
+                                                            //             // visible : true,
+                                                            //             loaderOverlayResponse: false,
+                                                            //             currentIco: null,
+                                                            //             currentLibelle: 'Erreur serveur',
+                                                            //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                            //             }))
+                                                            //             Vibration.vibrate(500)
+                                                            //         }
+                                                            //     }
+                                                            //     if(compteurTrouve == 0){
+                                                            //         dataPointing.push(
+                                                            //             {
+                                                            //                 'email' : this.props.email,
+                                                            //                 'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite]]       
+                                                            //             }
+                                                            //         )
+                                                            //         this.props.pointingAction(dataPointing)
+                                                            //         this.setState(prevState => ({
+                                                            //             // [`loading`+`${button}`] : false,
+                                                            //             // disabled : false,
+                                                            //             // statutIco : !prevState.statutIco,
+                                                            //             loadingList: false,
+                                                            //             // visible : true,
+                                                            //             loaderOverlayResponse: false,
+                                                            //             currentIco: null,
+                                                            //             currentLibelle: 'Erreur serveur',
+                                                            //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                            //         }))
+                                                            //         Vibration.vibrate(500)
+                                                            //     }
+                                                            // }else {
+                                                            //     this.setState({
+                                                            //         // [`loading`+`${button}`] : false,
+                                                            //         // disabled : false,
+                                                            //         // visible : true,
+                                                            //         loadingList: false,
+                                                            //         loaderOverlayResponse: false,
+                                                            //         currentIco: null,
+                                                            //         currentLibelle: 'Erreur serveur',
+                                                            //         currentText: "Serveur Indisponible"                                   
+                                                            //     })                    
+                                                            // }
+                                                            //////////////////////////////////////////
+                                                    }
+                                                })
+                                            } 
+                                            else 
+                                            {
+                                                this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
+                                                    /////////////////////////////////////
+                                                    // this.setState({
+                                                    //     errorServeur : true,
+                                                    //     // visible : true,
+                                                    // })
+                                                    // if(button == 'F00') {
+                                                    //     var dataPointing = this.props.pointing
+                                                    //     var compteurTrouve = 0;  
+                                                    //     for(var i = 0; i<dataPointing.length; i++) {
+                                                    //         if(dataPointing[i]['email'] == this.props.email) {
+                                                    //             dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite])
+                                                    //             compteurTrouve++;
+                                                    //             this.props.pointingAction(dataPointing)
+                                                    //             this.setState(prevState => ({
+                                                    //             // [`loading`+`${button}`] : false,
+                                                    //             // disabled : false,
+                                                    //             // statutIco : !prevState.statutIco,
+                                                    //             loadingList: false,
+                                                    //             loaderOverlayResponse: false,
+                                                    //             currentIco: null,
+                                                    //             currentLibelle: 'Erreur serveur',
+                                                    //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                    //             }))
+                                                    //             Vibration.vibrate(500)
+                                                    //         }
+                                                    //     }
+                                                    //     if(compteurTrouve == 0){
+                                                    //         dataPointing.push(
+                                                    //             {
+                                                    //                 'email' : this.props.email,
+                                                    //                 'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite]]       
+                                                    //             }
+                                                    //         )
+                                                    //         this.props.pointingAction(dataPointing)
+                                                    //         this.setState(prevState => ({
+                                                    //             // [`loading`+`${button}`] : false,
+                                                    //             // disabled : false,
+                                                    //             // statutIco : !prevState.statutIco,
+                                                    //             loadingList: false,
+                                                    //             loaderOverlayResponse: false,
+                                                    //             // visible : true,
+                                                    //             currentIco: null,
+                                                    //             currentLibelle: 'Erreur serveur',
+                                                    //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                                    //         }))
+                                                    //         Vibration.vibrate(500)
+                                                    //     }
+                                                    // }else {
+                                                    //     this.setState({
+                                                    //         // [`loading`+`${button}`] : false,
+                                                    //         // disabled : false,
+                                                    //         // visible : true,
+                                                    //         loadingList: false,
+                                                    //         loaderOverlayResponse: false,
+                                                    //         currentIco: null,
+                                                    //         currentLibelle: 'Erreur serveur',
+                                                    //         currentText: "Serveur Indisponible"                                   
+                                                    //     })                    
+                                                    // }
                                                     ///////////////////////////////////
-                                                }
-                                            })
-                                        }
+                                            }
+                                        })
                                     }
-                            ))
-                        }.bind(this)
-                        ).catch((error) => {
-                            this.setState({
-                                [`loading`+`${button}`] : true,
-                                disabled : true,
-                                visible : true,
-                                loaderOverlayResponse: true,
-                            }),
+                                })
+                            )
+                        }.bind(this)).catch((error) => {
+
                             getToken(this.props.email,this.props.password).then(data => {
-                                if(data[0] == 200) {
+                                
+                                if(data[0] == 200) 
+                                {
                                     postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null).then(data => {
-                                        if(data[0] == 200) {
-                                            if(button == 'F00') {
+                                        
+                                        if(data[0] == 200) 
+                                        {
+                                            if(button == 'F00') 
+                                            {
                                                 Vibration.vibrate(500)
                                             }
                                             this.setState({
-                                                [`loading`+`${button}`] : false,
-                                                disabled : false,
+                                                loadingList: false,
                                                 loaderOverlayResponse: false,
-                                                // visible : true,
+                                                statutUser: data[1].statut,
                                                 currentIco: data[1].ico,
                                                 currentLibelle: libelle,
                                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                            })  
-                                            if(data[1].ico !== '' && button == 'F00'){
-                                                this.setState(prevState => ({
-                                                    statutIco : !prevState.statutIco,
-                                                }))
-                                            }            
+                                            });            
                                         }
-                                        else {
-                                        ////////////////////////////////////////////
-                                        this.setState({
-                                            erroServeur : true,
-                                        })
-                                        if(button == 'F00') {
-                                            var dataPointing = this.props.pointing
-                                            var compteurTrouve = 0;  
-                                            for(var i = 0; i<dataPointing.length; i++) {
-                                                if(dataPointing[i]['email'] == this.props.email) {
-                                                    dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
-                                                    compteurTrouve++;
-                                                    this.props.pointingAction(dataPointing)
-                                                    this.setState(prevState => ({
-                                                    [`loading`+`${button}`] : false,
-                                                    disabled : false,
-                                                    statutIco : !prevState.statutIco,
-                                                    loaderOverlayResponse: false,
-                                                    // visible : true,
-                                                    currentIco: null,
-                                                    currentLibelle: 'Erreur serveur',
-                                                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                                    }))
-                                                    Vibration.vibrate(500)
-                                                }
-                                            }
-                                            if(compteurTrouve == 0){
-                                                dataPointing.push(
-                                                    {
-                                                        'email' : this.props.email,
-                                                        'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
-                                                    }
-                                                )
-                                                this.props.pointingAction(dataPointing)
-                                                this.setState(prevState => ({
-                                                    [`loading`+`${button}`] : false,
-                                                    disabled : false,
-                                                    statutIco : !prevState.statutIco,
-                                                    loaderOverlayResponse: false,
-                                                    // visible : true,
-                                                    currentIco: null,
-                                                    currentLibelle: 'Erreur serveur',
-                                                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                                }))
-                                                Vibration.vibrate(500)
-                                            }
-                                        }else {
-                                            this.setState({
-                                                [`loading`+`${button}`] : false,
-                                                disabled : false,
-                                                // visible : true,
-                                                loaderOverlayResponse: false,
-                                                currentIco: null,
-                                                currentLibelle: 'Erreur serveur',
-                                                currentText: "Serveur Indisponible"                                   
-                                            })                    
-                                        }
-                                        ////////////////////////////////////////////
+                                        else 
+                                        {
+                                            this.errorServeur(button,null,null,activite)
+                                            ////////////////////////////////////////////
+                                            // this.setState({
+                                            //     errorServeur : true,
+                                            // })
+                                            // if(button == 'F00') {
+                                            //     var dataPointing = this.props.pointing
+                                            //     var compteurTrouve = 0;  
+                                            //     for(var i = 0; i<dataPointing.length; i++) {
+                                            //         if(dataPointing[i]['email'] == this.props.email) {
+                                            //             dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
+                                            //             compteurTrouve++;
+                                            //             this.props.pointingAction(dataPointing)
+                                            //             this.setState(prevState => ({
+                                            //             // [`loading`+`${button}`] : false,
+                                            //             // disabled : false,
+                                            //             // statutIco : !prevState.statutIco,
+                                            //             loaderOverlayResponse: false,
+                                            //             loadingList: false,
+                                            //             // visible : true,
+                                            //             currentIco: null,
+                                            //             currentLibelle: 'Erreur serveur',
+                                            //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                            //             }))
+                                            //             Vibration.vibrate(500)
+                                            //         }
+                                            //     }
+                                            //     if(compteurTrouve == 0){
+                                            //         dataPointing.push(
+                                            //             {
+                                            //                 'email' : this.props.email,
+                                            //                 'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
+                                            //             }
+                                            //         )
+                                            //         this.props.pointingAction(dataPointing)
+                                            //         this.setState(prevState => ({
+                                            //             // [`loading`+`${button}`] : false,
+                                            //             // disabled : false,
+                                            //             // statutIco : !prevState.statutIco,
+                                            //             loaderOverlayResponse: false,
+                                            //             loadingList: false,
+                                            //             // visible : true,
+                                            //             currentIco: null,
+                                            //             currentLibelle: 'Erreur serveur',
+                                            //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                            //         }))
+                                            //         Vibration.vibrate(500)
+                                            //     }
+                                            // }else {
+                                            //     this.setState({
+                                            //         // [`loading`+`${button}`] : false,
+                                            //         // disabled : false,
+                                            //         // visible : true,
+                                            //         loadingList: false,
+                                            //         loaderOverlayResponse: false,
+                                            //         currentIco: null,
+                                            //         currentLibelle: 'Erreur serveur',
+                                            //         currentText: "Serveur Indisponible"                                   
+                                            //     })                    
+                                            // }
+                                            ////////////////////////////////////////////
                                         }
                                     })
                                 }
-                                else {
+                                else 
+                                {
+                                    this.errorServeur(button,null,null,activite)
                                     /////////////////////////////////////
-                                    this.setState({
-                                        erroServeur : true,
-                                    })
-                                    if(button == 'F00') {
-                                        var dataPointing = this.props.pointing
-                                        var compteurTrouve = 0;  
-                                        for(var i = 0; i<dataPointing.length; i++) {
-                                            if(dataPointing[i]['email'] == this.props.email) {
-                                                dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
-                                                compteurTrouve++;
-                                                this.props.pointingAction(dataPointing)
-                                                this.setState(prevState => ({
-                                                [`loading`+`${button}`] : false,
-                                                disabled : false,
-                                                statutIco : !prevState.statutIco,
-                                                loaderOverlayResponse: false,
-                                                // visible : true,
-                                                currentIco: null,
-                                                currentLibelle: 'Erreur serveur',
-                                                currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                                }))
-                                                Vibration.vibrate(500)
-                                            }
-                                        }
-                                        if(compteurTrouve == 0){
-                                            dataPointing.push(
-                                                {
-                                                    'email' : this.props.email,
-                                                    'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
-                                                }
-                                            )
-                                            this.props.pointingAction(dataPointing)
-                                            this.setState(prevState => ({
-                                                [`loading`+`${button}`] : false,
-                                                disabled : false,
-                                                statutIco : !prevState.statutIco,
-                                                loaderOverlayResponse: false,
-                                                // visible : true,
-                                                currentIco: null,
-                                                currentLibelle: 'Erreur serveur',
-                                                currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                            }))
-                                            Vibration.vibrate(500)
-                                        }
-                                    }else {
-                                        this.setState({
-                                            [`loading`+`${button}`] : false,
-                                            disabled : false,
-                                            // visible : true,
-                                            loaderOverlayResponse: false,
-                                            currentIco: null,
-                                            currentLibelle: 'Erreur serveur',
-                                            currentText: "Serveur Indisponible"                                   
-                                        })                    
-                                    }
+                                    // this.setState({
+                                    //     errorServeur : true,
+                                    // })
+                                    // if(button == 'F00') {
+                                    //     var dataPointing = this.props.pointing
+                                    //     var compteurTrouve = 0;  
+                                    //     for(var i = 0; i<dataPointing.length; i++) {
+                                    //         if(dataPointing[i]['email'] == this.props.email) {
+                                    //             dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
+                                    //             compteurTrouve++;
+                                    //             this.props.pointingAction(dataPointing)
+                                    //             this.setState(prevState => ({
+                                    //             // [`loading`+`${button}`] : false,
+                                    //             // disabled : false,
+                                    //             // statutIco : !prevState.statutIco,
+                                    //             loadingList: false,
+                                    //             loaderOverlayResponse: false,
+                                    //             // visible : true,
+                                    //             currentIco: null,
+                                    //             currentLibelle: 'Erreur serveur',
+                                    //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                    //             }))
+                                    //             Vibration.vibrate(500)
+                                    //         }
+                                    //     }
+                                    //     if(compteurTrouve == 0){
+                                    //         dataPointing.push(
+                                    //             {
+                                    //                 'email' : this.props.email,
+                                    //                 'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
+                                    //             }
+                                    //         )
+                                    //         this.props.pointingAction(dataPointing)
+                                    //         this.setState(prevState => ({
+                                    //             // [`loading`+`${button}`] : false,
+                                    //             // disabled : false,
+                                    //             // statutIco : !prevState.statutIco,
+                                    //             loadingList: false,
+                                    //             loaderOverlayResponse: false,
+                                    //             // visible : true,
+                                    //             currentIco: null,
+                                    //             currentLibelle: 'Erreur serveur',
+                                    //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                    //         }))
+                                    //         Vibration.vibrate(500)
+                                    //     }
+                                    // }else {
+                                    //     this.setState({
+                                    //         // [`loading`+`${button}`] : false,
+                                    //         // disabled : false,
+                                    //         // visible : true,
+                                    //         loadingList: false,
+                                    //         loaderOverlayResponse: false,
+                                    //         currentIco: null,
+                                    //         currentLibelle: 'Erreur serveur',
+                                    //         currentText: "Serveur Indisponible"                                   
+                                    //     })                    
+                                    // }
                                     /////////////////////////////////////
                                 } 
                             })
                         });
-                      } else {
-                        this.setState({
-                            [`loading`+`${button}`] : true,
-                            disabled : true,
-                            visible : true,
-                            loaderOverlayResponse: true,
-                        }),
+                    } 
+                    else 
+                    {
                         getToken(this.props.email,this.props.password).then(data => {
-                            if(data[0] == 200) {
+                            
+                            if(data[0] == 200) 
+                            {
                                 postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null).then(data => {
-                                    if(data[0] == 200) {
-                                        if(button == 'F00') {
+                                    
+                                    if(data[0] == 200) 
+                                    {
+                                        if(button == 'F00') 
+                                        {
                                             Vibration.vibrate(500)
                                         }
+
                                         this.setState({
-                                            [`loading`+`${button}`] : false,
-                                            disabled : false,
-                                            // visible : true,
+                                            loadingList: false,
                                             loaderOverlayResponse: false,
+                                            statutUser: data[1].statut,
                                             currentIco: data[1].ico,
                                             currentLibelle: libelle,
                                             currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                        }) 
-                                        if(  data[1].ico !== '' && button == 'F00'){
-                                            this.setState(prevState => ({
-                                                statutIco : !prevState.statutIco,
-                                            }))
-                                        }             
+                                        });            
                                     }
-                                    else {
+                                    else 
+                                    {
+                                        this.errorServeur(button,null,null,activite)
                                         ///////////////////////////////////////////
-                                        this.setState({
-                                            erroServeur : true,
-                                        })
-                                        if(button == 'F00') {
-                                            var dataPointing = this.props.pointing
-                                            var compteurTrouve = 0;  
-                                            for(var i = 0; i<dataPointing.length; i++) {
-                                                if(dataPointing[i]['email'] == this.props.email) {
-                                                    dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
-                                                    compteurTrouve++;
-                                                    this.props.pointingAction(dataPointing)
-                                                    this.setState(prevState => ({
-                                                    [`loading`+`${button}`] : false,
-                                                    disabled : false,
-                                                    statutIco : !prevState.statutIco,
-                                                    loaderOverlayResponse: false,
-                                                    // visible : true,
-                                                    currentIco: null,
-                                                    currentLibelle: 'Erreur serveur',
-                                                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                                    }))
-                                                    Vibration.vibrate(500)
-                                                }
-                                            }
-                                            if(compteurTrouve == 0){
-                                                dataPointing.push(
-                                                    {
-                                                        'email' : this.props.email,
-                                                        'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
-                                                    }
-                                                )
-                                                this.props.pointingAction(dataPointing)
-                                                this.setState(prevState => ({
-                                                    [`loading`+`${button}`] : false,
-                                                    disabled : false,
-                                                    statutIco : !prevState.statutIco,
-                                                    loaderOverlayResponse: false,
-                                                    // visible : true,
-                                                    currentIco: null,
-                                                    currentLibelle: 'Erreur serveur',
-                                                    currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                                }))
-                                                Vibration.vibrate(500)
-                                            }
-                                        }else {
-                                            this.setState({
-                                                [`loading`+`${button}`] : false,
-                                                disabled : false,
-                                                // visible : true,
-                                                loaderOverlayResponse: false,
-                                                currentIco: null,
-                                                currentLibelle: 'Erreur serveur',
-                                                currentText: "Serveur Indisponible"                                   
-                                            })                    
-                                        }
+                                        // this.setState({
+                                        //     errorServeur : true,
+                                        // })
+                                        // if(button == 'F00') {
+                                        //     var dataPointing = this.props.pointing
+                                        //     var compteurTrouve = 0;  
+                                        //     for(var i = 0; i<dataPointing.length; i++) {
+                                        //         if(dataPointing[i]['email'] == this.props.email) {
+                                        //             dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
+                                        //             compteurTrouve++;
+                                        //             this.props.pointingAction(dataPointing)
+                                        //             this.setState(prevState => ({
+                                        //             // [`loading`+`${button}`] : false,
+                                        //             // disabled : false,
+                                        //             // statutIco : !prevState.statutIco,
+                                        //             loadingList: false,
+                                        //             loaderOverlayResponse: false,
+                                        //             // visible : true,
+                                        //             currentIco: null,
+                                        //             currentLibelle: 'Erreur serveur',
+                                        //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                        //             }))
+                                        //             Vibration.vibrate(500)
+                                        //         }
+                                        //     }
+                                        //     if(compteurTrouve == 0){
+                                        //         dataPointing.push(
+                                        //             {
+                                        //                 'email' : this.props.email,
+                                        //                 'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
+                                        //             }
+                                        //         )
+                                        //         this.props.pointingAction(dataPointing)
+                                        //         this.setState(prevState => ({
+                                        //             // [`loading`+`${button}`] : false,
+                                        //             // disabled : false,
+                                        //             // statutIco : !prevState.statutIco,
+                                        //             loaderOverlayResponse: false,
+                                        //             loadingList: false,
+                                        //             // visible : true,
+                                        //             currentIco: null,
+                                        //             currentLibelle: 'Erreur serveur',
+                                        //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                        //         }))
+                                        //         Vibration.vibrate(500)
+                                        //     }
+                                        // }else {
+                                        //     this.setState({
+                                        //         // [`loading`+`${button}`] : false,
+                                        //         // disabled : false,
+                                        //         // visible : true,
+                                        //         loadingList: false,
+                                        //         loaderOverlayResponse: false,
+                                        //         currentIco: null,
+                                        //         currentLibelle: 'Erreur serveur',
+                                        //         currentText: "Serveur Indisponible"                                   
+                                        //     })                    
+                                        // }
                                         ////////////////////////////////////////////
                                     }
                                 })
-                            } else {
+                            } 
+                            else 
+                            {
+                                this.errorServeur(button,null,null,activite)
                                 //////////////////////////////////////////
-                                this.setState({
-                                    erroServeur : true,
-                                })
-                                if(button == 'F00') {
-                                    var dataPointing = this.props.pointing
-                                    var compteurTrouve = 0;  
-                                    for(var i = 0; i<dataPointing.length; i++) {
-                                        if(dataPointing[i]['email'] == this.props.email) {
-                                            dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
-                                            compteurTrouve++;
-                                            this.props.pointingAction(dataPointing)
-                                            this.setState(prevState => ({
-                                            [`loading`+`${button}`] : false,
-                                            disabled : false,
-                                            statutIco : !prevState.statutIco,
-                                            loaderOverlayResponse: false,
-                                            // visible : true,
-                                            currentIco: null,
-                                            currentLibelle: 'Erreur serveur',
-                                            currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                            }))
-                                            Vibration.vibrate(500)
-                                        }
-                                    }
-                                    if(compteurTrouve == 0){
-                                        dataPointing.push(
-                                            {
-                                                'email' : this.props.email,
-                                                'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
-                                            }
-                                        )
-                                        this.props.pointingAction(dataPointing)
-                                        this.setState(prevState => ({
-                                            [`loading`+`${button}`] : false,
-                                            disabled : false,
-                                            statutIco : !prevState.statutIco,
-                                            loaderOverlayResponse: false,
-                                            // visible : true,
-                                            currentIco: null,
-                                            currentLibelle: 'Erreur serveur',
-                                            currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
-                                        }))
-                                        Vibration.vibrate(500)
-                                    }
-                                }else {
-                                    this.setState({
-                                        [`loading`+`${button}`] : false,
-                                        disabled : false,
-                                        // visible : true,
-                                        loaderOverlayResponse: false,
-                                        currentIco: null,
-                                        currentLibelle: 'Erreur serveur',
-                                        currentText: "Serveur Indisponible"                                   
-                                    })                    
-                                }
+                                // this.setState({
+                                //     errorServeur : true,
+                                // })
+                                // if(button == 'F00') {
+                                //     var dataPointing = this.props.pointing
+                                //     var compteurTrouve = 0;  
+                                //     for(var i = 0; i<dataPointing.length; i++) {
+                                //         if(dataPointing[i]['email'] == this.props.email) {
+                                //             dataPointing[i]['pointage'].push(['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null])
+                                //             compteurTrouve++;
+                                //             this.props.pointingAction(dataPointing)
+                                //             this.setState(prevState => ({
+                                //             // [`loading`+`${button}`] : false,
+                                //             // disabled : false,
+                                //             // statutIco : !prevState.statutIco,
+                                //             loadingList: false,
+                                //             loaderOverlayResponse: false,
+                                //             // visible : true,
+                                //             currentIco: null,
+                                //             currentLibelle: 'Erreur serveur',
+                                //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                //             }))
+                                //             Vibration.vibrate(500)
+                                //         }
+                                //     }
+                                //     if(compteurTrouve == 0){
+                                //         dataPointing.push(
+                                //             {
+                                //                 'email' : this.props.email,
+                                //                 'pointage': [['0',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null]]       
+                                //             }
+                                //         )
+                                //         this.props.pointingAction(dataPointing)
+                                //         this.setState(prevState => ({
+                                //             // [`loading`+`${button}`] : false,
+                                //             // disabled : false,
+                                //             // statutIco : !prevState.statutIco,
+                                //             loadingList: false,
+                                //             loaderOverlayResponse: false,
+                                //             // visible : true,
+                                //             currentIco: null,
+                                //             currentLibelle: 'Erreur serveur',
+                                //             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
+                                //         }))
+                                //         Vibration.vibrate(500)
+                                //     }
+                                // }else {
+                                //     this.setState({
+                                //         // [`loading`+`${button}`] : false,
+                                //         // disabled : false,
+                                //         // visible : true,
+                                //         loadingList: false,
+                                //         loaderOverlayResponse: false,
+                                //         currentIco: null,
+                                //         currentLibelle: 'Erreur serveur',
+                                //         currentText: "Serveur Indisponible"                                   
+                                //     })                    
+                                // }
                                 /////////////////////////////////////////
                             }
                         })
-                      }
-                    } 
-                    catch (err) {
+                    }
+                } catch (err) {
                     console.warn(err);
                 } 
             }
-            else {
-                this.setState({
-                    [`loading`+`${button}`] : true,
-                    disabled : true,
-                    visible : true,
-                    loaderOverlayResponse: true,
-                }),
+            else 
+            {
                 getToken(this.props.email,this.props.password).then(data => {
-                    if(data[0] == 200) {
+                    
+                    if(data[0] == 200) 
+                    {
                         postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,null,null,activite).then(data => {
-                            if(data[0] == 200) {
-                                if(button == 'F00') {
+                            
+                            if(data[0] == 200) 
+                            {
+                                if(button == 'F00') 
+                                {
                                     Vibration.vibrate(500)
                                 }
+
                                 this.setState({
-                                    [`loading`+`${button}`] : false,
-                                    disabled : false,
-                                    // visible : true,
+                                    loadingList: false,
                                     loaderOverlayResponse: false,
+                                    statutUser: data[1].statut,
                                     currentIco: data[1].ico,
                                     currentLibelle: libelle,
                                     currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
-                                })     
-                                if(  data[1].ico !== '' && button == 'F00'){
-                                    this.setState(prevState => ({
-                                        statutIco : !prevState.statutIco,
-                                    }))
-                                }      
+                                });        
                             }
-                            else {
+                            else 
+                            {
                                 this.errorServeur(button,null,null,activite)
                             }
                         })
-                    }else {
+                    }
+                    else 
+                    {
                         this.errorServeur(button,null,null,activite)
                     }
                 })
@@ -979,7 +1074,7 @@ class ManagementTime extends React.Component {
                                 <Animatable.View animation = "slideInLeft" style = { styles.container_button_animation }>
                                     <View style = {{ alignItems: 'center', justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', marginVertical: 10, marginBottom: 5 }}>
                                         {
-                                            this.state.erroServeur ?               
+                                            this.state.errorServeur ?               
                                                 <FontAwesome5 
                                                     name = "exclamation-triangle" 
                                                     color = "red" 
@@ -996,9 +1091,9 @@ class ManagementTime extends React.Component {
                                         <Text style = { styles.text_dialog }>{ text }</Text>
                                     </View>
                                 </Animatable.View>
+                                <Button buttonStyle = { styles.button_overlay_accept } title = "OK" onPress = { () => this.setState({ visible: false, visibleListActivites : false }) }/>
                             </View> 
-                        }
-                    <Button buttonStyle = { styles.button_overlay_accept } title = "OK" onPress = { () => this.setState({ visible: false, visibleListActivites : false }) }/>
+                    }
                 </View>
             </Overlay>
         )
@@ -1006,33 +1101,59 @@ class ManagementTime extends React.Component {
 
     buttons = (user) => {
         let libelles =  [];
-        if( user.profil.action0.active )
+        if(this.state.statutUser) 
         {
-            if( this.state.statutIco == true ) {
-                libelles.push({ key : user.profil.action0.libelle, ico : this.state.icoAbsent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
-            }else {
-                libelles.push({ key : user.profil.action0.libelle, ico : this.state.icoPresent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
+            if(user.profil.action0.active)
+            {
+                libelles.push({ key : user.profil.action0.libellePresent, ico : user.profil.action0.icoPresent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
+            }
+            if(user.profil.action1.active)
+            {
+                libelles.push({ key : user.profil.action1.libellePresent, ico : user.profil.action1.icoPresent, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation, activite : user.profil.action1.activite});
+            }
+            if(user.profil.action2.active)
+            {
+                libelles.push({ key : user.profil.action2.libellePresent, ico : user.profil.action2.icoPresent, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation, activite : user.profil.action2.activite});
+            }
+            if(user.profil.action3.active)
+            {
+                libelles.push({ key : user.profil.action3.libellePresent, ico : user.profil.action3.icoPresent, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation, activite : user.profil.action3.activite});
+            }
+            if(user.profil.action4.active)
+            {
+                libelles.push({ key : user.profil.action4.libellePresent, ico : user.profil.action4.icoPresent, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation, activite : user.profil.action4.activite});
+            }
+            if(user.profil.action5.active)
+            {
+                libelles.push({ key : user.profil.action5.libellePresent, ico : user.profil.action5.icoPresent, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation, activite : user.profil.action5.activite });
             }
         }
-        if( user.profil.action1.active )
+        else
         {
-            libelles.push({ key : user.profil.action1.libelle, ico : user.profil.action1.ico, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation, activite : user.profil.action1.activite});
-        }
-        if( user.profil.action2.active )
-        {
-            libelles.push({ key : user.profil.action2.libelle, ico : user.profil.action2.ico, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation, activite : user.profil.action2.activite});
-        }
-        if( user.profil.action3.active )
-        {
-            libelles.push({ key : user.profil.action3.libelle, ico : user.profil.action3.ico, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation, activite : user.profil.action3.activite});
-        }
-        if( user.profil.action4.active )
-        {
-            libelles.push({ key : user.profil.action4.libelle, ico : user.profil.action4.ico, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation, activite : user.profil.action4.activite});
-        }
-        if( user.profil.action5.active )
-        {
-            libelles.push({ key : user.profil.action5.libelle, ico : user.profil.action5.ico, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation, activite : user.profil.action5.activite });
+            if(user.profil.action0.active)
+            {
+                libelles.push({ key : user.profil.action0.libelleAbsent, ico : user.profil.action0.icoAbsent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
+            }
+            if(user.profil.action1.active)
+            {
+                libelles.push({ key : user.profil.action1.libelleAbsent, ico : user.profil.action1.icoAbsent, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation, activite : user.profil.action1.activite});
+            }
+            if(user.profil.action2.active)
+            {
+                libelles.push({ key : user.profil.action2.libelleAbsent, ico : user.profil.action2.icoAbsent, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation, activite : user.profil.action2.activite});
+            }
+            if(user.profil.action3.active)
+            {
+                libelles.push({ key : user.profil.action3.libelleAbsent, ico : user.profil.action3.icoAbsent, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation, activite : user.profil.action3.activite});
+            }
+            if(user.profil.action4.active)
+            {
+                libelles.push({ key : user.profil.action4.libelleAbsent, ico : user.profil.action4.icoAbsent, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation, activite : user.profil.action4.activite});
+            }
+            if(user.profil.action5.active)
+            {
+                libelles.push({ key : user.profil.action5.libelleAbsent, ico : user.profil.action5.icoAbsent, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation, activite : user.profil.action5.activite });
+            }
         }
         return(
             <FlatList data={ libelles } 
@@ -1100,7 +1221,7 @@ class ManagementTime extends React.Component {
     }
 
     render(){
-        const { loadingList, currentIco, currentLibelle, currentText, user, activites, activitesButton, activitesLibelle, activitesLocalisation } = this.state;
+        const { loadingList, currentIco, currentLibelle, currentText, user, activitesButton, activitesLibelle, activitesLocalisation } = this.state;
         return(
             <View style = { styles.container }>
                 <StatusBar backgroundColor = '#008080' barStyle = "light-content"/>
@@ -1109,7 +1230,7 @@ class ManagementTime extends React.Component {
                         this.state.loading ? 
                                 <Text style = {{fontSize : 20, textAlign : 'justify', color : 'white', marginTop : 40}}>Veuillez patienter les transactions réalisées hors ligne sont en cours d'acheminement ...</Text>
                         :   <View style = {{ flex: 1 }}> 
-                            { this.state.erroServeur ? <Text style = {styles.text_erroServeur}>Serveur momentanément Indisponible</Text>  
+                            { this.state.errorServeur ? <Text style = {styles.text_errorServeur}>Serveur momentanément Indisponible</Text>  
 
                                 : (null)
                             }
@@ -1129,7 +1250,7 @@ class ManagementTime extends React.Component {
                     </View>
                 </View>
                 { this.dialogPopup(currentIco, currentLibelle, currentText) }
-                { this.activitesList(activitesButton, activitesLibelle, activitesLocalisation, activites) }
+                { this.activitesList(activitesButton, activitesLibelle, activitesLocalisation, user.activites) }
             </View>
         );
     }
@@ -1209,7 +1330,7 @@ const styles = StyleSheet.create({
         color : "#fff",
         fontSize : 20
     },
-    text_erroServeur: {
+    text_errorServeur: {
         textAlign : 'center',
         color : "#F25431",
         fontSize : 18
