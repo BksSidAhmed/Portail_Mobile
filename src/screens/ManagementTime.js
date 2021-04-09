@@ -8,12 +8,11 @@ import { getToken, postAction, getUser } from '../api/index';
 import Geolocation from '@react-native-community/geolocation';
 import {listeEmailAction} from '../redux/actions/listeEmailAction';
 import {pointingAction} from '../redux/actions/pointingHorsLigneAction';
-import {Overlay} from 'react-native-elements';
+import { Button, Overlay} from 'react-native-elements';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import {PermissionsAndroid} from 'react-native';
 import { getDistance } from 'geolib';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { Button } from 'react-native-paper';
 
 const geolib = require('geolib');
 
@@ -38,7 +37,7 @@ class ManagementTime extends React.Component {
             latitude: '',
             longitude : '',
             visible: false,
-            visibleList: false,
+            visibleListActivites: false,
             disabled : false,
             user : '',
             currentIco: '',
@@ -64,6 +63,7 @@ class ManagementTime extends React.Component {
             activitesButton: null,
             activitesLibelle: null,
             activitesLocalisation: null,
+            loaderOverlayResponse: false,
         }
     }
     
@@ -346,7 +346,9 @@ class ManagementTime extends React.Component {
         if ( this.state.activeGeolocalisation == false ) {
             this.setState({
                 [`loading`+`${button}`] : true,
-                disabled : true
+                disabled : true,
+                visible : true,
+                loaderOverlayResponse: true,
             }),
             getToken(this.props.email,this.props.password).then(data => {
                 if(data[0] == 200) {
@@ -358,7 +360,8 @@ class ManagementTime extends React.Component {
                             this.setState({
                                 [`loading`+`${button}`] : false,
                                 disabled : false,
-                                visible : true,
+                                // visible : true,
+                                loaderOverlayResponse: false,
                                 currentIco: data[1].ico,
                                 currentLibelle: libelle,
                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
@@ -416,7 +419,9 @@ class ManagementTime extends React.Component {
                                     if(test == true) {                                
                                         this.setState({
                                             [`loading`+`${button}`] : true,
-                                            disabled : true
+                                            disabled : true,
+                                            visible : true,
+                                            loaderOverlayResponse: true,
                                         })
                                         getToken(this.props.email,this.props.password).then(data => {
                                             if(data[0] == 200) {
@@ -428,7 +433,8 @@ class ManagementTime extends React.Component {
                                                         this.setState({
                                                             [`loading`+`${button}`] : false,
                                                             disabled : false,
-                                                            visible : true,
+                                                            // visible : true,
+                                                            loaderOverlayResponse: false,
                                                             currentIco: data[1].ico,
                                                             currentLibelle: libelle,
                                                             currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
@@ -453,7 +459,9 @@ class ManagementTime extends React.Component {
                                         else {    
                                             this.setState({
                                                 [`loading`+`${button}`] : true,
-                                                disabled : true
+                                                disabled : true,
+                                                visible : true,
+                                                loaderOverlayResponse: true,
                                             })
                                             getToken(this.props.email,this.props.password).then(data => {
                                                 if(data[0] == 200) {
@@ -465,7 +473,8 @@ class ManagementTime extends React.Component {
                                                             this.setState({
                                                                 [`loading`+`${button}`] : false,
                                                                 disabled : false,
-                                                                visible : true,
+                                                                // visible : true,
+                                                                loaderOverlayResponse: false,
                                                                 currentIco: data[1].ico,
                                                                 currentLibelle: libelle,
                                                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
@@ -480,6 +489,7 @@ class ManagementTime extends React.Component {
                                                             // this.errorServeur(button,this.state.latitude,this.state.longitude,activite)
                                                             this.setState({
                                                                 erroServeur : true,
+                                                                visible : true,
                                                             })
                                                             if(button == 'F00') {
                                                                 var dataPointing = this.props.pointing
@@ -493,7 +503,8 @@ class ManagementTime extends React.Component {
                                                                         [`loading`+`${button}`] : false,
                                                                         disabled : false,
                                                                         statutIco : !prevState.statutIco,
-                                                                        visible : true,
+                                                                        // visible : true,
+                                                                        loaderOverlayResponse: false,
                                                                         currentIco: null,
                                                                         currentLibelle: 'Erreur serveur',
                                                                         currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -513,7 +524,8 @@ class ManagementTime extends React.Component {
                                                                         [`loading`+`${button}`] : false,
                                                                         disabled : false,
                                                                         statutIco : !prevState.statutIco,
-                                                                        visible : true,
+                                                                        // visible : true,
+                                                                        loaderOverlayResponse: false,
                                                                         currentIco: null,
                                                                         currentLibelle: 'Erreur serveur',
                                                                         currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -524,7 +536,8 @@ class ManagementTime extends React.Component {
                                                                 this.setState({
                                                                     [`loading`+`${button}`] : false,
                                                                     disabled : false,
-                                                                    visible : true,
+                                                                    // visible : true,
+                                                                    loaderOverlayResponse: false,
                                                                     currentIco: null,
                                                                     currentLibelle: 'Erreur serveur',
                                                                     currentText: "Serveur Indisponible"                                   
@@ -551,7 +564,8 @@ class ManagementTime extends React.Component {
                                                                 [`loading`+`${button}`] : false,
                                                                 disabled : false,
                                                                 statutIco : !prevState.statutIco,
-                                                                visible : true,
+                                                                loaderOverlayResponse: false,
+                                                                // visible : true,
                                                                 currentIco: null,
                                                                 currentLibelle: 'Erreur serveur',
                                                                 currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -571,7 +585,8 @@ class ManagementTime extends React.Component {
                                                                 [`loading`+`${button}`] : false,
                                                                 disabled : false,
                                                                 statutIco : !prevState.statutIco,
-                                                                visible : true,
+                                                                loaderOverlayResponse: false,
+                                                                // visible : true,
                                                                 currentIco: null,
                                                                 currentLibelle: 'Erreur serveur',
                                                                 currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -582,7 +597,8 @@ class ManagementTime extends React.Component {
                                                         this.setState({
                                                             [`loading`+`${button}`] : false,
                                                             disabled : false,
-                                                            visible : true,
+                                                            // visible : true,
+                                                            loaderOverlayResponse: false,
                                                             currentIco: null,
                                                             currentLibelle: 'Erreur serveur',
                                                             currentText: "Serveur Indisponible"                                   
@@ -598,7 +614,9 @@ class ManagementTime extends React.Component {
                         ).catch((error) => {
                             this.setState({
                                 [`loading`+`${button}`] : true,
-                                disabled : true
+                                disabled : true,
+                                visible : true,
+                                loaderOverlayResponse: true,
                             }),
                             getToken(this.props.email,this.props.password).then(data => {
                                 if(data[0] == 200) {
@@ -610,7 +628,8 @@ class ManagementTime extends React.Component {
                                             this.setState({
                                                 [`loading`+`${button}`] : false,
                                                 disabled : false,
-                                                visible : true,
+                                                loaderOverlayResponse: false,
+                                                // visible : true,
                                                 currentIco: data[1].ico,
                                                 currentLibelle: libelle,
                                                 currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
@@ -638,7 +657,8 @@ class ManagementTime extends React.Component {
                                                     [`loading`+`${button}`] : false,
                                                     disabled : false,
                                                     statutIco : !prevState.statutIco,
-                                                    visible : true,
+                                                    loaderOverlayResponse: false,
+                                                    // visible : true,
                                                     currentIco: null,
                                                     currentLibelle: 'Erreur serveur',
                                                     currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -658,7 +678,8 @@ class ManagementTime extends React.Component {
                                                     [`loading`+`${button}`] : false,
                                                     disabled : false,
                                                     statutIco : !prevState.statutIco,
-                                                    visible : true,
+                                                    loaderOverlayResponse: false,
+                                                    // visible : true,
                                                     currentIco: null,
                                                     currentLibelle: 'Erreur serveur',
                                                     currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -669,7 +690,8 @@ class ManagementTime extends React.Component {
                                             this.setState({
                                                 [`loading`+`${button}`] : false,
                                                 disabled : false,
-                                                visible : true,
+                                                // visible : true,
+                                                loaderOverlayResponse: false,
                                                 currentIco: null,
                                                 currentLibelle: 'Erreur serveur',
                                                 currentText: "Serveur Indisponible"                                   
@@ -696,7 +718,8 @@ class ManagementTime extends React.Component {
                                                 [`loading`+`${button}`] : false,
                                                 disabled : false,
                                                 statutIco : !prevState.statutIco,
-                                                visible : true,
+                                                loaderOverlayResponse: false,
+                                                // visible : true,
                                                 currentIco: null,
                                                 currentLibelle: 'Erreur serveur',
                                                 currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -716,7 +739,8 @@ class ManagementTime extends React.Component {
                                                 [`loading`+`${button}`] : false,
                                                 disabled : false,
                                                 statutIco : !prevState.statutIco,
-                                                visible : true,
+                                                loaderOverlayResponse: false,
+                                                // visible : true,
                                                 currentIco: null,
                                                 currentLibelle: 'Erreur serveur',
                                                 currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -727,7 +751,8 @@ class ManagementTime extends React.Component {
                                         this.setState({
                                             [`loading`+`${button}`] : false,
                                             disabled : false,
-                                            visible : true,
+                                            // visible : true,
+                                            loaderOverlayResponse: false,
                                             currentIco: null,
                                             currentLibelle: 'Erreur serveur',
                                             currentText: "Serveur Indisponible"                                   
@@ -740,7 +765,9 @@ class ManagementTime extends React.Component {
                       } else {
                         this.setState({
                             [`loading`+`${button}`] : true,
-                            disabled : true
+                            disabled : true,
+                            visible : true,
+                            loaderOverlayResponse: true,
                         }),
                         getToken(this.props.email,this.props.password).then(data => {
                             if(data[0] == 200) {
@@ -752,7 +779,8 @@ class ManagementTime extends React.Component {
                                         this.setState({
                                             [`loading`+`${button}`] : false,
                                             disabled : false,
-                                            visible : true,
+                                            // visible : true,
+                                            loaderOverlayResponse: false,
                                             currentIco: data[1].ico,
                                             currentLibelle: libelle,
                                             currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
@@ -780,7 +808,8 @@ class ManagementTime extends React.Component {
                                                     [`loading`+`${button}`] : false,
                                                     disabled : false,
                                                     statutIco : !prevState.statutIco,
-                                                    visible : true,
+                                                    loaderOverlayResponse: false,
+                                                    // visible : true,
                                                     currentIco: null,
                                                     currentLibelle: 'Erreur serveur',
                                                     currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -800,7 +829,8 @@ class ManagementTime extends React.Component {
                                                     [`loading`+`${button}`] : false,
                                                     disabled : false,
                                                     statutIco : !prevState.statutIco,
-                                                    visible : true,
+                                                    loaderOverlayResponse: false,
+                                                    // visible : true,
                                                     currentIco: null,
                                                     currentLibelle: 'Erreur serveur',
                                                     currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -811,7 +841,8 @@ class ManagementTime extends React.Component {
                                             this.setState({
                                                 [`loading`+`${button}`] : false,
                                                 disabled : false,
-                                                visible : true,
+                                                // visible : true,
+                                                loaderOverlayResponse: false,
                                                 currentIco: null,
                                                 currentLibelle: 'Erreur serveur',
                                                 currentText: "Serveur Indisponible"                                   
@@ -837,7 +868,8 @@ class ManagementTime extends React.Component {
                                             [`loading`+`${button}`] : false,
                                             disabled : false,
                                             statutIco : !prevState.statutIco,
-                                            visible : true,
+                                            loaderOverlayResponse: false,
+                                            // visible : true,
                                             currentIco: null,
                                             currentLibelle: 'Erreur serveur',
                                             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -857,7 +889,8 @@ class ManagementTime extends React.Component {
                                             [`loading`+`${button}`] : false,
                                             disabled : false,
                                             statutIco : !prevState.statutIco,
-                                            visible : true,
+                                            loaderOverlayResponse: false,
+                                            // visible : true,
                                             currentIco: null,
                                             currentLibelle: 'Erreur serveur',
                                             currentText: "Serveur Indisponible.\nMouvement enregistrer dans le téléphone"                                   
@@ -868,7 +901,8 @@ class ManagementTime extends React.Component {
                                     this.setState({
                                         [`loading`+`${button}`] : false,
                                         disabled : false,
-                                        visible : true,
+                                        // visible : true,
+                                        loaderOverlayResponse: false,
                                         currentIco: null,
                                         currentLibelle: 'Erreur serveur',
                                         currentText: "Serveur Indisponible"                                   
@@ -886,7 +920,9 @@ class ManagementTime extends React.Component {
             else {
                 this.setState({
                     [`loading`+`${button}`] : true,
-                    disabled : true
+                    disabled : true,
+                    visible : true,
+                    loaderOverlayResponse: true,
                 }),
                 getToken(this.props.email,this.props.password).then(data => {
                     if(data[0] == 200) {
@@ -898,7 +934,8 @@ class ManagementTime extends React.Component {
                                 this.setState({
                                     [`loading`+`${button}`] : false,
                                     disabled : false,
-                                    visible : true,
+                                    // visible : true,
+                                    loaderOverlayResponse: false,
                                     currentIco: data[1].ico,
                                     currentLibelle: libelle,
                                     currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
@@ -924,37 +961,44 @@ class ManagementTime extends React.Component {
     dialogPopup = (ico, title, text) => {
         return(
             <Overlay 
-                isVisible={this.state.visible} 
-                onBackdropPress={() => this.setState({ visible: false })}
-                overlayStyle = {{height : '100%', width: '100%', padding : 0}}
+                isVisible = { this.state.visible } 
+                overlayStyle = {{ padding : 0 }}
+                fullScreen = { true }
                 animationType = 'slide'>
-                <View style = {{flex : 1}}>
-                    <View style= {{alignItems : 'center',justifyContent : 'center', borderBottomWidth : 1, backgroundColor : '#008080', height : 60}}>
-                        <Text style= {{fontSize : 20, fontWeight : "bold", color : 'white'}}>{title}</Text>
+                <View style = {{ flex : 1 }}>
+                    <View style= {{ alignItems: 'center',justifyContent: 'center', backgroundColor: '#008080', height: 60 }}>
+                        <Text style= {{ fontSize: 20, fontWeight: "bold", color: 'white' }}>{ title }</Text>
                     </View>
-                    <View style = {{alignItems : 'center', justifyContent : 'center', marginLeft: 5, marginBottom : 20, marginTop : 20,marginRight: 5, flex :0.4}}>
-                         {
-                             this.state.erroServeur ? (              
-                                <FontAwesome5 
-                                    name="exclamation-triangle" 
-                                    color= "red" 
-                                    size={70} 
-                                />
-                            ) : (                        
-                                 <Image style={ styles.imageOverlay } source={{ uri: `data:image/png;base64,${ico}` }} />
-                             )
-                         }
-                    </View>
-                    <View style = {{alignItems :'center', justifyContent : 'flex-start',flex :1}}>
-                        <Text style={ styles.text_dialog }>{text}</Text>
-                    </View>
-                    <TouchableOpacity 
-                        onPress={ () => this.setState({ visible: false, visibleList : false }) } 
-                        style = {{flex :0.2,borderWidth : 1, borderColor : 'white',width : '100%', alignItems : 'center', justifyContent: 'center', backgroundColor : '#008080', marginBottom : 15}}>
-                        <Text style = {{fontSize : 20, color : 'white'}}>
-                            OK
-                        </Text>
-                    </TouchableOpacity>
+                    {   
+                        this.state.loaderOverlayResponse ? 
+                            <View style = {{ flex : 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <ActivityIndicator size="large" color="#008080"/> 
+                            </View>
+                            :
+                            <View style = {{ flex : 1 }}>
+                                <Animatable.View animation = "slideInLeft" style = { styles.container_button_animation }>
+                                    <View style = {{ alignItems: 'center', justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', marginVertical: 10, marginBottom: 5 }}>
+                                        {
+                                            this.state.erroServeur ?               
+                                                <FontAwesome5 
+                                                    name = "exclamation-triangle" 
+                                                    color = "red" 
+                                                    size = { 70 } 
+                                                />
+                                                :                         
+                                                <Image style = { styles.imageOverlay } source = {{ uri: `data:image/png;base64,${ ico }` }} />
+                                            
+                                        }
+                                    </View>
+                                </Animatable.View>
+                                <Animatable.View animation="slideInRight" style = { styles.container_button_animation }>
+                                    <View style = {{ alignItems: 'center', justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', marginVertical: 10, marginTop: 5 }}>
+                                        <Text style = { styles.text_dialog }>{ text }</Text>
+                                    </View>
+                                </Animatable.View>
+                            </View> 
+                        }
+                    <Button buttonStyle = { styles.button_overlay_accept } title = "OK" onPress = { () => this.setState({ visible: false, visibleListActivites : false }) }/>
                 </View>
             </Overlay>
         )
@@ -1019,7 +1063,7 @@ class ManagementTime extends React.Component {
 
     showActiviteList = (button, libelle, localisation) => {
         this.setState({
-            visibleList: true,
+            visibleListActivites: true,
             activitesButton: button,
             activitesLibelle: libelle,
             activitesLocalisation: localisation
@@ -1029,42 +1073,27 @@ class ManagementTime extends React.Component {
     activitesList = (button, libelle, localisation, activites) => {
         return(
             <Overlay 
-                isVisible={ this.state.visibleList } 
-                overlayStyle = {{ height : '100%', width: '100%', padding : 0 }}
+                isVisible={ this.state.visibleListActivites } 
+                overlayStyle = {{ padding : 0 }}
+                fullScreen = { true }
                 animationType = 'slide'>
-                <View style = {{flex :1}}>
-                <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60}}>
-                    <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white'}}>Activités disponibles</Text>
-                </View>
-                <FlatList data={ activites } 
-                    renderItem={({ item }) => 
-                        <Animatable.View animation="bounceIn" style={ styles.container_button_animation }>
-                            <TouchableOpacity 
-                                onPress={ () => this.actionButton(button, libelle, localisation, item.code) } 
-                                disabled={ item.disabled } 
-                                style={ styles.button }
-                            >
-                                {
-                                    (item.loading 
-                                        ? <ActivityIndicator size="large" color="#00ff00"/>  
-                                        : <View style={ styles.container_ico }>
-                                            <Text>{ item.nom }</Text>
-                                        </View>
-                                    )
-                                }
-
-                            </TouchableOpacity>
-                        </Animatable.View>
-                    }
-                    keyExtractor = {item => item.code}
-                ></FlatList>
-                <TouchableOpacity 
-                    onPress={ () => this.setState({ visibleList: false }) } 
-                    style = {{ flex :0.2,borderWidth : 1, borderColor : 'white',width : '100%', alignItems : 'center', justifyContent: 'center', backgroundColor : '#008080', marginBottom : 15 }}>
-                    <Text style = {{ fontSize : 20, color : 'white' }}>
-                        Retour
-                    </Text>
-                </TouchableOpacity>
+                <View style = {{ flex :1 }}>
+                    <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60, marginBottom: 1}}>
+                        <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white' }}>Activités disponibles</Text>
+                    </View>
+                    <FlatList data={ activites } 
+                        renderItem={({ item, index }) => 
+                            <Animatable.View animation = "bounceIn" delay = { index * 300 } style = { styles.container_button_animation }>
+                                <Button 
+                                    onPress={ () => this.actionButton(button, libelle, localisation, item.code) } 
+                                    buttonStyle= { styles.buttons_list_activites }
+                                    title = { item.nom }
+                                />
+                            </Animatable.View>
+                        }
+                        keyExtractor = { item => item.code }
+                    ></FlatList>
+                    <Button buttonStyle = { styles.button_overlay_accept } title = "Retour" onPress={ () => this.setState({ visibleListActivites: false }) }/>
                 </View>
             </Overlay>
         )
@@ -1074,12 +1103,12 @@ class ManagementTime extends React.Component {
         const { loadingList, currentIco, currentLibelle, currentText, user, activites, activitesButton, activitesLibelle, activitesLocalisation } = this.state;
         return(
             <View style = { styles.container }>
-                <StatusBar backgroundColor='#008080' barStyle="light-content"/>
-                <Animatable.View animation="fadeInDown" style={ styles.container_header }>
+                <StatusBar backgroundColor = '#008080' barStyle = "light-content"/>
+                <Animatable.View animation = "fadeInDown" style = { styles.container_header }>
                     {
                         this.state.loading ? 
                                 <Text style = {{fontSize : 20, textAlign : 'justify', color : 'white', marginTop : 40}}>Veuillez patienter les transactions réalisées hors ligne sont en cours d'acheminement ...</Text>
-                        :   <View> 
+                        :   <View style = {{ flex: 1 }}> 
                             { this.state.erroServeur ? <Text style = {styles.text_erroServeur}>Serveur momentanément Indisponible</Text>  
 
                                 : (null)
@@ -1139,7 +1168,7 @@ const styles = StyleSheet.create({
     },
     container_buttons: {
         flex : 1 , 
-        flexDirection: 'row', 
+        // flexDirection: 'row', 
     },
     container_button_animation: {
         flex : 1 , 
@@ -1171,9 +1200,8 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     imageOverlay : {
-        height : 100,
-        width: 100,
-        marginVertical: 10
+        height : 70,
+        width: 70
     },
     text_date: {
         textAlign : 'center',
@@ -1222,8 +1250,22 @@ const styles = StyleSheet.create({
     },
     text_dialog: {
         textAlign: 'center',
-        fontSize : 20
+        fontSize : 17,
+        color: 'white'
     },
+    buttons_list_activites: {
+        borderRadius: 0,
+        marginVertical: 2,
+        backgroundColor: '#16A085',
+        paddingVertical: 20
+    },  
+    button_overlay_accept: {
+        borderRadius: 50,
+        backgroundColor: '#008080',
+        marginVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 20
+    }
 })
 
 const mapStateToProps = (state) => {
