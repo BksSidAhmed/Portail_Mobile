@@ -4,33 +4,53 @@ import { emailAction } from '../redux/actions/emailAction'
 import { passwordAction } from '../redux/actions/passwordAction'
 import { connect } from 'react-redux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import LinearGradient from 'react-native-linear-gradient';
+import { Switch } from 'react-native-paper';
+import SwitchExample from '../component/switch_example'
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 class Settings extends React.Component { 
-
+    constructor(props) {
+        super(props)
+        this.state = {
+            switch1Value: false,
+         }
+    }
     changePassword = () => {
         console.log('data')
     }
-
-    exitAlertShow = () => { 
-        Alert.alert(
-            'Déconnexion',
-            'Voulez-vous vraiment vous déconnecter ?',
-            [
-                {
-                    text: 'Oui',
-                    onPress: () => this.exit()
-                },
-                {
-                    text: 'Non',
-                }
-            ] 
-        );
+    componentWillUnmount = () => {
+        LocationServicesDialogBox.stopListener();
     }
-    exit = () => {
-        this.props.emailAction('')
-        this.props.passwordAction('')
-    } 
+
+    toggleSwitch1 = (value) => {
+        this.setState({switch1Value: value})
+        console.log('Switch 1 is: ' + value)
+        if (value) {
+            console.log('ici')
+            LocationServicesDialogBox.checkLocationServicesIsEnabled({
+                message: "<h3>Activer le GPS pour la localiation ?</h3>",           
+                ok: "OK",
+                cancel: "NON, MERCI",
+                enableHighAccuracy: true,
+                showDialog: true,
+                openLocationServices: true,
+                preventOutSideTouch: false,
+                preventBackClick: false,
+                providerListener: true
+            }).then(function(success) 
+            { 
+                this.setState({
+                    switch1Value : true
+                })
+            }.bind(this)
+            ).catch((error) => {
+                this.setState({
+                    switch1Value : false
+                })
+            });
+        }
+
+    }
 
     render(){
         return(
@@ -59,15 +79,11 @@ class Settings extends React.Component {
                             </LinearGradient>
                         </TouchableOpacity>  
                     </View> */}
-                    <View style={ styles.container_button_logout }>
-                        <TouchableOpacity onPress={ () => this.exitAlertShow() }>
-                            <LinearGradient
-                                colors={ ["#922B21", "#922B21"] }
-                                style={ styles.button }>
-                                <Text style={ styles.text_logout }>Déconnexion</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-                    </View>
+                <View>
+                    <SwitchExample
+                        toggleSwitch1 = {this.toggleSwitch1}
+                        switch1Value = {this.state.switch1Value}/>
+                </View>
                 </ScrollView>
             </View>
         );

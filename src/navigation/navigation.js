@@ -12,7 +12,7 @@ import DrawerComponent from '../component/DrawerComponent'
 
 // import DeletScreenComponent from '../component/DeletScreenComponent'
 
-// import Settings from '../screens/Settings'
+import Settings from '../screens/Settings'
 // import Home from '../screens/Home'
 
 import { AuthContext } from "../context/context";
@@ -67,6 +67,39 @@ const ManagementTimeStackScreen = ({navigation}) => (
         />
     </ManagementTimeStack.Navigator>
 )
+const ParamStack = createStackNavigator();
+const ParamStackScreen = ({navigation}) => (
+  <ParamStack.Navigator>
+      <ParamStack.Screen 
+        name = "Paramètre" 
+        component={Settings}
+        options = {{
+          title : 'Niva® - Paramètre',
+          headerStyle : {
+            backgroundColor : '#008080',
+          },
+          headerTintColor : '#fff',
+          headerTitleAlign : 'center',
+          headerTitleStyle : {
+            fontWeight: 'bold'
+          },
+          headerRight: () => (
+            <FontAwesome5 
+                onPress={() => navigation.toggleDrawer()}
+                name="bars" 
+                color= "white" 
+                size={23} 
+            />
+          ),
+          headerRightContainerStyle : {
+            padding : 20,
+            marginTop : 5
+          }
+        }}
+      />
+  </ParamStack.Navigator>
+)
+
 const AboutStack = createStackNavigator();
 const AboutStackScreen = ({navigation}) => (
   <AboutStack.Navigator>
@@ -202,6 +235,7 @@ const Drawer = createDrawerNavigator();
 const DrawerScreen = () => (
   <Drawer.Navigator initialRouteName="Gestion du temps" drawerPosition = "right" drawerContent= { props => <DrawerComponent {...props}/>}>
     <Drawer.Screen name="Gestion du temps" component={ManagementTimeStackScreen}/>
+    <Drawer.Screen name="Parametre" component={ParamStackScreen}/>
     <Drawer.Screen name="A propos" component={AboutStackScreen}/>
     <Drawer.Screen name="Confidentialite" component={ConfidentialStackScreen}/>
   </Drawer.Navigator>

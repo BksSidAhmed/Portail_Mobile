@@ -43,7 +43,7 @@ class DrawerComponent extends React.Component {
                                     labelStyle = {{
                                         fontSize : 15,
                                     }}
-                                    onPress={() => {this.props.navigation.navigate('Gestion du temps')}}
+                                    onPress={() => {this.props.navigation.navigate('Parametre')}}
                                 />
                             </Drawer.Section>
                             <Drawer.Section style={styles.drawerSection}>
