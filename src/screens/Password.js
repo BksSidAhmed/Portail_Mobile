@@ -1,24 +1,162 @@
 import React from 'react'
-import { Text, View, Image, StyleSheet, ScrollView } from 'react-native';
+import { Text, View, Image, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Button, Input, Overlay } from 'react-native-elements'
+import { getToken, postEditPassword } from '../api';
+import * as Animatable from 'react-native-animatable';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { connect } from 'react-redux';
+import { passwordAction } from '../redux/actions/passwordAction'
 
 class Password extends React.Component { 
 
-    valider() {
-        console.log('valider')
+    constructor(props) {
+        super(props)
+        this.oldPassword = "",
+        this.newPassword = "",
+        this.samePassword = "",
+        this.state = {
+            currentIco: '',
+            currentLibelle: '',
+            currentText: '', 
+            visible: false,
+            loaderOverlayResponse: false,
+            error : false,
+        }
     }
+    
+    valider(newPassword,oldPassword,samePassword) {
+
+        this.setState({
+            error: false,
+            visible: true,
+            loaderOverlayResponse: true,
+            currentLibelle: ''
+        });
+
+        if(newPassword === samePassword) 
+        {
+            if(this.props.password === this.oldPassword) 
+            {
+                getToken(this.props.email,this.props.password).then(data => {
+                    if(data[0] == 200) {
+                        postEditPassword(data[1].token, this.props.email, newPassword, oldPassword).then(data => {
+                            if(data[0] == 200) {
+                                this.setState({
+                                    loaderOverlayResponse: false,
+                                    currentLibelle: "Information",
+                                    currentText: data[1].message
+                                });
+                                this.props.passwordAction(newPassword);
+                            }
+                            else
+                            {
+                                this.setState({
+                                    error: true,
+                                    loaderOverlayResponse: false,
+                                    currentLibelle: "Erreur",
+                                    currentText: "Erreur côté serveur. Veuillez réessayer ultérieurement."
+                                });
+                            }
+                        });
+                    }
+                    else
+                    {
+                        this.setState({
+                            error: true,
+                            loaderOverlayResponse: false,
+                            currentLibelle: "Erreur",
+                            currentText: "Votre mot de passe actuel n'est pas le bon."
+                        });
+                    }
+                });
+            }
+            else
+            {
+                this.setState({
+                    error: true,
+                    loaderOverlayResponse: false,
+                    currentLibelle: "Erreur",
+                    currentText: "Votre mot de passe actuel n'est pas le bon."
+                });
+            }
+        } 
+        else
+        {
+            this.setState({
+                error: true,
+                loaderOverlayResponse: false,
+                currentLibelle: "Erreur formulaire",
+                currentText: "Les deux mots de passe ne sont pas identiques."
+            });
+        }
+    }
+    
+    editOldPassword = (text) => {
+        this.oldPassword = text
+    }
+
+    editNewPassword = (text) => {
+        this.newPassword = text
+    }
+
+    editSamePassword = (text) => {
+        this.samePassword = text
+    }
+
+    dialogPopup = (ico, title, text) => {
+        return(
+            <Overlay 
+                isVisible = { this.state.visible } 
+                overlayStyle = {{ padding : 0 }}
+                fullScreen = { true }
+                animationType = 'slide'>
+                <View style = {{ flex : 1 }}>
+                    <View style= {{ alignItems: 'center',justifyContent: 'center', backgroundColor: '#008080', height: 60 }}>
+                        <Text style= {{ fontSize: 20, fontWeight: "bold", color: 'white' }}>{ title }</Text>
+                    </View>
+                    {   
+                        this.state.loaderOverlayResponse ? 
+                            <View style = {{ flex : 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <ActivityIndicator size="large" color="#008080"/> 
+                            </View>
+                            :
+                            <View style = {{ flex : 1 }}>
+                                <Animatable.View animation = "slideInLeft" style = { styles.container_button_animation }>
+                                    <View style = {{ alignItems: 'center', justifyContent: 'center', flex: 1, backgroundColor: '#008080', marginVertical: 10, marginBottom: 5 }}>
+                                        {
+                                            this.state.error ?               
+                                                <FontAwesome5 name = "exclamation-triangle" color = "white" size = { 70 }/>
+                                                :                         
+                                                <FontAwesome5 name = "check-circle" color = "white" size = { 70 }/>
+                                        }
+                                    </View>
+                                </Animatable.View>
+                                <Animatable.View animation="slideInRight" style = { styles.container_button_animation }>
+                                    <View style = {{ alignItems: 'center', justifyContent: 'center', flex: 1, backgroundColor: '#008080', marginVertical: 10, marginTop: 5, padding: 15 }}>
+                                        <Text style = { styles.text_dialog }>{ text }</Text>
+                                    </View>
+                                </Animatable.View>
+                                <Button buttonStyle = { styles.button_overlay_accept } title = "OK" onPress = { () => this.setState({ visible: false }) }/>
+                            </View> 
+                    }
+                </View>
+            </Overlay>
+        )
+    }
+
     render(){
+        const { currentIco, currentLibelle, currentText } = this.state;
         return(
             <View style = { styles.view_form }>
                 <ScrollView style = {{ flex : 1 }}>
                         <View style = { styles.view_input }>
                             <Input 
                                 placeholder = "Mot de passe actuelle"
-                                // rightIcon = {{ type: 'font-awesome', name: 'envelope' }}
+                                rightIcon = {{ type: 'font-awesome', name: 'unlock' }}
                                 style = { styles.text_input }
-                                // keyboardType = "email-address"
+                                secureTextEntry = { true }
                                 autoCapitalize = "none"
-                                // onChangeText = { (text) => this.editEmail(text) }
+                                onChangeText = { (text) => this.editOldPassword(text) }
                             />
                             <Input 
                                 placeholder = "Nouveau Mot de Passe"
@@ -26,21 +164,22 @@ class Password extends React.Component {
                                 style = { styles.text_input }
                                 secureTextEntry = { true }
                                 autoCapitalize = "none"
-                                onChangeText = { (text) => this.editPassword(text) }
+                                onChangeText = { (text) => this.editNewPassword(text) }
                             />
                             <Input 
-                                placeholder = "Saisir à nouveau le Mot de Passe"
+                                placeholder = "Saisir à nouveau"
                                 rightIcon = {{ type: 'font-awesome', name: 'lock' }}
                                 style = { styles.text_input }
                                 secureTextEntry = { true }
                                 autoCapitalize = "none"
-                                onChangeText = { (text) => this.editPassword(text) }
+                                onChangeText = { (text) => this.editSamePassword(text) }
                             />
                         </View>
                 </ScrollView>
                 <View style = { styles.view_button }>
-                    <Button containerStyle = { styles.button_container} buttonStyle = { styles.button_style } title = "Valider" onPress = { () => this.valider() }/>
+                    <Button containerStyle = { styles.button_container} buttonStyle = { styles.button_style } title = "Valider" onPress = { () => this.valider(this.newPassword, this.oldPassword, this.samePassword) }/>
                 </View>
+                { this.dialogPopup(this.state.currentIco, this.state.currentLibelle, this.state.currentText) }
             </View>
         );
     }
@@ -50,6 +189,9 @@ const styles = StyleSheet.create({
     container: {
       flex: 1, 
       backgroundColor: '#008080'
+    },
+    container_button_animation: {
+        flex : 1 , 
     },
     view_title: {
         flex: 1,
@@ -102,6 +244,11 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         fontSize: 15 
     },  
+    text_dialog: {
+        textAlign: 'center',
+        color: 'white',
+        fontSize: 20
+    },
     button_style: {
         padding: 15,
         marginVertical: 5,
@@ -124,7 +271,18 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20
-    }
+    },
+    imageOverlay : {
+        height : 70,
+        width: 70
+    },
 });
 
-export default Password
+const mapStateToProps = (state) => {
+    return {
+        email: state.emailReducer.email,
+        password: state.passwordReducer.password,
+    }
+}
+
+export default connect(mapStateToProps,{passwordAction}) (Password)
