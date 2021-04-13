@@ -6,11 +6,11 @@ import * as Animatable from 'react-native-animatable';
 import { connect } from 'react-redux';
 import { getToken, postAction, getUser } from '../api/index';
 import Geolocation from '@react-native-community/geolocation';
-import {listeEmailAction} from '../redux/actions/listeEmailAction';
-import {pointingAction} from '../redux/actions/pointingHorsLigneAction';
-import { Button, Overlay} from 'react-native-elements';
+import { listeEmailAction } from '../redux/actions/listeEmailAction';
+import { pointingAction } from '../redux/actions/pointingHorsLigneAction';
+import { Button, Overlay } from 'react-native-elements';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
-import {PermissionsAndroid} from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 import { getDistance } from 'geolib';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -210,131 +210,7 @@ class ManagementTime extends React.Component {
                             activites: response[1].user.activites,
                         },
                         statutUser: response[1].user.statut
-
-                        // icoAbsent : response[1].user.icoAbsent,
-                        // icoPresent : response[1].user.icoPresent,
-                    })
-                    // {
-                    //     response[1].user.client.activeBadge == false && response[1].user.activeBadge == false ?
-                    //         (
-                    //             response[1].user.profil.action_0.active = false
-
-                    //         ) : (
-                                
-                    //             response[1].user.client.activeBadge == false || response[1].user.activeBadge == false ? 
-                    //                     (
-                    //                         response[1].user.profil.action_0.active = false
-
-                    //                     ) : (
-                    //                         null
-                    //                     )
-                    //             )
-                    // }
-                    // if( response[1].user.statut == true ) {
-                    //     this.setState({
-                    //         loadingList: false,
-                    //         user: {
-                    //             'email': response[1].user.email,
-                    //             'profil': {
-                    //                 'action0': {
-                    //                     'active': response[1].user.profil.action_0.active ,
-                    //                     'ico_present': response[1].user.profil.action_0.icoPresent,
-                    //                     'ico_absent': response[1].user.icoAbsent,
-                    //                     'libelle': response[1].user.profil.action_0.libelle,
-                    //                     'localisation' : response[1].user.profil.action_0.localisation,
-                    //                     'activite' : response[1].user.profil.action_0.activite
-                    //                 },
-                    //                 'action1': {
-                    //                     'active': response[1].user.profil.action_1.active,
-                    //                     'ico': response[1].user.profil.action_1.ico,
-                    //                     'libelle': response[1].user.profil.action_1.libelle,
-                    //                     'localisation' : response[1].user.profil.action_1.localisation, 
-                    //                     'activite' : response[1].user.profil.action_1.activite
-                    //                 },
-                    //                 'action2': {
-                    //                     'active': response[1].user.profil.action_2.active,
-                    //                     'ico': response[1].user.profil.action_2.ico,
-                    //                     'libelle': response[1].user.profil.action_2.libelle,
-                    //                     'localisation' : response[1].user.profil.action_2.localisation, 
-                    //                     'activite' : response[1].user.profil.action_2.activite
-                    //                 },
-                    //                 'action3': {
-                    //                     'active': response[1].user.profil.action_3.active,
-                    //                     'ico': response[1].user.profil.action_3.ico,
-                    //                     'libelle': response[1].user.profil.action_3.libelle,
-                    //                     'localisation' : response[1].user.profil.action_3.localisation, 
-                    //                     'activite' : response[1].user.profil.action_3.activite
-                    //                 },
-                    //                 'action4': {
-                    //                     'active': response[1].user.profil.action_4.active,
-                    //                     'ico': response[1].user.profil.action_4.ico,
-                    //                     'libelle': response[1].user.profil.action_4.libelle,
-                    //                     'localisation' : response[1].user.profil.action_4.localisation, 
-                    //                     'activite' : response[1].user.profil.action_4.activite
-                    //                 },
-                    //                 'action5': {
-                    //                     'active': response[1].user.profil.action_5.active,
-                    //                     'ico': response[1].user.profil.action_5.ico,
-                    //                     'libelle': response[1].user.profil.action_5.libelle,
-                    //                     'localisation' : response[1].user.profil.action_5.localisation,
-                    //                     'activite' : response[1].user.profil.action_5.activite
-                    //                 }
-                    //             }
-                    //         }
-                    //     })
-                    // } else {
-                    //     this.setState({
-                    //         loadingList: false,
-                    //         user: {
-                    //             'email': response[1].user.email,
-                    //             'profil': {
-                    //                 'action0': {
-                    //                     'active': response[1].user.profil.action_0.active ,
-                    //                     'ico': response[1].user.icoPresent,
-                    //                     'libelle': response[1].user.profil.action_0.libelle,
-                    //                     'localisation' : response[1].user.profil.action_0.localisation, 
-                    //                     'activite' : response[1].user.profil.action_0.activite
-                    //                 },
-                    //                 'action1': {
-                    //                     'active': response[1].user.profil.action_1.active,
-                    //                     'ico': response[1].user.profil.action_1.ico,
-                    //                     'libelle': response[1].user.profil.action_1.libelle,
-                    //                     'localisation' : response[1].user.profil.action_1.localisation,
-                    //                     'activite' : response[1].user.profil.action_1.activite
-                    //                 },
-                    //                 'action2': {
-                    //                     'active': response[1].user.profil.action_2.active,
-                    //                     'ico': response[1].user.profil.action_2.ico,
-                    //                     'libelle': response[1].user.profil.action_2.libelle,
-                    //                     'localisation' : response[1].user.profil.action_2.localisation, 
-                    //                     'activite' : response[1].user.profil.action_2.activite
-                    //                 },
-                    //                 'action3': {
-                    //                     'active': response[1].user.profil.action_3.active,
-                    //                     'ico': response[1].user.profil.action_3.ico,
-                    //                     'libelle': response[1].user.profil.action_3.libelle,
-                    //                     'localisation' : response[1].user.profil.action_3.localisation,
-                    //                     'activite' : response[1].user.profil.action_3.activite
-                    //                 },
-                    //                 'action4': {
-                    //                     'active': response[1].user.profil.action_4.active,
-                    //                     'ico': response[1].user.profil.action_4.ico,
-                    //                     'libelle': response[1].user.profil.action_4.libelle,
-                    //                     'localisation' : response[1].user.profil.action_4.localisation, 
-                    //                     'activite' : response[1].user.profil.action_4.activite
-                    //                 },
-                    //                 'action5': {
-                    //                     'active': response[1].user.profil.action_5.active,
-                    //                     'ico': response[1].user.profil.action_5.ico,
-                    //                     'libelle': response[1].user.profil.action_5.libelle,
-                    //                     'localisation' : response[1].user.profil.action_5.localisation,
-                    //                     'activite' : response[1].user.profil.action_5.activite 
-                    //                 }
-                    //             }
-                    //         }
-                    //     })
-                    // }
-
+                    });
                 });
             }
         });

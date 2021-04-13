@@ -7,7 +7,7 @@ import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 class About extends React.Component { 
 
-    render(){
+    render() {
         const list_about =  [
             { key : 1, text: 'NIVA® version V1.0 2021' },
             { key : 2, text: 'Cette application a été réalisée par ALPHASYS - Lyon - France.' },
@@ -20,7 +20,7 @@ class About extends React.Component {
         ];
         return(
             <View style = { styles.container }>
-                <Animatable.View animation = "fadeInDown" style = { styles.container_header }>
+                <Animatable.View animation = "bounceIn" style = { styles.container_header }>
                     <View style = { styles.container_logo }>
                         <View style = { styles.container_ico }>
                             <Image style = { styles.image_top_body } source = { require ('../image/logo_niva.png') }/>
@@ -28,7 +28,7 @@ class About extends React.Component {
                     </View>
                 </Animatable.View>
                 <View style = { styles.container_body }>
-                    <Animatable.View animation = "bounceIn" style = { styles.text_body }>  
+                    <Animatable.View animation = "bounceIn" delay = { 300 } style = { styles.text_body }>  
                         <FlatList data = { list_about } renderItem = { ({ item }) => <Text style = { styles.text_about }>{ item.text }</Text>} />
                     </Animatable.View>
                 </View>

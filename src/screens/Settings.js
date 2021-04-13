@@ -1,11 +1,10 @@
-import React from 'react'
+import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { emailAction } from '../redux/actions/emailAction'
-import { passwordAction } from '../redux/actions/passwordAction'
-import { connect } from 'react-redux'
+import { emailAction } from '../redux/actions/emailAction';
+import { passwordAction } from '../redux/actions/passwordAction';
+import { connect } from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Switch } from 'react-native-paper';
-import SwitchExample from '../component/switch_example'
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import * as Animatable from 'react-native-animatable';
 
@@ -13,17 +12,58 @@ class Settings extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            switch1Value: false,
-            isSelected : false
-         }
+            switchOn: false,
+            title_message: '',
+            text_localisation: ''
+        }
+
     }
+
+    UNSAFE_componentWillMount() {
+        this.getStatutLocalistation();
+    }
+
     componentWillUnmount = () => {
         LocationServicesDialogBox.stopListener();
     }
 
-    toggleSwitch1 = (value) => {
-        this.setState({switch1Value: value})
-        console.log('Switch 1 is: ' + value)
+    getStatutLocalistation = () => {
+        LocationServicesDialogBox.checkLocationServicesIsEnabled({
+            openLocationServices: false,
+        }).then(success => {
+            this.setState({
+                switchOn: true,
+                title_message: 'Désactiver la localisation ?',
+                text_localisation: 'Activé'
+            });
+        }).catch(error => {
+            this.setState({
+                switchOn: false,
+                title_message: 'Activer la localisation ?',
+                text_localisation: 'Désactivé'
+            });
+        });
+    }
+
+    toggleSwitch = () => {
+
+        LocationServicesDialogBox.checkLocationServicesIsEnabled({
+            message: "<h3 style='color: #0af13e, text-align: center'>"+this.state.title_message+"</h3>",
+            ok: "Oui",
+            cancel: "Non",
+            enableHighAccuracy: true, 
+            showDialog: true, 
+            openLocationServices: true, 
+            preventOutSideTouch: false,
+            preventBackClick: false,
+            providerListener: false
+        }).then((success) => {
+            this.getStatutLocalistation();
+        }).catch((error) => {
+            this.getStatutLocalistation();
+        });
+
+        // console.log('Switch 1 is: ' + value)
         // if (value) {
         //     console.log('ici')
         //     LocationServicesDialogBox.checkLocationServicesIsEnabled({
@@ -77,16 +117,16 @@ class Settings extends React.Component {
     onPressPassword = () => {
         this.props.navigation.navigate('Mot de passe')
     }
-
+    
     onPressLocation = () => {
         this.props.navigation.navigate('Location')
     }
-    
+
     render(){
         const { isSelected } = this.state
         return(
             <View style = { styles.container }>
-                <Animatable.View animation = "fadeInDown" style = { styles.container_header }>
+                <Animatable.View animation = "bounceIn" style = { styles.container_header }>
                     <View style = { styles.container_logo_email }>
                         <View style = { styles.container_ico }>
                             <FontAwesome5 name='cogs' size = { 35 } color = '#008080' style = {{ padding:15 }}/>
@@ -96,33 +136,22 @@ class Settings extends React.Component {
                         </View>
                     </View>
                 </Animatable.View>
-
-                    {/* <View style={ styles.container_button_logoutModif }>
-                        <TouchableOpacity onPress={ () => this.changePassword() }>
-                            <LinearGradient
-                                colors={ ["#008080", "#008080"] }
-                                style={ styles.button }>
-                                <Text style={ styles.text_logout }>Modifier Password</Text>
-                            </LinearGradient>
-                        </TouchableOpacity>  
-                    </View> */}
-                {/* <View>
-                    <SwitchExample
-                        toggleSwitch1 = {this.toggleSwitch1}
-                        switch1Value = {this.state.switch1Value}/>
-                </View> */}
-                
                 <View style = { styles.container_body }>
-                    <Animatable.View animation = "bounceIn" delay = { 0 }>
+                    <Animatable.View animation = "bounceIn" delay = { 300 }>
                         <TouchableOpacity style = { styles.button_body } onPress = { () => this.onPressPassword() }>
                             <FontAwesome5 name = "key" color = "black" size = { 20 }/>
                             <Text style = { styles.text_button }>Mot de passe</Text>
                         </TouchableOpacity>
                     </Animatable.View>
-                    <Animatable.View animation = "bounceIn" delay = { 300 }>
-                        <TouchableOpacity style = { styles.button_body } onPress = { () => this.onPressLocation() }>
-                            <FontAwesome5 name = "map-marker-alt" color = "black" size = { 20 }/>
-                            <Text style = { styles.text_button }>Localisation GPS</Text>
+                    <Animatable.View animation = "bounceIn" delay = { 600 }>
+                        <TouchableOpacity style = { styles.button_body } onPress = { () => this.toggleSwitch() }>
+                            <View style = { styles.button_localisation_left }>
+                                <FontAwesome5 name = "map-marker-alt" color = "black" size = { 20 }/>
+                                <Text style = { styles.text_button }>Localisation ({ this.state.text_localisation })</Text>
+                            </View>
+                            <View style = { styles.button_localisation_right }>
+                                <Switch value = { this.state.switchOn } onValueChange = { () => this.toggleSwitch() }/>
+                            </View>
                         </TouchableOpacity>
                     </Animatable.View>
                 </View>
@@ -161,7 +190,8 @@ const styles = StyleSheet.create({
         backgroundColor : "#ECEFEC", 
         borderRadius : 50, 
         justifyContent : 'center',
-        alignItems : 'center'
+        alignItems : 'center',
+        height: 70
     },
     button_body : {
         padding: 30, 
@@ -169,8 +199,18 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius : 5,
         flexDirection : 'row',
+        alignItems: 'center',
         marginBottom : 10
     }, 
+    button_localisation_left: {
+        flex: 2,
+        flexDirection: 'row'
+    },
+    button_localisation_right: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end'
+    },
     text_button: {
         fontSize : 16, 
         marginLeft : 15
