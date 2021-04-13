@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from "react-native";
 import { Button, Text } from 'react-native-elements';
 import Modal from 'react-native-modal';
-// import Colors from '../../constants/Colors'
-// import Icon from '../../components/Icon';
 
 class DeletScreenComponent extends React.Component { 
     constructor(props) {

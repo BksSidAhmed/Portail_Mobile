@@ -1,12 +1,12 @@
-import React from 'react'
+import React from 'react';
 import { Text, View, Image, StyleSheet } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { connect } from 'react-redux'
-import {emailAction} from '../redux/actions/emailAction'
-import {passwordAction} from '../redux/actions/passwordAction'
-import { Drawer} from 'react-native-paper';
+import { connect } from 'react-redux';
+import { emailAction } from '../redux/actions/emailAction';
+import { passwordAction } from '../redux/actions/passwordAction';
+import { Drawer } from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { color } from 'react-native-reanimated';
+import { Button } from 'react-native-elements';
 
 class DrawerComponent extends React.Component { 
 
@@ -15,74 +15,34 @@ class DrawerComponent extends React.Component {
         this.props.passwordAction('')
     }
 
-    render(){
+    render() {
         return(
-            <View style = {{flex : 1}}>
+            <View style = { styles.container }>
                 <DrawerContentScrollView>
-                    <View style = {{flex :1, alignContent : 'center'}}>
-                        <View style = {{flex : 0.5, justifyContent : 'center', alignItems: 'center', margin : 20}}>
-                            <Image
-                                style={{height : 100, width: 100, alignContent : 'center'}}
-                                source={require ('../../android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png')}
-                            />
-                            <Text style = {{fontSize : 20, fontWeight : 'bold', }}>{ this.props.email } </Text>
+                    <View style = { styles.container_body }>
+                        <View style = { styles.container_top_body }>
+                            <Image style = { styles.image_top_body } source = { require ('../image/logo_niva.png') }/>
                         </View>
-                        <View style = {{flex : 1}}>
-                            <Drawer.Section style={styles.drawerSection}>
-                                <DrawerItem 
-                                    label="Gestion du temps"
-                                    labelStyle = {{
-                                        fontSize : 15,
-                                    }}
-                                    onPress={() => {this.props.navigation.navigate('Gestion du temps')}}
-                                />
-                            </Drawer.Section>
-                            <Drawer.Section style={styles.drawerSection}>
-                                <DrawerItem 
-                                    label="Paramètres"
-                                    labelStyle = {{
-                                        fontSize : 15,
-                                    }}
-                                    onPress={() => {this.props.navigation.navigate('Parametre')}}
-                                />
-                            </Drawer.Section>
-                            <Drawer.Section style={styles.drawerSection}>
-                                <DrawerItem 
-                                    label="Confidentialité"
-                                    labelStyle = {{
-                                        fontSize : 15,
-                                    }}
-                                    onPress={() => {this.props.navigation.navigate('Confidentialite')}}
-                                />
-                            </Drawer.Section>
-                            <Drawer.Section style={styles.drawerSection}>
-                                <DrawerItem 
-                                    label="À propos"
-                                    labelStyle = {{
-                                        fontSize : 15,
-                                    }}
-                                    onPress={() => {this.props.navigation.navigate('A propos')}}
-                                />
-                            </Drawer.Section>
+                        <View style = { styles.container_items_body }>
+                            <View>
+                                <Button title = "Gestion du temps" buttonStyle = { styles.button_item } onPress = { () => { this.props.navigation.navigate('Gestion du temps') }}/>
+                            </View>
+                            <View>
+                                <Button title = "Paramètres" buttonStyle = { styles.button_item } onPress = { () => { this.props.navigation.navigate('Parametre') }}/>
+                            </View>
+                            <View>
+                                <Button title = "Confidentialité" buttonStyle = { styles.button_item } onPress = { () => { this.props.navigation.navigate('Confidentialite') }}/>
+                            </View>
+                            <View>
+                                <Button title = "À propos" buttonStyle = { styles.button_item } onPress={ () => { this.props.navigation.navigate('A propos') }}/>
+                            </View>
                         </View>
                     </View>
                 </DrawerContentScrollView>
-               <View style={styles.bottomDrawerSection}>
-                    <DrawerItem 
-                        icon={() => (
-                            <FontAwesome5 
-                                name="sign-out-alt" 
-                                color='white'
-                                size={30}
-                            />
-                        )}
-                        label="Déconnexion"
-                        labelStyle = {{
-                            fontSize : 20,
-                            color : 'white'
-                        }}
-                        onPress={() => {this.signOut()}}
-                    />
+                <View style = { styles.container_bottom }>
+                    <View>
+                        <Button title = "Déconnexion" buttonStyle = { styles.button_item_deconnexion } onPress={ () => { this.signOut() }}/>
+                    </View>
                 </View>
             </View>
         );
@@ -91,34 +51,52 @@ class DrawerComponent extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    bottomDrawerSection: {
-        marginBottom: 15,
-        borderTopColor: '#f4f4f4',
-        borderTopWidth: 2,
-        borderBottomWidth : 2,
-        borderBottomColor: '#f4f4f4',
-        justifyContent : 'flex-end',
-        backgroundColor : '#008080'
+    container: {
+        flex: 1
     },
-    drawerSection: {
-        borderColor: '#f4f4f4',
-        borderTopWidth: 2,
-        borderBottomWidth: 2,
+    container_body: {
+        flex: 1
     },
-    bottomDrawerSectionDeco: {
-        marginBottom: 15,
-        borderTopColor: '#f4f4f4',
-        borderTopWidth: 1,
-        justifyContent : 'flex-end',
+    container_top_body: {
+        flex : 1, 
+        justifyContent : "center", 
+        alignItems: "center", 
+        margin : 10,
+        marginBottom: 10
     },
-  });
+    button_item_deconnexion: {
+        backgroundColor : "#C72C41",
+        marginHorizontal: 10,
+        marginVertical: 10,
+        borderRadius: 40,
+        padding: 10
+    },
+    container_items_body: {
+        flex : 1
+    },
+    button_item: {
+        backgroundColor: "#008080",
+        marginHorizontal: 10,
+        marginVertical: 5,
+        borderRadius: 40,
+        padding: 10
+    },
+    text_top_body: {
+        fontSize : 20,
+        margin: 10 
+    },
+    image_top_body: {
+        height : 100, 
+        width: '100%', 
+        alignContent : "center"
+    }
+});
 
 const mapStateToProps = (state) => {
-    // Redux Store --> Component
-   return {
-    email: state.emailReducer.email,
-    password: state.passwordReducer.password,
-   }
-  }
+    return {
+        email: state.emailReducer.email,
+        password: state.passwordReducer.password
+    }
+}
 
 export default connect(mapStateToProps,{emailAction,passwordAction}) (DrawerComponent)

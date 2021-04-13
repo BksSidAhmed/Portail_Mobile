@@ -7,6 +7,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Switch } from 'react-native-paper';
 import SwitchExample from '../component/switch_example'
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
+import * as Animatable from 'react-native-animatable';
 
 class Settings extends React.Component { 
     constructor(props) {
@@ -76,28 +77,26 @@ class Settings extends React.Component {
     onPressPassword = () => {
         this.props.navigation.navigate('Mot de passe')
     }
+
     onPressLocation = () => {
         this.props.navigation.navigate('Location')
     }
+    
     render(){
         const { isSelected } = this.state
         return(
-            <View style={ styles.container }>
-                <View style={ styles.container_header }>     
-                    {/* <View style={ styles.container_text_name }>
-                        <Text style={ styles.text_name }>{ this.props.email }</Text>
-                    </View> */}
-                    <View style={ styles.container_logo_user }>
-                        <TouchableOpacity style={ styles.button_logo_user }>
-                            <FontAwesome5 
-                                name='cogs' 
-                                size={ 45 } 
-                                color='#008080'>
-                            </FontAwesome5>
-                        </TouchableOpacity>
+            <View style = { styles.container }>
+                <Animatable.View animation = "fadeInDown" style = { styles.container_header }>
+                    <View style = { styles.container_logo_email }>
+                        <View style = { styles.container_ico }>
+                            <FontAwesome5 name='cogs' size = { 35 } color = '#008080' style = {{ padding:15 }}/>
+                        </View>
+                        <View style={ styles.container_email }>
+                            <Text style = { styles.text_email }>{ this.props.email }</Text>
+                        </View>
                     </View>
-                </View>
-                <ScrollView style={ styles.container_body }>
+                </Animatable.View>
+
                     {/* <View style={ styles.container_button_logoutModif }>
                         <TouchableOpacity onPress={ () => this.changePassword() }>
                             <LinearGradient
@@ -112,29 +111,21 @@ class Settings extends React.Component {
                         toggleSwitch1 = {this.toggleSwitch1}
                         switch1Value = {this.state.switch1Value}/>
                 </View> */}
-                    <View style = {{flex :1, padding : 10}}>
-                        <TouchableOpacity 
-                            style={styles.touchablePassword}  
-                            onPress={() => this.onPressPassword()}>
-                                <FontAwesome5 
-                                    name="key" 
-                                    color= "black" 
-                                    size={20} 
-                                />
-                                <Text style = {{fontSize : 16, marginLeft : 15}}>Mot de passe</Text>
+                
+                <View style = { styles.container_body }>
+                    <Animatable.View animation = "bounceIn" delay = { 0 }>
+                        <TouchableOpacity style = { styles.button_body } onPress = { () => this.onPressPassword() }>
+                            <FontAwesome5 name = "key" color = "black" size = { 20 }/>
+                            <Text style = { styles.text_button }>Mot de passe</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={styles.touchablePassword}  
-                            onPress={() => this.onPressLocation()}>
-                                <FontAwesome5 
-                                    name="map-marker-alt" 
-                                    color= "black" 
-                                    size={20} 
-                                />
-                                <Text style = {{fontSize : 16, marginLeft : 15}}>Localisation GPS</Text>
+                    </Animatable.View>
+                    <Animatable.View animation = "bounceIn" delay = { 300 }>
+                        <TouchableOpacity style = { styles.button_body } onPress = { () => this.onPressLocation() }>
+                            <FontAwesome5 name = "map-marker-alt" color = "black" size = { 20 }/>
+                            <Text style = { styles.text_button }>Localisation GPS</Text>
                         </TouchableOpacity>
-                    </View>
-                </ScrollView>
+                    </Animatable.View>
+                </View>
             </View>
         );
     }
@@ -145,17 +136,34 @@ const styles = StyleSheet.create({
         flex : 1
     },
     container_header : {
-        flex : 0.25,
-        backgroundColor : '#008080',
-        alignItems: 'center',
-        zIndex: 1,
-        elevation : 3
+        flex : 1,
+        padding: 10,
+        paddingTop: 20
     },
     container_body : {
-        flex : 1,
-        zIndex: 0,
+        flex : 2,
+        padding: 10
     },
-    touchablePassword : {
+    container_logo_email: {
+        flex: 1,
+        padding: 20, 
+        backgroundColor : '#008080',
+        elevation: 5,
+        borderRadius : 5,
+        justifyContent: 'center',
+        alignItems : "center"
+    },
+    container_email: {
+        flex: 1,
+        justifyContent: 'center'
+    },
+    container_ico: {
+        backgroundColor : "#ECEFEC", 
+        borderRadius : 50, 
+        justifyContent : 'center',
+        alignItems : 'center'
+    },
+    button_body : {
         padding: 30, 
         backgroundColor : 'white',
         elevation: 5,
@@ -163,56 +171,13 @@ const styles = StyleSheet.create({
         flexDirection : 'row',
         marginBottom : 10
     }, 
-    container_logo_user: {
-        height: 45, 
-        alignItems : "center", 
-        marginTop : 15
+    text_button: {
+        fontSize : 16, 
+        marginLeft : 15
     },
-    container_button_logout: {
-        flex : 1, 
-        marginTop: 10,
-        marginBottom: 60
-    }, 
-    container_button_logoutModif: {
-        flex : 1, 
-        marginTop: 30,
-    },
-    container_text_name: {
-        flex : 1, 
-        justifyContent : 'center', 
-        alignItems : 'center',
-    },
-    container_input: {
-        flex : 10,
-        flexDirection: 'row',
-        marginTop: 10,
-        paddingBottom: 5
-    },
-    button : {
-        width: '100%',
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10
-    },
-    button_logo_user : {
-        backgroundColor : "#ECEFEC", 
-        position: 'absolute',
-        width : 90, 
-        height: 90, 
-        borderRadius : 50, 
-        justifyContent : 'center',
-        alignItems : 'center', 
-    },
-    text_logout: {
-        fontSize: 18,
-        fontWeight: 'bold', 
-        color : "white"
-    },
-    text_name : {
+    text_email : {
         color : 'white',
-        fontSize : 30,
-        top : 15
+        fontSize : 25
     },
 })
 

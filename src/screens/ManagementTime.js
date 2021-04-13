@@ -359,11 +359,12 @@ class ManagementTime extends React.Component {
     }
 
     errorServeur = async (buttonError,lat,long,activite) => {
+
         this.setState({
             errorServeur : true,
         });
 
-        if(buttonError == 'F00') 
+        if(buttonError == 'F00' || activite != null) 
         {
             var dataPointing = this.props.pointing
             var compteurTrouve = 0;  
@@ -427,6 +428,11 @@ class ManagementTime extends React.Component {
             loaderOverlayResponse: true,
         });
 
+        let ligne_1 = '';
+        let ligne_2 = '';
+        let ligne_3 = '';
+        let ligne_4 = '';
+
         if(this.state.user.activeGeolocalisation == false) 
         {
             getToken(this.props.email, this.props.password).then(data => {
@@ -442,13 +448,31 @@ class ManagementTime extends React.Component {
                                 Vibration.vibrate(500);
                             }   
 
+                            ligne_1 = data[1].message.ligne_1;
+                            ligne_2 = data[1].message.ligne_2;
+                            ligne_3 = data[1].message.ligne_3;
+                            ligne_4 = data[1].message.ligne_4;
+
+                            if(ligne_1 !== '')
+                            {
+                                ligne_1 = ligne_1+'\n';
+                            }
+                            if(ligne_2 !== '')
+                            {
+                                ligne_2 = ligne_2+'\n';
+                            }
+                            if(ligne_3 !== '')
+                            {
+                                ligne_3 = ligne_3+'\n';
+                            }
+
                             this.setState({
                                 loadingList: false,
                                 loaderOverlayResponse: false,
                                 statutUser: data[1].statut,
                                 currentIco: data[1].ico,
                                 currentLibelle: libelle,
-                                currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                currentText: ligne_1+ligne_2+ligne_3+ligne_4,
                             });
                         }
                         else 
@@ -518,13 +542,31 @@ class ManagementTime extends React.Component {
                                                             Vibration.vibrate(500)
                                                         }
 
+                                                        ligne_1 = data[1].message.ligne_1;
+                                                        ligne_2 = data[1].message.ligne_2;
+                                                        ligne_3 = data[1].message.ligne_3;
+                                                        ligne_4 = data[1].message.ligne_4;
+
+                                                        if(ligne_1 !== '')
+                                                        {
+                                                            ligne_1 = ligne_1+'\n';
+                                                        }
+                                                        if(ligne_2 !== '')
+                                                        {
+                                                            ligne_2 = ligne_2+'\n';
+                                                        }
+                                                        if(ligne_3 !== '')
+                                                        {
+                                                            ligne_3 = ligne_3+'\n';
+                                                        }
+
                                                         this.setState({
                                                             loadingList: false,
                                                             loaderOverlayResponse: false,
                                                             statutUser: data[1].statut,
                                                             currentIco: data[1].ico,
                                                             currentLibelle: libelle,
-                                                            currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                                            currentText: ligne_1+ligne_2+ligne_3+ligne_4,
                                                         }); 
                                                     }
                                                     else 
@@ -554,13 +596,31 @@ class ManagementTime extends React.Component {
                                                             Vibration.vibrate(500)
                                                         }
 
+                                                        ligne_1 = data[1].message.ligne_1;
+                                                        ligne_2 = data[1].message.ligne_2;
+                                                        ligne_3 = data[1].message.ligne_3;
+                                                        ligne_4 = data[1].message.ligne_4;
+
+                                                        if(ligne_1 !== '')
+                                                        {
+                                                            ligne_1 = ligne_1+'\n';
+                                                        }
+                                                        if(ligne_2 !== '')
+                                                        {
+                                                            ligne_2 = ligne_2+'\n';
+                                                        }
+                                                        if(ligne_3 !== '')
+                                                        {
+                                                            ligne_3 = ligne_3+'\n';
+                                                        }
+
                                                         this.setState({
                                                             loadingList: false,
                                                             loaderOverlayResponse: false,
                                                             statutUser: data[1].statut,
                                                             currentIco: data[1].ico,
                                                             currentLibelle: libelle,
-                                                            currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                                            currentText: ligne_1+ligne_2+ligne_3+ligne_4,
                                                         });           
                                                     }
                                                     else 
@@ -712,13 +772,32 @@ class ManagementTime extends React.Component {
                                             {
                                                 Vibration.vibrate(500)
                                             }
+
+                                            ligne_1 = data[1].message.ligne_1;
+                                            ligne_2 = data[1].message.ligne_2;
+                                            ligne_3 = data[1].message.ligne_3;
+                                            ligne_4 = data[1].message.ligne_4;
+
+                                            if(ligne_1 !== '')
+                                            {
+                                                ligne_1 = ligne_1+'\n';
+                                            }
+                                            if(ligne_2 !== '')
+                                            {
+                                                ligne_2 = ligne_2+'\n';
+                                            }
+                                            if(ligne_3 !== '')
+                                            {
+                                                ligne_3 = ligne_3+'\n';
+                                            }
+
                                             this.setState({
                                                 loadingList: false,
                                                 loaderOverlayResponse: false,
                                                 statutUser: data[1].statut,
                                                 currentIco: data[1].ico,
                                                 currentLibelle: libelle,
-                                                currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                                currentText: ligne_1+ligne_2+ligne_3+ligne_4,
                                             });            
                                         }
                                         else 
@@ -869,13 +948,31 @@ class ManagementTime extends React.Component {
                                             Vibration.vibrate(500)
                                         }
 
+                                        ligne_1 = data[1].message.ligne_1;
+                                        ligne_2 = data[1].message.ligne_2;
+                                        ligne_3 = data[1].message.ligne_3;
+                                        ligne_4 = data[1].message.ligne_4;
+
+                                        if(ligne_1 !== '')
+                                        {
+                                            ligne_1 = ligne_1+'\n';
+                                        }
+                                        if(ligne_2 !== '')
+                                        {
+                                            ligne_2 = ligne_2+'\n';
+                                        }
+                                        if(ligne_3 !== '')
+                                        {
+                                            ligne_3 = ligne_3+'\n';
+                                        }
+
                                         this.setState({
                                             loadingList: false,
                                             loaderOverlayResponse: false,
                                             statutUser: data[1].statut,
                                             currentIco: data[1].ico,
                                             currentLibelle: libelle,
-                                            currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                            currentText: ligne_1+ligne_2+ligne_3+ligne_4,
                                         });            
                                     }
                                     else 
@@ -1029,13 +1126,31 @@ class ManagementTime extends React.Component {
                                     Vibration.vibrate(500)
                                 }
 
+                                ligne_1 = data[1].message.ligne_1;
+                                ligne_2 = data[1].message.ligne_2;
+                                ligne_3 = data[1].message.ligne_3;
+                                ligne_4 = data[1].message.ligne_4;
+
+                                if(ligne_1 !== '')
+                                {
+                                    ligne_1 = ligne_1+'\n';
+                                }
+                                if(ligne_2 !== '')
+                                {
+                                    ligne_2 = ligne_2+'\n';
+                                }
+                                if(ligne_3 !== '')
+                                {
+                                    ligne_3 = ligne_3+'\n';
+                                }
+
                                 this.setState({
                                     loadingList: false,
                                     loaderOverlayResponse: false,
                                     statutUser: data[1].statut,
                                     currentIco: data[1].ico,
                                     currentLibelle: libelle,
-                                    currentText: data[1].message.ligne_1+'\n'+data[1].message.ligne_2+'\n'+data[1].message.ligne_3+'\n'+data[1].message.ligne_4,
+                                    currentText: ligne_1+ligne_2+ligne_3+ligne_4,
                                 });        
                             }
                             else 
@@ -1054,151 +1169,158 @@ class ManagementTime extends React.Component {
     }
 
     dialogPopup = (ico, title, text) => {
+
         return(
-            <Overlay 
-                isVisible = { this.state.visible } 
-                overlayStyle = {{ padding : 0 }}
-                fullScreen = { true }
-                animationType = 'slide'>
-                <View style = {{ flex : 1 }}>
-                    <View style= {{ alignItems: 'center',justifyContent: 'center', backgroundColor: '#008080', height: 60 }}>
-                        <Text style= {{ fontSize: 20, fontWeight: "bold", color: 'white' }}>{ title }</Text>
-                    </View>
-                    {   
-                        this.state.loaderOverlayResponse ? 
-                            <View style = {{ flex : 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <ActivityIndicator size="large" color="#008080"/> 
+            <Overlay isVisible = { this.state.visible } overlayStyle = {{ padding : 0 }} fullScreen = { true } animationType = 'slide'>
+                {   
+                    this.state.loaderOverlayResponse ? 
+                        <View style = { styles.container_overlay }>
+                            <View style = { styles.loader_overlay }>
+                                <ActivityIndicator size = "large" color = "#008080"/> 
                             </View>
-                            :
-                            <View style = {{ flex : 1 }}>
-                                <Animatable.View animation = "slideInLeft" style = { styles.container_button_animation }>
-                                    <View style = {{ alignItems: 'center', justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', marginVertical: 10, marginBottom: 5 }}>
+                        </View>
+                    :
+                        <View style = { styles.container_overlay }>
+                            <View style = { styles.container_global_header_overlay }>
+                                <Animatable.View animation="bounceIn" delay = { 0 } style = { styles.container_animation_header_overlay }>
+                                    <View style = { styles.container_title_overlay }>
+                                        <Text style = { styles.text_title_overlay }>{ title }</Text>
+                                    </View>
+                                </Animatable.View>
+                            </View>
+                            <View style = { styles.container_global_tiles_overlay }>
+                                <Animatable.View animation = "bounceIn" delay = { 300 } style = { styles.container_animation_overlay_ico }>
+                                    <View style = { styles.container_ico_overlay }>
                                         {
                                             this.state.errorServeur ?               
-                                                <FontAwesome5 
-                                                    name = "exclamation-triangle" 
-                                                    color = "red" 
-                                                    size = { 70 } 
-                                                />
-                                                :                         
-                                                <Image style = { styles.imageOverlay } source = {{ uri: `data:image/png;base64,${ ico }` }} />
-                                            
+                                                <FontAwesome5 name = "exclamation-triangle" color = "red" size = { 70 }/>
+                                            :                         
+                                                <Image style = { styles.ico_overlay } source = {{ uri: `data:image/png;base64,${ ico }` }}/>
                                         }
                                     </View>
                                 </Animatable.View>
-                                <Animatable.View animation="slideInRight" style = { styles.container_button_animation }>
-                                    <View style = {{ alignItems: 'center', justifyContent: 'center', flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)', marginVertical: 10, marginTop: 5 }}>
-                                        <Text style = { styles.text_dialog }>{ text }</Text>
+                                <Animatable.View animation = "bounceIn" delay = { 600 } style = { styles.container_animation_overlay_text }>
+                                    <View style = { styles.container_text_overlay }>
+                                        <Text style = { styles.text_body_overlay }>{ text }</Text>
                                     </View>
                                 </Animatable.View>
                                 <Button buttonStyle = { styles.button_overlay_accept } title = "OK" onPress = { () => this.setState({ visible: false, visibleListActivites : false }) }/>
                             </View> 
-                    }
-                </View>
+                        </View> 
+                }
             </Overlay>
         )
+
     }
 
     buttons = (user) => {
+
         let libelles =  [];
         if(this.state.statutUser) 
         {
             if(user.profil.action0.active)
             {
-                libelles.push({ key : user.profil.action0.libellePresent, ico : user.profil.action0.icoPresent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
+                libelles.push({ key : user.profil.action0.libellePresent, ico : user.profil.action0.icoPresent, button : 'F00', delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
             }
             if(user.profil.action1.active)
             {
-                libelles.push({ key : user.profil.action1.libellePresent, ico : user.profil.action1.icoPresent, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation, activite : user.profil.action1.activite});
+                libelles.push({ key : user.profil.action1.libellePresent, ico : user.profil.action1.icoPresent, button : 'F01', delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation, activite : user.profil.action1.activite});
             }
             if(user.profil.action2.active)
             {
-                libelles.push({ key : user.profil.action2.libellePresent, ico : user.profil.action2.icoPresent, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation, activite : user.profil.action2.activite});
+                libelles.push({ key : user.profil.action2.libellePresent, ico : user.profil.action2.icoPresent, button : 'F02', delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation, activite : user.profil.action2.activite});
             }
             if(user.profil.action3.active)
             {
-                libelles.push({ key : user.profil.action3.libellePresent, ico : user.profil.action3.icoPresent, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation, activite : user.profil.action3.activite});
+                libelles.push({ key : user.profil.action3.libellePresent, ico : user.profil.action3.icoPresent, button : 'F03', delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation, activite : user.profil.action3.activite});
             }
             if(user.profil.action4.active)
             {
-                libelles.push({ key : user.profil.action4.libellePresent, ico : user.profil.action4.icoPresent, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation, activite : user.profil.action4.activite});
+                libelles.push({ key : user.profil.action4.libellePresent, ico : user.profil.action4.icoPresent, button : 'F04', delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation, activite : user.profil.action4.activite});
             }
             if(user.profil.action5.active)
             {
-                libelles.push({ key : user.profil.action5.libellePresent, ico : user.profil.action5.icoPresent, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation, activite : user.profil.action5.activite });
+                libelles.push({ key : user.profil.action5.libellePresent, ico : user.profil.action5.icoPresent, button : 'F05', delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation, activite : user.profil.action5.activite });
             }
         }
         else
         {
             if(user.profil.action0.active)
             {
-                libelles.push({ key : user.profil.action0.libelleAbsent, ico : user.profil.action0.icoAbsent, button : 'F00', disabled : this.state.disabled, delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
+                libelles.push({ key : user.profil.action0.libelleAbsent, ico : user.profil.action0.icoAbsent, button : 'F00', delay: 0, loading : this.state.loadingF00, localisation : user.profil.action0.localisation, activite : user.profil.action0.activite });
             }
             if(user.profil.action1.active)
             {
-                libelles.push({ key : user.profil.action1.libelleAbsent, ico : user.profil.action1.icoAbsent, button : 'F01', disabled : this.state.disabled, delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation, activite : user.profil.action1.activite});
+                libelles.push({ key : user.profil.action1.libelleAbsent, ico : user.profil.action1.icoAbsent, button : 'F01', delay : 200, loading : this.state.loadingF01, localisation : user.profil.action1.localisation, activite : user.profil.action1.activite});
             }
             if(user.profil.action2.active)
             {
-                libelles.push({ key : user.profil.action2.libelleAbsent, ico : user.profil.action2.icoAbsent, button : 'F02', disabled : this.state.disabled, delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation, activite : user.profil.action2.activite});
+                libelles.push({ key : user.profil.action2.libelleAbsent, ico : user.profil.action2.icoAbsent, button : 'F02', delay : 400, loading : this.state.loadingF02, localisation : user.profil.action2.localisation, activite : user.profil.action2.activite});
             }
             if(user.profil.action3.active)
             {
-                libelles.push({ key : user.profil.action3.libelleAbsent, ico : user.profil.action3.icoAbsent, button : 'F03', disabled : this.state.disabled, delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation, activite : user.profil.action3.activite});
+                libelles.push({ key : user.profil.action3.libelleAbsent, ico : user.profil.action3.icoAbsent, button : 'F03', delay : 600, loading : this.state.loadingF03, localisation : user.profil.action3.localisation, activite : user.profil.action3.activite});
             }
             if(user.profil.action4.active)
             {
-                libelles.push({ key : user.profil.action4.libelleAbsent, ico : user.profil.action4.icoAbsent, button : 'F04', disabled : this.state.disabled, delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation, activite : user.profil.action4.activite});
+                libelles.push({ key : user.profil.action4.libelleAbsent, ico : user.profil.action4.icoAbsent, button : 'F04', delay : 800, loading : this.state.loadingF04, localisation : user.profil.action4.localisation, activite : user.profil.action4.activite});
             }
             if(user.profil.action5.active)
             {
-                libelles.push({ key : user.profil.action5.libelleAbsent, ico : user.profil.action5.icoAbsent, button : 'F05', disabled : this.state.disabled, delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation, activite : user.profil.action5.activite });
+                libelles.push({ key : user.profil.action5.libelleAbsent, ico : user.profil.action5.icoAbsent, button : 'F05', delay : 1000, loading : this.state.loadingF05, localisation : user.profil.action5.localisation, activite : user.profil.action5.activite });
             }
         }
+
         return(
-            <FlatList data={ libelles } 
-                renderItem={({item}) => 
-                    <Animatable.View animation="bounceIn" delay={ item.delay } style={ styles.container_button_animation }>
+            <FlatList data = { libelles } 
+                renderItem = { ({ item }) => 
+                    <Animatable.View animation = "bounceIn" delay = { item.delay } style = { styles.container_button_animation }>
                         <TouchableOpacity 
-                            onPress={ () => { if(item.activite){ this.showActiviteList(item.button, item.key, item.localisation) } else { this.actionButton(item.button, item.key, item.localisation, this.state.activite) } } } 
-                            disabled={ item.disabled } 
+                            onPress={ () => { 
+                                if(item.activite)
+                                { 
+                                    this.showActiviteList(item.button, item.key, item.localisation) 
+                                } 
+                                else 
+                                { 
+                                    this.actionButton(item.button, item.key, item.localisation, null) 
+                                } 
+                            } } 
                             style={ styles.button }
                         >
                             {
-                                (item.loading 
-                                    ? <ActivityIndicator size="large" color="#00ff00"/>  
-                                    : <View style={ styles.container_ico }>
+                                item.loading ? 
+                                    <ActivityIndicator size="large" color="#00ff00"/>  
+                                : 
+                                    <View style={ styles.container_ico }>
                                         <Image style={ styles.image } source={{ uri: `data:image/png;base64,${item.ico}` }} />
                                         <Text>{ item.key }</Text>
-                                      </View>
-                                )
+                                    </View>
                             }
-
                         </TouchableOpacity>
                     </Animatable.View>
                 }
             ></FlatList>
-            
         )
+
     }
 
     showActiviteList = (button, libelle, localisation) => {
+
         this.setState({
             visibleListActivites: true,
             activitesButton: button,
             activitesLibelle: libelle,
             activitesLocalisation: localisation
-        })
+        });
+
     }
 
     activitesList = (button, libelle, localisation, activites) => {
+
         return(
-            <Overlay 
-                isVisible={ this.state.visibleListActivites } 
-                overlayStyle = {{ padding : 0 }}
-                fullScreen = { true }
-                animationType = 'slide'>
-                <View style = {{ flex :1 }}>
+            <Overlay isVisible = { this.state.visibleListActivites } overlayStyle = {{ padding : 0 }} fullScreen = { true } animationType = 'slide'>
+                <View style = { styles.container_overlay }>
                     <View style= {{ alignItems : 'center', justifyContent : 'center', backgroundColor : '#008080', height : 60, marginBottom: 1}}>
                         <Text style= {{ fontSize : 20, fontWeight : "bold", color : 'white' }}>Activités disponibles</Text>
                     </View>
@@ -1214,40 +1336,49 @@ class ManagementTime extends React.Component {
                         }
                         keyExtractor = { item => item.code }
                     ></FlatList>
-                    <Button buttonStyle = { styles.button_overlay_accept } title = "Retour" onPress={ () => this.setState({ visibleListActivites: false }) }/>
+                    <Button buttonStyle = { styles.button_overlay_accept } title = "Retour" onPress = { () => this.setState({ visibleListActivites: false }) }/>
                 </View>
             </Overlay>
         )
+
     }
 
     render(){
         const { loadingList, currentIco, currentLibelle, currentText, user, activitesButton, activitesLibelle, activitesLocalisation } = this.state;
         return(
             <View style = { styles.container }>
-                <StatusBar backgroundColor = '#008080' barStyle = "light-content"/>
-                <Animatable.View animation = "fadeInDown" style = { styles.container_header }>
+                <StatusBar backgroundColor = "#008080" barStyle = "light-content"/>
+                <View style = { styles.container_global_header }>
+                    <Animatable.View animation = "bounceIn" style = { styles.container_header }>
                     {
                         this.state.loading ? 
-                                <Text style = {{fontSize : 20, textAlign : 'justify', color : 'white', marginTop : 40}}>Veuillez patienter les transactions réalisées hors ligne sont en cours d'acheminement ...</Text>
-                        :   <View style = {{ flex: 1 }}> 
-                            { this.state.errorServeur ? <Text style = {styles.text_errorServeur}>Serveur momentanément Indisponible</Text>  
-
-                                : (null)
-                            }
-                                <View>
-                                    <Text style={ styles.text_date }>{ moment().format("dddd Do MMMM YYYY").toUpperCase() }</Text>
-                                </View>
-                                <View style={ styles.container_clock }>
-                                    <Text style={ styles.text_heure }>{ this.state.time }</Text>
-                                </View>
-                            </View>
+                            <Text style = {{fontSize : 20, textAlign : "justify", color : "white", marginTop : 40}}>Veuillez patienter les transactions réalisées hors ligne sont en cours d'acheminement ...</Text>   
+                        :   
+                            // <View style = {{ flex: 1 }}> 
+                            //     { 
+                            //         this.state.errorServeur ? <Text style = {styles.text_errorServeur}>Serveur momentanément Indisponible</Text>
+                            //         : 
+                            //         (null)
+                            //     }
+                            // </View>
+                            
+                            <View style={ styles.container_clock }>
+                                <Text style={ styles.text_date }>{ moment().format("dddd Do MMMM YYYY").toUpperCase() }</Text>
+                                <Text style={ styles.text_heure }>{ this.state.time }</Text>
+                            </View> 
                     }
-
-                </Animatable.View>
-                <View style={ styles.container_all_buttons }>
-                    <View style={ styles.container_buttons }>
-                        { this.state.loading ? <ActivityIndicator size="large" color="#00ff00" style={ styles.container_loader } /> : loadingList ? <ActivityIndicator size="large" color="#00ff00" style={ styles.container_loader } /> : this.buttons(user) }
-                    </View>
+                    </Animatable.View>
+                </View>
+                <View style={ styles.container_global_tiles }>
+                    { 
+                        this.state.loading ? 
+                            <ActivityIndicator size = "large" color = "#008080" style={ styles.container_loader } /> 
+                        : 
+                            loadingList ? 
+                                    <ActivityIndicator size = "large" color = "#008080" style={ styles.container_loader } /> 
+                                : 
+                                    this.buttons(user) 
+                    }
                 </View>
                 { this.dialogPopup(currentIco, currentLibelle, currentText) }
                 { this.activitesList(activitesButton, activitesLibelle, activitesLocalisation, user.activites) }
@@ -1265,68 +1396,107 @@ const styles = StyleSheet.create({
     },
     container_clock: {
         flex : 1,
-        borderBottomEndRadius : 90,
-        borderBottomLeftRadius : 90, 
-        paddingHorizontal: 20,
-        paddingBottom: 50
+        padding: 20, 
+        backgroundColor : '#008080',
+        elevation: 5,
+        borderRadius : 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    container_title_overlay: {
+        flex : 1,
+        padding: 20, 
+        backgroundColor : '#008080',
+        elevation: 5,
+        borderRadius : 5,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     container_header : {
-        flex : 0.35,
-        backgroundColor: '#008080',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        flex: 1,
+        paddingTop: 20,
+        padding: 10, 
     },
-    container_all_buttons: {
-        flex:1,
+    container_animation_header_overlay : {
+        flex: 1,
+        paddingTop: 20,
+        padding: 10, 
     },
-    container_buttons: {
+    container_global_tiles: {
+        flex:2,
+    },
+    container_global_tiles_overlay: {
+        flex:3,
+    },
+    container_global_header: {
         flex : 1 , 
-        // flexDirection: 'row', 
+    },
+    container_global_header_overlay: {
+        flex : 1 , 
     },
     container_button_animation: {
         flex : 1 , 
+        padding: 10
+    },
+    container_animation_overlay: {
+        flex : 1 , 
+        padding: 10
+    },
+    container_animation_overlay_ico: {
+        flex : 1 , 
+        padding: 10
+    },
+    container_animation_overlay_text: {
+        flex : 2 , 
+        padding: 10
     },
     container_ico: {
         flex : 1, 
         alignItems : "center", 
         justifyContent: "center"
     },
+    container_overlay: {
+        flex: 1
+    },  
     button:{ 
-        flex : 1,
-        backgroundColor: "#FFF",
-        paddingVertical: 20,
-        marginVertical: 2,
-        
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.24,
-        shadowRadius: 3.80,
+        padding: 20, 
+        backgroundColor : 'white',
         elevation: 5,
-        borderRadius: 3
+        borderRadius : 5,
+        // flexDirection : 'row',
+        // marginBottom : 10
+    },
+    container_ico_overlay:{ 
+        padding: 20, 
+        backgroundColor : 'white',
+        elevation: 5,
+        borderRadius : 5,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    container_text_overlay:{ 
+        padding: 10, 
+        backgroundColor : 'white',
+        elevation: 5,
+        borderRadius : 5,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     image: {
         height : 50,
         width: 50,
         marginVertical: 10
     },
-    imageOverlay : {
-        height : 70,
-        width: 70
+    ico_overlay : {
+        height : 50,
+        width: 50,
+        padding: 20
     },
     text_date: {
         textAlign : 'center',
-        marginTop : 20,
+        // marginTop : 20,
         color : "#fff",
         fontSize : 20
     },
@@ -1337,12 +1507,9 @@ const styles = StyleSheet.create({
     },
     text_heure:{
         textAlign:'center',
-        fontSize:50,
-        textAlign : "center",
+        fontSize: 40,
+        // textAlign : "center",
         color : "#fff",
-    },
-    text_dialog: {
-        textAlign: 'center'
     },
     dialog: {
         textAlign: 'center'
@@ -1369,16 +1536,21 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius: 3
     },
-    text_dialog: {
+    text_title_overlay: {
         textAlign: 'center',
         fontSize : 17,
         color: 'white'
     },
+    text_body_overlay: {
+        textAlign: 'center',
+        fontSize : 15,
+        padding: 20
+    },
     buttons_list_activites: {
-        borderRadius: 0,
-        marginVertical: 2,
-        backgroundColor: '#16A085',
-        paddingVertical: 20
+        padding: 20, 
+        backgroundColor : '#16A085',
+        elevation: 5,
+        borderRadius : 5,
     },  
     button_overlay_accept: {
         borderRadius: 50,
@@ -1386,6 +1558,11 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20
+    },
+    loader_overlay: {
+        flex : 1, 
+        justifyContent: 'center', 
+        alignItems: 'center'
     }
 })
 
