@@ -7,6 +7,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Switch } from 'react-native-paper';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import * as Animatable from 'react-native-animatable';
+import { PermissionsAndroid } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
 
 class Settings extends React.Component { 
     constructor(props) {
@@ -16,7 +18,10 @@ class Settings extends React.Component {
             title_message: '',
             text_localisation: ''
         }
+    }
 
+    componentDidMount() {
+        this.getStatutLocalistation();
     }
 
     UNSAFE_componentWillMount() {
@@ -28,40 +33,48 @@ class Settings extends React.Component {
     }
 
     getStatutLocalistation = () => {
-        LocationServicesDialogBox.checkLocationServicesIsEnabled({
-            openLocationServices: false,
-        }).then(success => {
+        Geolocation.getCurrentPosition((position) => {
             this.setState({
                 switchOn: true,
-                title_message: 'Désactiver la localisation ?',
                 text_localisation: 'Activé'
             });
-        }).catch(error => {
+        }, (error) => {
             this.setState({
                 switchOn: false,
-                title_message: 'Activer la localisation ?',
                 text_localisation: 'Désactivé'
             });
         });
     }
 
-    toggleSwitch = () => {
+    requestLocationPermission = async () => {
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+        return granted;
+    }
 
-        LocationServicesDialogBox.checkLocationServicesIsEnabled({
-            message: "<h3 style='color: #0af13e, text-align: center'>"+this.state.title_message+"</h3>",
-            ok: "Oui",
-            cancel: "Non",
-            enableHighAccuracy: true, 
-            showDialog: true, 
-            openLocationServices: true, 
-            preventOutSideTouch: false,
-            preventBackClick: false,
-            providerListener: false
-        }).then((success) => {
-            this.getStatutLocalistation();
-        }).catch((error) => {
-            this.getStatutLocalistation();
+    toggleSwitch = () => {
+        Geolocation.getCurrentPosition((position) => {
+            Alert.alert(
+                "Désactivation de localisation",
+                "Pour désactiver la localisation rendez vous dans les paramètres de votre téléphone.\n"+
+                "Séléctionner ensuite la localisation par application.\n"+
+                "Une fois que vous verrez l'application Niva dans la liste désactiver sa localisation.",
+                [
+                    { text: "OK" }
+                ]
+            );
+        }, (error) => {console.log('desactiver')
+            this.requestLocationPermission().then(granted => {
+                if(granted === PermissionsAndroid.RESULTS.GRANTED) 
+                {
+                    this.setState({
+                        switchOn: true,
+                        text_localisation: 'Activé'
+                    });
+                }
+            });
         });
+        
+      
 
         // console.log('Switch 1 is: ' + value)
         // if (value) {

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { listeEmailAction } from '../redux/actions/listeEmailAction';
 import { pointingAction } from '../redux/actions/pointingHorsLigneAction';
 import * as Animatable from 'react-native-animatable';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 class About extends React.Component { 
 
     render() {
