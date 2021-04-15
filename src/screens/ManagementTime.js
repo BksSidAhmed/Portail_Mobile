@@ -87,7 +87,6 @@ class ManagementTime extends React.Component {
                 mouvementsEnAttente: true
             });
         }
-        console.log(dataPointing[0])
     }
 
     getMouvementsEnAttenteByEmail = () => {
