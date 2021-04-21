@@ -4,18 +4,74 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { connect } from 'react-redux';
 import { emailAction } from '../redux/actions/emailAction';
 import { passwordAction } from '../redux/actions/passwordAction';
+import { langueAction } from '../redux/actions/langueAction';
 import { Drawer } from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Button } from 'react-native-elements';
 
 class DrawerComponent extends React.Component { 
-
+    constructor(props) {
+        super(props)
+    }
     signOut = () => {
-        this.props.emailAction('')
-        this.props.passwordAction('')
+        this.props.emailAction('');
+        this.props.passwordAction('');
+        this.props.langueAction('100');
     }
 
     render() {
+        let list_item = [];
+        //Français
+        if(this.props.langue === '100') {
+            list_item = [
+                { text : 'Gestion du temps' },
+                { text : 'Paramètres' },
+                { text : 'Confidentialité' },
+                { text : 'À propos' },
+                { text : 'Déconnexion' }
+            ];
+        }
+        //Allemand
+        if(this.props.langue === '109') {
+            list_item = [
+                { text : 'Zeitmanagement' },
+                { text : 'Einstellungen' },
+                { text : 'Vertraulichkeit' },
+                { text : 'Etwa' },
+                { text : 'Ausloggen' }
+            ];
+        }
+        //Espagnol
+        if(this.props.langue === '134') {
+            list_item = [
+                { text : 'Gestión del tiempo' },
+                { text : 'Configuraciones' },
+                { text : 'Confidencialidad' },
+                { text : 'A proposito' },
+                { text : 'Cerrar sesión' }
+            ];
+        }
+        //Anglais
+        if(this.props.langue === '132') {
+            list_item = [
+                { text : 'Time management' },
+                { text : 'Settings' },
+                { text : 'Confidentiality' },
+                { text : 'About' },
+                { text : 'Logout' }
+            ];
+        }
+        //Italien
+        if(this.props.langue === '127') {
+            list_item = [
+                { text : 'Gestione del tempo' },
+                { text : 'Impostazioni' },
+                { text : 'Riservatezza' },
+                { text : 'A proposito' },
+                { text : 'Disconnettersi' }
+            ];
+        }
+        
         return(
             <View style = { styles.container }>
                 <DrawerContentScrollView>
@@ -25,23 +81,23 @@ class DrawerComponent extends React.Component {
                         </View>
                         <View style = { styles.container_items_body }>
                             <View>
-                                <Button title = "Gestion du temps" buttonStyle = { styles.button_item } onPress = { () => { this.props.navigation.navigate('Gestion du temps') }}/>
+                                <Button title = { list_item[0].text } buttonStyle = { styles.button_item } onPress = { () => { this.props.navigation.navigate('Gestion du temps') }}/>
                             </View>
                             <View>
-                                <Button title = "Paramètres" buttonStyle = { styles.button_item } onPress = { () => { this.props.navigation.navigate('Parametre') }}/>
+                                <Button title = { list_item[1].text } buttonStyle = { styles.button_item } onPress = { () => { this.props.navigation.navigate('Parametre') }}/>
                             </View>
                             <View>
-                                <Button title = "Confidentialité" buttonStyle = { styles.button_item } onPress = { () => { this.props.navigation.navigate('Confidentialite') }}/>
+                                <Button title = { list_item[2].text } buttonStyle = { styles.button_item } onPress = { () => { this.props.navigation.navigate('Confidentialite') }}/>
                             </View>
                             <View>
-                                <Button title = "À propos" buttonStyle = { styles.button_item } onPress={ () => { this.props.navigation.navigate('A propos') }}/>
+                                <Button title = { list_item[3].text } buttonStyle = { styles.button_item } onPress={ () => { this.props.navigation.navigate('A propos') }}/>
                             </View>
                         </View>
                     </View>
                 </DrawerContentScrollView>
                 <View style = { styles.container_bottom }>
                     <View>
-                        <Button title = "Déconnexion" buttonStyle = { styles.button_item_deconnexion } onPress={ () => { this.signOut() }}/>
+                        <Button title = { list_item[4].text } buttonStyle = { styles.button_item_deconnexion } onPress={ () => { this.signOut() }}/>
                     </View>
                 </View>
             </View>
@@ -95,8 +151,9 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         email: state.emailReducer.email,
-        password: state.passwordReducer.password
+        password: state.passwordReducer.password,
+        langue: state.langueReducer.langue
     }
 }
 
-export default connect(mapStateToProps,{emailAction,passwordAction}) (DrawerComponent)
+export default connect(mapStateToProps,{emailAction,passwordAction,langueAction}) (DrawerComponent)

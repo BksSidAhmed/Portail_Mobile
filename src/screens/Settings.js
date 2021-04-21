@@ -16,7 +16,45 @@ class Settings extends React.Component {
         this.state = {
             switchOn: false,
             title_message: '',
-            text_localisation: ''
+            text_localisation: '',
+            text_localisation_active: '',
+            text_localisation_desactive: '',
+            text_password: ''
+        }
+        //Français
+        if(this.props.langue === '100') {
+            this.state.text_localisation_active = 'Localisation activé';
+            this.state.text_localisation_desactive = 'Localisation désactivé';
+            this.state.text_password = 'Mot de passe';
+            this.props.navigation.setOptions({ title: 'Paramètres' });
+        }
+        //Allemand
+        if(this.props.langue === '109') {
+            this.state.text_localisation_active = 'Lage aktiviert';
+            this.state.text_localisation_desactive = 'Lage deaktiviert';
+            this.state.text_password = 'Passwort';
+            this.props.navigation.setOptions({ title: 'Einstellungen' });
+        }
+        //Espagnol
+        if(this.props.langue === '134') {
+            this.state.text_localisation_active = 'Localización activado';
+            this.state.text_localisation_desactive = 'Localización desactivado';
+            this.state.text_password = 'Contraseña';
+            this.props.navigation.setOptions({ title: 'Configuraciones' });
+        }
+        //Anglais
+        if(this.props.langue === '132') {
+            this.state.text_localisation_active = 'Location enabled';
+            this.state.text_localisation_desactive = 'Location disabled';
+            this.state.text_password = 'Password';
+            this.props.navigation.setOptions({ title: 'Settings' });
+        }
+        //Italien
+        if(this.props.langue === '127') {
+            this.state.text_localisation_active = 'Posizione abilitato';
+            this.state.text_localisation_desactive = 'Posizione disattivato';
+            this.state.text_password = 'Parola d\'ordine';
+            this.props.navigation.setOptions({ title: 'Impostazioni' });
         }
     }
 
@@ -36,12 +74,12 @@ class Settings extends React.Component {
         Geolocation.getCurrentPosition((position) => {
             this.setState({
                 switchOn: true,
-                text_localisation: 'Activé'
+                text_localisation: this.state.text_localisation_active
             });
         }, (error) => {
             this.setState({
                 switchOn: false,
-                text_localisation: 'Désactivé'
+                text_localisation: this.state.text_localisation_desactive
             });
         });
     }
@@ -62,13 +100,13 @@ class Settings extends React.Component {
                     { text: "OK" }
                 ]
             );
-        }, (error) => {console.log('desactiver')
+        }, (error) => {
             this.requestLocationPermission().then(granted => {
                 if(granted === PermissionsAndroid.RESULTS.GRANTED) 
                 {
                     this.setState({
                         switchOn: true,
-                        text_localisation: 'Activé'
+                        text_localisation: this.state.text_localisation_active
                     });
                 }
             });
@@ -128,11 +166,11 @@ class Settings extends React.Component {
     }
 
     onPressPassword = () => {
-        this.props.navigation.navigate('Mot de passe')
+        this.props.navigation.navigate('Mot de passe');
     }
     
     onPressLocation = () => {
-        this.props.navigation.navigate('Location')
+        this.props.navigation.navigate('Location');
     }
 
     render(){
@@ -153,14 +191,14 @@ class Settings extends React.Component {
                     <Animatable.View animation = "bounceIn" delay = { 300 }>
                         <TouchableOpacity style = { styles.button_body } onPress = { () => this.onPressPassword() }>
                             <FontAwesome5 name = "key" color = "black" size = { 20 }/>
-                            <Text style = { styles.text_button }>Mot de passe</Text>
+                            <Text style = { styles.text_button }>{ this.state.text_password }</Text>
                         </TouchableOpacity>
                     </Animatable.View>
                     <Animatable.View animation = "bounceIn" delay = { 600 }>
                         <TouchableOpacity style = { styles.button_body } onPress = { () => this.toggleSwitch() }>
                             <View style = { styles.button_localisation_left }>
                                 <FontAwesome5 name = "map-marker-alt" color = "black" size = { 20 }/>
-                                <Text style = { styles.text_button }>Localisation ({ this.state.text_localisation })</Text>
+                                <Text style = { styles.text_button }>{ this.state.text_localisation }</Text>
                             </View>
                             <View style = { styles.button_localisation_right }>
                                 <Switch value = { this.state.switchOn } onValueChange = { () => this.toggleSwitch() }/>
@@ -237,7 +275,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         email: state.emailReducer.email,
-        password: state.passwordReducer.password
+        password: state.passwordReducer.password,
+        langue: state.langueReducer.langue
     }
 }
 

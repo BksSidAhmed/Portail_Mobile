@@ -9,8 +9,39 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 class Confidential extends React.Component { 
 
     render() {
-        const text_confidential_1 = 'Vos données sont protégées.';
-        const text_confidential_2 = 'Les données échangées entre votre téléphone mobile et le serveur NIVA sont sécurisées et cryptées par certificat.';
+        let text_confidential_1 = '';
+        let text_confidential_2 = '';
+        //Français
+        if(this.props.langue === '100') {
+            text_confidential_1 = 'Vos données sont protégées.';
+            text_confidential_2 = 'Les données échangées entre votre téléphone mobile et le serveur NIVA sont sécurisées et cryptées par certificat.';
+            this.props.navigation.setOptions({ title: 'Confidentialité' });
+        }
+        //Allemand
+        if(this.props.langue === '109') {
+            text_confidential_1 = 'Ihre Daten sind geschützt.';
+            text_confidential_2 = 'Die zwischen Ihrem Mobiltelefon und dem NIVA-Server ausgetauschten Daten werden durch ein Zertifikat gesichert und verschlüsselt.';
+            this.props.navigation.setOptions({ title: 'Vertraulichkeit' });
+        }
+        //Espagnol
+        if(this.props.langue === '134') {
+            text_confidential_1 = 'Tus datos están protegidos.';
+            text_confidential_2 = 'Los datos intercambiados entre su teléfono móvil y el servidor NIVA están protegidos y encriptados por certificado.';
+            this.props.navigation.setOptions({ title: 'Confidencialidad' });
+        }
+        //Anglais
+        if(this.props.langue === '132') {
+            text_confidential_1 = 'Your data is protected.';
+            text_confidential_2 = 'The data exchanged between your mobile phone and the NIVA server is secured and encrypted by certificate.';
+            this.props.navigation.setOptions({ title: 'Confidentiality' });
+        }
+        //Italien
+        if(this.props.langue === '127') {
+            text_confidential_1 = 'I tuoi dati sono protetti.';
+            text_confidential_2 = 'I dati scambiati tra il tuo telefono cellulare e il server NIVA sono protetti e crittografati da certificato.';
+            this.props.navigation.setOptions({ title: 'Riservatezza' });
+        }
+        
         return(
             <View style = { styles.container }>
                 <Animatable.View animation = "bounceIn" style = { styles.container_header }>
@@ -80,7 +111,8 @@ const mapStateToProps = (state) => {
         email: state.emailReducer.email,
         password: state.passwordReducer.password,
         pointing: state.pointingReducer.pointing,
-        emails: state.listeEmailReducer.emails
+        emails: state.listeEmailReducer.emails,
+        langue: state.langueReducer.langue
     }
 }
 

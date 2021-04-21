@@ -14,6 +14,7 @@ import { AuthContext } from '../context/context';
 import { connect } from 'react-redux';
 import { emailAction } from '../redux/actions/emailAction';
 import { passwordAction } from '../redux/actions/passwordAction';
+import { langueAction } from '../redux/actions/langueAction';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import NetInfo from "@react-native-community/netinfo";
 import Confidential from "../screens/Confidential";
@@ -235,7 +236,7 @@ class Navigation extends React.Component {
 
     render() {
         return(
-            <AuthContext.Provider>
+            <AuthContext.Provider value = { this.props }>
                 <NavigationContainer>
                     <RootStackScreen email = { this.props.email } password = { this.props.password } connection = { this.state.etatConnection } navigation = { this.props.navigation }/>
                 </NavigationContainer>
@@ -247,9 +248,10 @@ class Navigation extends React.Component {
 const mapStateToProps = (state) => {
     return {
         email: state.emailReducer.email,
-        password: state.passwordReducer.password
+        password: state.passwordReducer.password,
+        langue: state.langueReducer.langue
     }
 }
 
-export default connect(mapStateToProps, {emailAction, passwordAction}) (Navigation)
+export default connect(mapStateToProps, {emailAction, passwordAction, langueAction}) (Navigation)
 

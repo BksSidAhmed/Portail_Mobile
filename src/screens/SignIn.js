@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { ScrollView, View, StyleSheet, Text, StatusBar, ActivityIndicator } from 'react-native';
 import { emailAction } from '../redux/actions/emailAction';
 import { passwordAction } from '../redux/actions/passwordAction';
-import { getToken, postLostPassword } from '../api/index';
+import { getToken, getUser, postLostPassword } from '../api/index';
 import * as Animatable from 'react-native-animatable';
 import { listeEmailAction } from '../redux/actions/listeEmailAction';
+import { langueAction } from '../redux/actions/langueAction';
 import { Button, Input, Overlay } from 'react-native-elements';
 
 class SignIn extends React.Component { 
@@ -49,6 +50,21 @@ class SignIn extends React.Component {
 
                 this.props.emailAction(this.email);
                 this.props.passwordAction(this.password);
+
+                getUser(data[1].token, this.email).then(data => {
+                    
+                    if(data[0] == 200) 
+                    {
+                        this.props.langueAction(data[1].user.langue);
+                    }
+                    else
+                    {
+                        this.setState({
+                            loading : false,
+                            visibleError: true
+                        });
+                    }
+                });
 
                 const found = this.props.emails.find(element => element == this.email); 
 
@@ -296,9 +312,10 @@ const mapStateToProps = (state) => {
     return {
         email: state.emailReducer.email,
         password: state.passwordReducer.password,
-        emails: state.listeEmailReducer.emails
+        emails: state.listeEmailReducer.emails,
+        langue: state.langueReducer.langue
     }
 }
 
-export default connect(mapStateToProps, {emailAction, passwordAction, listeEmailAction}) (SignIn)
+export default connect(mapStateToProps, {emailAction, passwordAction, listeEmailAction, langueAction}) (SignIn)
 

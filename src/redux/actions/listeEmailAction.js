@@ -5,4 +5,4 @@ export const listeEmailAction = (listeEmailAction) => ({
 
 export const resetListMail = () => ({
     type: "RESET_LISTE_EMAIL"
-  })
+})

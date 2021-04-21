@@ -50,6 +50,26 @@ class ManagementTime extends React.Component {
             icoEnvoyeEchec: false,
             colorIcoEnvoye: '#008080'
         }
+        //Français
+        if(this.props.langue === '100') {
+            this.props.navigation.setOptions({ title: 'Gestion du temps' });
+        }
+        //Allemand
+        if(this.props.langue === '109') {
+            this.props.navigation.setOptions({ title: 'Zeiteinteilung' });
+        }
+        //Espagnol
+        if(this.props.langue === '134') {
+            this.props.navigation.setOptions({ title: 'Gestión del tiempo' });
+        }
+        //Anglais
+        if(this.props.langue === '132') {
+            this.props.navigation.setOptions({ title: 'Time management' });
+        }
+        //Italien
+        if(this.props.langue === '127') {
+            this.props.navigation.setOptions({ title: 'Gestione del tempo' });
+        }        
     }
     
     UNSAFE_componentWillMount() {
@@ -1181,7 +1201,8 @@ const mapStateToProps = (state) => {
         email: state.emailReducer.email,
         password: state.passwordReducer.password,
         pointing: state.pointingReducer.pointing,
-        emails: state.listeEmailReducer.emails
+        emails: state.listeEmailReducer.emails,
+        langue: state.langueReducer.langue
     }
 }
 
