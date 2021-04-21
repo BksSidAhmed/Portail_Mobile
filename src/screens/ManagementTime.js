@@ -447,10 +447,6 @@ class ManagementTime extends React.Component {
                 
                 if(data[0] == 200) 
                 {
-                    this.getMouvementsEnAttente();
-                    if(this.state.mouvementsEnAttente) {
-                        indicateurTemps = '0';
-                    }
                     postAction(data[1].token, indicateurTemps, this.props.email, this.getFullDate(), this.getFullHeure(), button, null, null, activite).then(data => {
                        
                         if(data[0] == 200 && data[1].code == 200) 
@@ -543,10 +539,6 @@ class ManagementTime extends React.Component {
                                             
                                         if(data[0] == 200) 
                                         {
-                                            this.getMouvementsEnAttente();
-                                            if(this.state.mouvementsEnAttente) {
-                                                indicateurTemps = '0';
-                                            }
                                             postAction(data[1].token,indicateurTemps,this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude,activite).then(data => {
                                                     
                                                 if(data[0] == 200 && data[1].code == 200) 
@@ -611,10 +603,6 @@ class ManagementTime extends React.Component {
 
                                         if(data[0] == 200) 
                                         {
-                                            this.getMouvementsEnAttente();
-                                            if(this.state.mouvementsEnAttente) {
-                                                indicateurTemps = '0';
-                                            }
                                             postAction(data[1].token,indicateurTemps,this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite).then(data => {
                                                         
                                                 if(data[0] == 200 && data[1].code == 200) 
@@ -679,10 +667,6 @@ class ManagementTime extends React.Component {
                             
                             if(data[0] == 200) 
                             {
-                                this.getMouvementsEnAttente();
-                                if(this.state.mouvementsEnAttente) {
-                                    indicateurTemps = '0';
-                                }
                                 postAction(data[1].token,indicateurTemps,this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null).then(data => {
                                     
                                     if(data[0] == 200 && data[1].code == 200) 
@@ -744,10 +728,6 @@ class ManagementTime extends React.Component {
                     
                     if(data[0] == 200) 
                     {
-                        this.getMouvementsEnAttente();
-                        if(this.state.mouvementsEnAttente) {
-                            indicateurTemps = '0';
-                        }
                         postAction(data[1].token,indicateurTemps,this.props.email,this.getFullDate(),this.getFullHeure(),button,null,null,activite).then(data => {
                             
                             if(data[0] == 200 && data[1].code == 200) 
