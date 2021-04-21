@@ -50,10 +50,9 @@ class ManagementTime extends React.Component {
             loaderOverlayResponse: false,
             refreshing: false,
             mouvementsEnAttente: false,
+            mouvements : null,
             mouvementText: '',
-            icoEnvoyeSuccess: false,
-            icoEnvoyeEchec: false,
-            colorIcoEnvoye: '#008080'
+            disableBoutonMouvements: true
         }
         //Français
         if(this.props.langue === '100') {
@@ -126,7 +125,7 @@ class ManagementTime extends React.Component {
                 element.pointage.forEach(pointing => {
                     date = pointing[2].substring(6,8)+'/'+pointing[2].substring(4,6)+'/'+pointing[2].substring(0,4);
                     heure = pointing[3].substring(0,2)+'h'+pointing[3].substring(2,4);
-                    mouvements.push({ key: compteur, date: date, heure: heure });
+                    mouvements.push({ key: compteur, date: date, heure: heure, ico: '', colorIco: '', loadingMouvement: true });
                     compteur++;
                 });
             }
@@ -136,10 +135,15 @@ class ManagementTime extends React.Component {
 
     sendPointingDeconnection() {
 
-        var dataPointing = this.props.pointing
-        var compteurDelete = 0
-        var date = '';
-        var heure = '';
+        var dataPointing = this.props.pointing;
+        var compteurDelete = 0;
+        
+        this.setState({
+            mouvements: this.getMouvementsEnAttenteByEmail(),
+            mouvementText: 'Début de la séquence d\'envoi',
+            disableBoutonMouvements: true
+        });
+        console.log(this.state.disableBoutonMouvements);
 
         dataPointing.forEach(element => { 
 
@@ -147,19 +151,12 @@ class ManagementTime extends React.Component {
             {
                 this.setState({
                     visibleMouvementsEnAttente: true,
-                    icoEnvoyeEchec: false,
-                    icoEnvoyeSuccess: false
                 });
-                
-                element.pointage.forEach(pointing => {
-                    
-                    date = pointing[2].substring(6,8)+'/'+pointing[2].substring(4,6)+'/'+pointing[2].substring(0,4);
-                    heure = pointing[3].substring(0,2)+'h'+pointing[3].substring(2,4);
 
-                    this.setState({
-                        mouvementText: 'Mouvement du '+date+' à '+heure+' en cours d\'envoi'
-                    });
-                    
+                var compteur = 0;
+
+                element.pointage.forEach(pointing => {                   
+
                     getToken(this.props.email, this.props.password).then(data => {
                     
                         if(data[0] == 200) 
@@ -167,57 +164,77 @@ class ManagementTime extends React.Component {
                             postAction(data[1].token,pointing[0],pointing[1],pointing[2],pointing[3],pointing[4],pointing[5],pointing[6],null).then(data => {
                                     
                                 if(data[0] == 200 && data[1].code == 200) 
-                                {      
-                                    compteurDelete++
-                                    
+                                {   
+                                    this.state.mouvements[compteur].ico = 'check-circle';
+                                    this.state.mouvements[compteur].colorIco = '#008080'; 
+                                    this.state.mouvements[compteur].loadingMouvement = false;  
+
                                     this.setState({
-                                        mouvementText: 'Mouvement du '+date+' à '+heure+' envoyé',
-                                        icoEnvoyeSuccess: true
+                                        mouvementText: 'Envoi du mouvement '+(compteur+1)+' réussi'
                                     });
 
+                                    compteurDelete++
+                                    compteur++;
                                     if(compteurDelete == element.pointage.length) 
                                     {
                                         var removeIndex = dataPointing.map(function(item) { return item.email; }).indexOf(this.props.email);
                                         dataPointing.splice(removeIndex, 1);
                                         this.props.pointingAction(dataPointing)
                                         this.setState({
-                                            visibleMouvementsEnAttente : false,
                                             errorServeur : false,
+                                            disableBoutonMouvements: false 
                                         });
                                     }
                                 }
                                 else 
                                 {
+                                    this.state.mouvements[compteur].ico = 'times-circle';
+                                    this.state.mouvements[compteur].colorIco = '#C72C41'; 
+                                    this.state.mouvements[compteur].loadingMouvement = false;  
+                                    
+                                    
+
                                     this.setState({
-                                        visibleMouvementsEnAttente: false,
-                                        errorServeur : true,
-                                        visible : true,
-                                        currentIco: null,
-                                        currentLibelle: 'Erreur serveur',
-                                        currentText: "Serveur Indisponible",
-                                        icoEnvoyeEchec: true,
-                                        icoEnvoyeSuccess: false
+                                        mouvementText: 'Envoi du mouvement '+(compteur+1)+' echoué',
                                     });
+                                    
+                                    compteur++;
+                                    
+                                    if(compteur == element.pointage.length) 
+                                    {
+                                        this.setState({
+                                            disableBoutonMouvements: false 
+                                        });
+                                    }
                                 }
                             });
                         }
                         else 
                         {
+                            this.state.mouvements[compteur].ico = 'times-circle';
+                            this.state.mouvements[compteur].colorIco = '#C72C41'; 
+                            this.state.mouvements[compteur].loadingMouvement = false;  
+
                             this.setState({
-                                visibleMouvementsEnAttente : false,
-                                errorServeur : true,
-                                visible : true,
-                                currentIco: null,
-                                currentLibelle: 'Erreur serveur',
-                                currentText: "Serveur Indisponible",
-                                icoEnvoyeEchec: true,
-                                icoEnvoyeSuccess: false
+                                mouvementText: 'Envoi du mouvement '+(compteur+1)+' echoué',
+                                disableBoutonMouvements: false 
                             });
+                            
+                            compteur++;
+
+                            if(compteur == element.pointage.length) 
+                            {
+                                this.setState({
+                                    disableBoutonMouvements: false 
+                                });
+                            }
                         }
                     });
-                });
+                    
+                }); 
             }
         });
+        this.onRefresh();
     }
 
     getDataCust() 
@@ -388,6 +405,8 @@ class ManagementTime extends React.Component {
                 Vibration.vibrate(500)
             }
 
+            this.onRefresh();
+
         }
         else 
         {
@@ -410,6 +429,7 @@ class ManagementTime extends React.Component {
         let ligne_3 = '';
         let ligne_4 = '';
         let dataIco = null;
+        let indicateurTemps = '1';
 
         if(button == 'P00')
         {
@@ -427,7 +447,11 @@ class ManagementTime extends React.Component {
                 
                 if(data[0] == 200) 
                 {
-                    postAction(data[1].token, '1', this.props.email, this.getFullDate(), this.getFullHeure(), button, null, null, activite).then(data => {
+                    this.getMouvementsEnAttente();
+                    if(this.state.mouvementsEnAttente) {
+                        indicateurTemps = '0';
+                    }
+                    postAction(data[1].token, indicateurTemps, this.props.email, this.getFullDate(), this.getFullHeure(), button, null, null, activite).then(data => {
                        
                         if(data[0] == 200 && data[1].code == 200) 
                         {
@@ -519,7 +543,11 @@ class ManagementTime extends React.Component {
                                             
                                         if(data[0] == 200) 
                                         {
-                                            postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude,activite).then(data => {
+                                            this.getMouvementsEnAttente();
+                                            if(this.state.mouvementsEnAttente) {
+                                                indicateurTemps = '0';
+                                            }
+                                            postAction(data[1].token,indicateurTemps,this.props.email,this.getFullDate(),this.getFullHeure(),button,this.state.latitude,this.state.longitude,activite).then(data => {
                                                     
                                                 if(data[0] == 200 && data[1].code == 200) 
                                                 {
@@ -583,7 +611,11 @@ class ManagementTime extends React.Component {
 
                                         if(data[0] == 200) 
                                         {
-                                            postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite).then(data => {
+                                            this.getMouvementsEnAttente();
+                                            if(this.state.mouvementsEnAttente) {
+                                                indicateurTemps = '0';
+                                            }
+                                            postAction(data[1].token,indicateurTemps,this.props.email,this.getFullDate(),this.getFullHeure(),'E01',this.state.latitude,this.state.longitude,activite).then(data => {
                                                         
                                                 if(data[0] == 200 && data[1].code == 200) 
                                                 {
@@ -647,7 +679,11 @@ class ManagementTime extends React.Component {
                             
                             if(data[0] == 200) 
                             {
-                                postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null).then(data => {
+                                this.getMouvementsEnAttente();
+                                if(this.state.mouvementsEnAttente) {
+                                    indicateurTemps = '0';
+                                }
+                                postAction(data[1].token,indicateurTemps,this.props.email,this.getFullDate(),this.getFullHeure(),"E00",null,null,null).then(data => {
                                     
                                     if(data[0] == 200 && data[1].code == 200) 
                                     {
@@ -708,7 +744,11 @@ class ManagementTime extends React.Component {
                     
                     if(data[0] == 200) 
                     {
-                        postAction(data[1].token,'1',this.props.email,this.getFullDate(),this.getFullHeure(),button,null,null,activite).then(data => {
+                        this.getMouvementsEnAttente();
+                        if(this.state.mouvementsEnAttente) {
+                            indicateurTemps = '0';
+                        }
+                        postAction(data[1].token,indicateurTemps,this.props.email,this.getFullDate(),this.getFullHeure(),button,null,null,activite).then(data => {
                             
                             if(data[0] == 200 && data[1].code == 200) 
                             {
@@ -969,7 +1009,6 @@ class ManagementTime extends React.Component {
     }
 
     mouvementsEnAttente = () => {
-        var mouvements = this.getMouvementsEnAttenteByEmail();
         return (
             <Overlay isVisible = { this.state.visibleMouvementsEnAttente } overlayStyle = {{ padding : 0 }} fullScreen = { true } animationType = 'slide'>
                 <View style = { styles.container_overlay }>
@@ -981,28 +1020,29 @@ class ManagementTime extends React.Component {
                             </View>
                         </Animatable.View>
                         <View style = { styles.container_global_tiles_overlay }>
-                            <Animatable.View animation = "bounceIn" delay = { 300 } style = { styles.container_animation_overlay_ico }>
-                                <View style = { styles.container_ico_overlay }>        
-                                    <Text>{ this.state.mouvementText }</Text>
-                                </View>
-                            </Animatable.View>
                             <Animatable.View animation = "bounceIn" delay = { 600 } style = { styles.container_animation_overlay_text }>
                                 <View style = { styles.container_mouvement_overlay }>
-                                    <FlatList data = { mouvements } 
+                                    <FlatList data = { this.state.mouvements } 
                                         renderItem = { ({ item }) => 
                                             <View style = { styles.container_list_mouvement }>
-                                                {
-                                                    this.state.icoEnvoyeSuccess || this.state.icoEnvoyeEchec ?
-                                                        <FontAwesome5 name = "arrow-alt-check" color = { this.state.colorIcoEnvoye } size = { 20 } style = {{ paddingHorizontal: 10 }}/> 
+                                                {    
+                                                    item.loadingMouvement ?
+                                                        <ActivityIndicator color = "#008080" style = {{ paddingHorizontal: 10 }} /> 
                                                     :
-                                                        <FontAwesome5 name = "arrow-alt-circle-right" color = "grey" size = { 20 } style = {{ paddingHorizontal: 10 }}/>
-                                                }
+                                                        <FontAwesome5 name = { item.ico } color = { item.colorIco } size = { 20 } style = {{ paddingHorizontal: 10 }}/>  
+                                                }   
                                                 <Text style = { styles.text_mouvement_overlay }>Mouvement du { item.date } à { item.heure }</Text> 
                                             </View>
                                         }>
                                     </FlatList>
                                 </View>
                             </Animatable.View>
+                            <Animatable.View animation = "bounceIn" delay = { 300 } style = { styles.container_animation_overlay_ico }>
+                                <View style = { styles.container_ico_overlay }>        
+                                    <Text>{ this.state.mouvementText }</Text>
+                                </View>
+                            </Animatable.View>
+                            <Button disabled = { this.state.disableBoutonMouvements } buttonStyle = { styles.button_overlay_accept } title = "Ok" onPress = { () => this.setState({ visibleMouvementsEnAttente: false }) }/>
                         </View> 
                     </View> 
                 </View>
