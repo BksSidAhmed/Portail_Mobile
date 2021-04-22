@@ -21,8 +21,21 @@ import Confidential from "../screens/Confidential";
 
 const ManagementNoConnectionTimeStack = createStackNavigator();
 const ManagementNoConnectionStackScreen = () => (
-    <ManagementNoConnectionTimeStack.Navigator headerMode = "none">
-        <ManagementNoConnectionTimeStack.Screen name = "Gestion du temps hors connection" component = { ManagementNoConnection }/>
+    <ManagementNoConnectionTimeStack.Navigator>
+        <ManagementNoConnectionTimeStack.Screen 
+            name = "Gestion du temps hors connection" 
+            component = { ManagementNoConnection }
+            options = {{
+                title: 'Niva - Perte de Connexion ',
+                headerStyle: {
+                    backgroundColor: '#008080',
+                },
+                headerTintColor: '#fff',
+                headerTitleAlign: 'center',
+                headerTitleStyle: {
+                    fontWeight: 'bold'
+                },
+            }}/>
     </ManagementNoConnectionTimeStack.Navigator>
 )
 

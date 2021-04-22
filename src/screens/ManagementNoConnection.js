@@ -4,8 +4,8 @@ import moment from 'moment';
 import 'moment/locale/fr';
 import * as Animatable from 'react-native-animatable';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {Overlay} from 'react-native-elements'
-import { TextInput } from 'react-native-paper';
+import {Overlay,  Button, Input} from 'react-native-elements'
+// import { TextInput } from 'react-native-paper';
 import { connect } from 'react-redux'
 import {pointingAction} from '../redux/actions/pointingHorsLigneAction'
 import {RESET_ACTION} from '../redux/actions/resetActions'
@@ -28,7 +28,8 @@ class ManagementNoConnection extends React.Component {
             timer : 60,
             timers : false,
             textPointing : "",
-            color : {}
+            color : {},
+            errorMail : null
         }
     }
 
@@ -91,20 +92,22 @@ class ManagementNoConnection extends React.Component {
             <Overlay 
                 isVisible={this.state.isVisible} 
                 onBackdropPress={() => this.setState({ isVisible: false, loading : false })}
-                overlayStyle = {{height : 120, width: 300}}>
-                <View>
-                    <TextInput
-                        label="Email"
-                        mode = 'outlined'
-                        autoCapitalize = "none"
-                        onChangeText = { (text) => this.editEmail(text) }
-                    />
-                    <View style = {{flexDirection: 'row', alignItems : 'flex-end'}}>
-                        <TouchableOpacity
-                            onPress ={() => this._validatePointing()}
-                            style = {{flex: 1, alignItems : 'flex-end', marginRight : 20, marginTop: 10}}>
-                            <Text style= {{fontSize : 20, color : 'green'}}>Valider</Text>
-                        </TouchableOpacity>
+                overlayStyle = {{ padding : 0 }} animationType = 'slide'>
+                <View style = { styles.view_overlay }>
+                    <View>
+                        <Text style = { styles.text_overlay }>Entrez votre email de connexion.{'\n'}Votre transaction sera envoyé lors de votre prochaine connexion</Text>
+                        <Input 
+                            placeholder = "Email"
+                            rightIcon = {{ type: 'font-awesome', name: 'envelope' }}
+                            style = { styles.text_input }
+                            keyboardType = "email-address"
+                            autoCapitalize = "none"
+                            onChangeText = { (text) => this.editEmail(text) }
+                        />
+                    </View>
+                    <View style = { styles.view_button_overlay }>
+                        <Button buttonStyle = { styles.button_overlay_accept } title = "Envoyer" onPress = { () => this._validatePointing() }/>
+                        <Button buttonStyle = { styles.button_overlay_refuse } title = "Annuler" onPress = { () =>  this.setState({ isVisible: false })}/>
                     </View>
                 </View>
             </Overlay>
@@ -120,22 +123,35 @@ class ManagementNoConnection extends React.Component {
             <Overlay 
                 isVisible={this.state.visible} 
                 onBackdropPress={() => this.setState({ visible: false })}
-                overlayStyle = {{height : 'auto', width: '100%', padding : 0}}>
-                    <View>
-                        <View style= {this.state.color}>
-                            <Text style= {{fontSize : 20, fontWeight : "bold"}}>Transaction Entrée/Sortie</Text>
-                        </View>
-                        <View style = {{alignItems : 'center', justifyContent : 'center', marginTop : 20, marginBottom: 20, marginLeft: 5, marginRight: 5}}>
-                                <Text style={ styles.text_dialog }>{ this.state.textPointing }</Text>
-                        </View>
-                        <TouchableOpacity 
-                                onPress={ () => this.setState({ visible: false }) } 
-                                style = {{borderTopWidth : 1, width : '100%', alignItems : 'center', justifyContent: 'center', paddingTop : 15, paddingBottom : 15, backgroundColor : '#EDEDED'}}>
-                                <Text style = {{fontSize : 20}}>
-                                    OK
-                                </Text>
-                        </TouchableOpacity>
-                    </View>
+                overlayStyle = {{ padding : 0 }} fullScreen = { true } animationType = 'slide'>
+                        <View style = { styles.container }>
+                            <View style = { styles.container }>
+                                <Animatable.View animation="bounceIn" delay = { 0 } style = { styles.container_animation_header_overlay }>
+                                    <View style = { styles.container_title_overlay }>
+                                        <Text style = { styles.text_title_overlay }>Transaction Entrée/Sortie</Text>
+                                    </View>
+                                </Animatable.View>
+                            </View>
+                            <View style = { styles.container_global_tiles_overlay }>
+                                <Animatable.View animation = "bounceIn" delay = { 300 } style = { styles.container_animation_overlay_ico }>
+                                    <View style = { styles.container_ico_overlay }>
+                                        {
+                                            this.state.errorMail ?               
+                                                <FontAwesome5 name = "exclamation-triangle" color = "#C72C41" size = { 50 }/>
+                                            :                         
+                                                <FontAwesome5 name = "check-circle" color = "#2EB769" size = { 50 }/>
+                                            
+                                        }
+                                    </View>
+                                </Animatable.View>
+                                <Animatable.View animation = "bounceIn" delay = { 600 } style = { styles.container_animation_overlay_text }>
+                                    <View style = { styles.container_text_overlay }>
+                                        <Text style = { styles.text_body_overlay }>{ this.state.textPointing }</Text>
+                                    </View>
+                                </Animatable.View>
+                                <Button buttonStyle = { styles.button_overlay_accept } title = "OK" onPress = { () => this.setState({ visible: false, visibleListActivites : false }) }/>
+                            </View> 
+                        </View> 
             </Overlay>
         )
     }
@@ -166,6 +182,7 @@ class ManagementNoConnection extends React.Component {
                                     disabled : true,
                                     timers : true, 
                                     visible : true,
+                                    errorMail : false,
                                     color : { alignItems : 'center',justifyContent : 'center', borderBottomWidth : 1, backgroundColor : '#35C724', height : 60},
                                     textPointing : "Votre transaction a été enregistrée avec succès. Elle sera communiquée à votre employeur lors de votre prochaine connexion en ligne."
                                 })
@@ -188,6 +205,7 @@ class ManagementNoConnection extends React.Component {
                                 disabled : true,
                                 timers : true,
                                 visible : true,
+                                errorMail : false,
                                 color : { alignItems : 'center',justifyContent : 'center', borderBottomWidth : 1, backgroundColor : '#35C724', height : 60 },
                                 textPointing : "Votre transaction a été enregistrée avec succès. Elle sera communiquée à votre employeur lors de votre prochaine connexion en ligne."
                             })
@@ -201,6 +219,7 @@ class ManagementNoConnection extends React.Component {
                 this.setState({
                     isVisible : false,
                     visible : true,
+                    errorMail : true,
                     color : { alignItems : 'center',justifyContent : 'center', borderBottomWidth : 1, backgroundColor : '#F94040', height : 60 },
                     textPointing : "Pour utiliser la fonctionnalité hors ligne, veuillez vous connecter en ligne au moins une fois avec vos identifiants."
                 })
@@ -213,36 +232,42 @@ class ManagementNoConnection extends React.Component {
         return(
             <View style={ styles.container }>
                 <StatusBar backgroundColor='#008080' barStyle="light-content"/>
-                <Animatable.View animation="fadeInDown" style={ styles.container_header }>
+                {/* <Animatable.View animation="fadeInDown" style={ styles.container_header }>
                     <View>
                         <Text style={ styles.text_date }>{ moment().format("dddd Do MMMM YYYY").toUpperCase() }</Text>
                     </View>
                     <View style={ styles.container_clock }>
                         <Text style={ styles.text_heure }>{ this.state.time }</Text>
                     </View>
-                </Animatable.View>
+                </Animatable.View> */}
+                <View style = { styles.container }>
+                    <Animatable.View animation = "bounceIn" style = { styles.container_header }>
+                        <View style={ styles.container_clock }>
+                            <Text style={ styles.text_date }>{ moment().format("dddd Do MMMM YYYY").toUpperCase() }</Text>
+                            <Text style={ styles.text_heure }>{ this.state.time }</Text>
+                        </View> 
+                    </Animatable.View>
+                </View>
                 <Animatable.View animation="bounceIn" style={ styles.container_button_animation }>
                     <View style= { styles.button1 }>
                         <Text style = {styles.text_horsLigne}>En mode Hors ligne vous pouvez réaliser une transaction d'entrée ou de sortie, si vous souhaitez profiter de toutes les fonctionnalités que Niva Mobile vous propose, veuillez vous connecter à un réseau internet.</Text>
                     </View>
-                    <View style = {{flex : 1,justifyContent : 'center', alignItems : 'center'}}>
-                        <TouchableOpacity 
-                            onPress={ () => this.actionButton() } 
-                            disabled = {this.state.disabled}
-                            style={ this.state.timers ? styles.buttonDesactiv : styles.button }
-                        >
-                            <View style = {{ flex : 1, alignItems : "center", justifyContent: "center"}}>
-                                {   
-                                    (this.state.timers 
-                                        ?  <Text style={{fontSize: 50, color: "black"}}>
-                                                {this.state.timer}
-                                            </Text>
-                                        :   <FontAwesome5 name="user-clock" color= "white" size={50}/> 
-                                    ) 
-                                }
-                            </View>
-                        </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity 
+                        onPress={ () => this.actionButton() } 
+                        disabled = {this.state.disabled}
+                        style={ this.state.timers ? styles.buttonDesactiv : styles.button1 }
+                    >
+                        <View style = {{ flex : 1, alignItems : "center", justifyContent: "center"}}>
+                            {   
+                                (this.state.timers 
+                                    ?  <Text style={{fontSize: 50, color: "black"}}>
+                                            {this.state.timer}
+                                        </Text>
+                                    :   <FontAwesome5 name="user-clock" color= "#008080" size={50}/> 
+                                ) 
+                            }
+                        </View>
+                    </TouchableOpacity>
                 </Animatable.View>
                 {this.Overlay()}
                 { this.dialogPopup() }
@@ -257,87 +282,87 @@ const styles = StyleSheet.create({
     },
     container_clock: {
         flex : 1,
-        borderBottomEndRadius : 90,
-        borderBottomLeftRadius : 90, 
-        paddingHorizontal: 20,
-        paddingBottom: 50
+        padding: 20, 
+        backgroundColor : '#008080',
+        elevation: 5,
+        borderRadius : 5,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     container_header : {
-        flex : 0.35,
-        backgroundColor: '#008080',
-        paddingHorizontal: 20,
-        paddingVertical: 30,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        flex: 1,
+        padding: 10, 
+        paddingBottom : 5
     },
     container_button_animation: {
-        flex : 1 , 
+        flex : 2 , 
     },
     button1:{ 
-        flex : 0.25,
+        flex : 0.3,
         backgroundColor: "#FFF",
-        paddingVertical: 20,
-        marginVertical: 2,
-        
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.24,
-        shadowRadius: 3.80,
-        elevation: 5,
-        borderRadius: 3
+        padding: 5,
+        elevation: 7,
+        justifyContent : 'center',
+        borderRadius : 5,
+        margin : 10,
+        marginTop : 0
     },
     button:{ 
-        height : 200,
-        width : 200,
-        backgroundColor: '#008080',
-        paddingVertical: 20,
-        marginVertical: 2,
+        // height : 200,
+        // width : 200,
+        // backgroundColor: '#008080',
+        // paddingVertical: 20,
+        // marginVertical: 2,
         
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 4.00,
+        // shadowColor: "#000",
+        // shadowOffset: {
+        //     width: 0,
+        //     height: 2,
+        // },
+        // shadowOpacity: 0.5,
+        // shadowRadius: 4.00,
         elevation: 10,
-        borderRadius: 100
+        // borderRadius: 100
+        padding: 20, 
+        backgroundColor : 'white',
+        elevation: 5,
+        borderRadius : 5,
     }, 
     buttonDesactiv : {
-        height : 200,
-        width : 200,
-        backgroundColor: '#ECEFEC',
-        paddingVertical: 20,
-        marginVertical: 2,
+        // height : 200,
+        // width : 200,
+        // backgroundColor: '#ECEFEC',
+        // paddingVertical: 20,
+        // marginVertical: 2,
         
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 4.00,
-        elevation: 10,
-        borderRadius: 100
+        // shadowColor: "#000",
+        // shadowOffset: {
+        //     width: 0,
+        //     height: 2,
+        // },
+        // shadowOpacity: 0.5,
+        // shadowRadius: 4.00,
+        // elevation: 10,
+        // borderRadius: 100
+        flex : 0.3,
+        backgroundColor: '#ECEFEC',
+        padding: 5,
+        elevation: 7,
+        justifyContent : 'center',
+        borderRadius : 5,
+        margin : 10,
+        marginTop : 0
     }, 
     text_date: {
         textAlign : 'center',
-        marginTop : 50,
+        // marginTop : 20,
         color : "#fff",
         fontSize : 20
     },
     text_heure:{
         textAlign:'center',
-        fontSize:50,
+        fontSize: 40,
+        // textAlign : "center",
         color : "#fff",
     },
     text_horsLigne : {
@@ -350,6 +375,98 @@ const styles = StyleSheet.create({
     },
     dialog: {
         textAlign: 'center',
+    },
+    view_overlay: {
+        padding: 20
+    },  
+    view_button_overlay: {
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    text_input: {
+        color: '#05375a'
+    },
+    text_overlay: {
+        marginBottom: 20,
+        fontSize: 15 
+    },  
+    view_button_overlay: {
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    button_overlay_accept: {
+        borderRadius: 50,
+        backgroundColor: '#008080',
+        marginVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 20
+    },
+    button_overlay_refuse: {
+        borderRadius: 50,
+        backgroundColor: '#b22222',
+        marginVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 20
+    },
+    container_animation_header_overlay : {
+        flex: 1,
+        paddingTop: 20,
+        padding: 10, 
+    },
+    container_text_overlay:{ 
+        padding: 20, 
+        backgroundColor : 'white',
+        elevation: 5,
+        borderRadius : 5,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    text_title_overlay: {
+        textAlign: 'center',
+        fontSize : 17,
+        color: 'white'
+    },
+    container_animation_overlay_ico: {
+        flex : 1 , 
+        padding: 10
+    },
+    container_ico_overlay:{ 
+        padding: 20, 
+        backgroundColor : 'white',
+        elevation: 5,
+        borderRadius : 5,
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    container_animation_overlay_text: {
+        flex : 2, 
+        padding: 10
+    },
+    container_title_overlay: {
+        flex : 1,
+        padding: 20, 
+        backgroundColor : '#008080',
+        elevation: 5,
+        borderRadius : 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    text_body_overlay: {
+        textAlign: 'center',
+        fontSize : 18,
+        padding: 20
+    },
+    button_overlay_accept: {
+        borderRadius: 50,
+        backgroundColor: '#008080',
+        marginVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 20
+    },
+    container_global_tiles_overlay: {
+        flex:3,
     },
 })
 const mapStateToProps = (state) => {
