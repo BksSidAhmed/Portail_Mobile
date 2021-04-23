@@ -41,6 +41,12 @@ class Confidential extends React.Component {
             text_confidential_2 = 'I dati scambiati tra il tuo telefono cellulare e il server NIVA sono protetti e crittografati da certificato.';
             this.props.navigation.setOptions({ title: 'Riservatezza' });
         }
+        //Néerlandais
+        if(this.props.langue === '135') {
+            text_confidential_1 = 'Uw gegevens zijn beschermd.';
+            text_confidential_2 = 'De gegevens die tussen uw mobiele telefoon en de NIVA-server worden uitgewisseld, zijn beveiligd en versleuteld met een certificaat.';
+            this.props.navigation.setOptions({ title: 'Vertrouwelijkheid' });
+        }
         
         return(
             <View style = { styles.container }>

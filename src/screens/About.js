@@ -78,6 +78,20 @@ class About extends React.Component {
             ];
             this.props.navigation.setOptions({ title: 'A proposito' });
         }
+        //Néerlandais
+        if(this.props.langue === '135') {
+            list_about =  [
+                { key : 1, text: 'NIVA® versie V1.0 2021' },
+                { key : 2, text: 'Deze applicatie is gemaakt door ALPHASYS - Lyon - Frankrijk.' },
+                { key : 3, text: 'NIVA is een handelsmerk geregistreerd door ALPHASYS - Lyon - Frankrijk.' },
+                { key : 4, text: 'Deze applicatie heeft tot doel : ' },
+                { key : 5, text: ' - Haal de begin-, eind- of wijzigingsbewegingen op' },
+                { key : 6, text: ' - Bereken en noteer de tijd die is verstreken tussen twee bewegingen' },
+                { key : 7, text: ' - Informeer de gebruiker over het aantal getoonde tellers' },
+                { key : 8, text: ' - De berekening van de verstreken tijd en de keuze van de weergegeven tellers zijn de verantwoordelijkheid van uw werkgever.' },
+            ];
+            this.props.navigation.setOptions({ title: 'Over' });
+        }
         return(
             <View style = { styles.container }>
                 <Animatable.View animation = "bounceIn" style = { styles.container_header }>

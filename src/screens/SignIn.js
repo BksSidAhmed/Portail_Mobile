@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ScrollView, View, StyleSheet, Text, StatusBar, ActivityIndicator } from 'react-native';
+import { ScrollView, View, StyleSheet, Text, StatusBar, ActivityIndicator, NativeModules  } from 'react-native';
 import { emailAction } from '../redux/actions/emailAction';
 import { passwordAction } from '../redux/actions/passwordAction';
 import { getToken, getUser, postLostPassword } from '../api/index';
@@ -8,6 +8,7 @@ import * as Animatable from 'react-native-animatable';
 import { listeEmailAction } from '../redux/actions/listeEmailAction';
 import { langueAction } from '../redux/actions/langueAction';
 import { Button, Input, Overlay } from 'react-native-elements';
+import { Platform } from 'react-native';
 
 class SignIn extends React.Component { 
     constructor(props) {
@@ -22,6 +23,58 @@ class SignIn extends React.Component {
             loaderLostPassword: false,
             responseLostPassword: '',
             emailLostPassword: null,
+            text_input_email: "Email",
+            text_input_password: "Mot de passe",
+            text_bouton_connexion: "Connexion",
+            text_bouton_lost_password: "Mot de passe oublié ?"
+        } 
+    }
+
+    UNSAFE_componentWillMount = () => {
+        const locale = Platform.OS === 'ios' ? 
+                NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0]
+            :
+                NativeModules.I18nManager.localeIdentifier;
+                console.log(locale)
+        if(locale === 'de_DE') {
+            this.setState({
+                text_input_email: "Email",
+                text_input_password: "Passwort",
+                text_bouton_connexion: "Einloggen",
+                text_bouton_lost_password: "Passwort vergessen ?"
+            });
+        }
+        if(locale === 'es_ES') {
+            this.setState({
+                text_input_email: "Correo electrónico",
+                text_input_password: "Contraseña",
+                text_bouton_connexion: "Iniciar sesión",
+                text_bouton_lost_password: "Contraseña olvidada ?"
+            });
+        }
+        if(locale === 'en_GB') {
+            this.setState({
+                text_input_email: "Email",
+                text_input_password: "Password",
+                text_bouton_connexion: "Login",
+                text_bouton_lost_password: "Lost password ?"
+            });
+        }
+        if(locale === 'it_IT') {
+            this.setState({
+                text_input_email: "E-mail",
+                text_input_password: "Parola d'ordine",
+                text_bouton_connexion: "Accedi",
+                text_bouton_lost_password: "Password dimenticata ?"
+            });
+        }
+        if(locale === 'nl_NL') {
+            this.setState({
+                text_input_email: "E-mail",
+                text_input_password: "Wachtwoord",
+                text_bouton_connexion: "Inloggen",
+                text_bouton_lost_password: "Vergeten wachtwoord ?"
+            });
         }
     }
 
@@ -139,7 +192,7 @@ class SignIn extends React.Component {
                 <View>
                     <Text style = { styles.text_overlay }>Entrez votre email. Un lien vous permettant de renouveler votre mot de passe vous sera envoyé.</Text>
                     <Input 
-                        placeholder = "Email"
+                        placeholder = { this.state.text_input_email }
                         rightIcon = {{ type: 'font-awesome', name: 'envelope' }}
                         style = { styles.text_input }
                         keyboardType = "email-address"
@@ -196,7 +249,7 @@ class SignIn extends React.Component {
                         <Animatable.View animation = "fadeInUp">
                             <View style = { styles.view_input }>
                                 <Input 
-                                    placeholder = "Email"
+                                    placeholder = { this.state.text_input_email }
                                     rightIcon = {{ type: 'font-awesome', name: 'envelope' }}
                                     style = { styles.text_input }
                                     keyboardType = "email-address"
@@ -204,7 +257,7 @@ class SignIn extends React.Component {
                                     onChangeText = { (text) => this.editEmail(text) }
                                 />
                                 <Input 
-                                    placeholder = "Mot de Passe"
+                                    placeholder = { this.state.text_input_password }
                                     rightIcon = {{ type: 'font-awesome', name: 'lock' }}
                                     style = { styles.text_input }
                                     secureTextEntry = { true }
@@ -213,8 +266,8 @@ class SignIn extends React.Component {
                                 />
                             </View>
                             <View style = { styles.view_button }>
-                                <Button containerStyle = { styles.container_button } buttonStyle = { styles.button_style } title = "Connexion" onPress = { () => this.connexion() }/>
-                                <Button containerStyle = { styles.container_button } buttonStyle = { styles.button_style } title = "Mot de passe oublié ?" onPress = { () => this.toggleOverlay('lost-password') }/>
+                                <Button containerStyle = { styles.container_button } buttonStyle = { styles.button_style } title = { this.state.text_bouton_connexion } onPress = { () => this.connexion() }/>
+                                <Button containerStyle = { styles.container_button } buttonStyle = { styles.button_style } title = { this.state.text_bouton_lost_password } onPress = { () => this.toggleOverlay('lost-password') }/>
                             </View>
                         </Animatable.View>
                     </ScrollView>

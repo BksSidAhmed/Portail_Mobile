@@ -73,6 +73,10 @@ class ManagementTime extends React.Component {
         //Italien
         if(this.props.langue === '127') {
             this.props.navigation.setOptions({ title: 'Gestione del tempo' });
+        }  
+        //Néerlandais
+        if(this.props.langue === '135') {
+            this.props.navigation.setOptions({ title: 'Tijdsbeheer' });
         }        
     }
     
@@ -185,6 +189,8 @@ class ManagementTime extends React.Component {
                                             disableBoutonMouvements: false 
                                         });
                                     }
+
+                                    this.onRefresh();
                                 }
                                 else 
                                 {
@@ -206,6 +212,8 @@ class ManagementTime extends React.Component {
                                             disableBoutonMouvements: false 
                                         });
                                     }
+
+                                    this.onRefresh();
                                 }
                             });
                         }
@@ -228,13 +236,14 @@ class ManagementTime extends React.Component {
                                     disableBoutonMouvements: false 
                                 });
                             }
+
+                            this.onRefresh();
                         }
                     });
                     
                 }); 
             }
         });
-        this.onRefresh();
     }
 
     getDataCust() 
@@ -810,7 +819,7 @@ class ManagementTime extends React.Component {
                                 <Animatable.View animation = "bounceIn" delay = { 300 } style = { styles.container_animation_overlay_ico }>
                                     <View style = { styles.container_ico_overlay }>
                                         {
-                                            this.state.errorServeur || this.state.currentIco === null ?               
+                                            this.state.errorServeur || ico === null ?               
                                                 <FontAwesome5 name = "exclamation-triangle" color = "#C72C41" size = { 50 }/>
                                             :                         
                                                 <Image style = { styles.ico_overlay } source = {{ uri: `data:image/png;base64,${ico}` }}/>
@@ -918,8 +927,8 @@ class ManagementTime extends React.Component {
                     renderItem = { ({ item }) => 
                         <Animatable.View animation = "bounceIn" delay = { item.delay } style = { styles.container_button_animation }>
                             <TouchableOpacity 
-                                onPress={ () => { 
-                                    if(item.activite)
+                                onPress = { () => { 
+                                    if(item.activite === 'O')
                                     { 
                                         this.showActiviteList(item.button, item.libelle, item.localisation) 
                                     } 
@@ -928,14 +937,14 @@ class ManagementTime extends React.Component {
                                         this.actionButton(item.button, item.libelle, item.localisation, null) 
                                     } 
                                 } } 
-                                style={ styles.button }
+                                style = { styles.button }
                             >     
-                                <View style={ styles.container_ico }>
+                                <View style = { styles.container_ico }>
                                     {
                                         item.ico !== '' ?
-                                            <Image style={ styles.image } source={{ uri: `data:image/png;base64,${item.ico}` }} />
+                                            <Image style = { styles.image } source = {{ uri: `data:image/png;base64,${item.ico}` }} />
                                         :
-                                            <FontAwesome5 style={{ padding: 10 }} name = "exclamation-circle" color = "#C72C41" size = { 40 }/>
+                                            <FontAwesome5 style = {{ padding: 10 }} name = "exclamation-circle" color = "#C72C41" size = { 40 }/>
                                     }
                                     <Text>{ item.libelle }</Text>
                                 </View>

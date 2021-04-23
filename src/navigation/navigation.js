@@ -26,7 +26,7 @@ const ManagementNoConnectionStackScreen = () => (
             name = "Gestion du temps hors connection" 
             component = { ManagementNoConnection }
             options = {{
-                title: 'Niva - Perte de Connexion ',
+                title: 'Niva - Gestion du temps hors ligne',
                 headerStyle: {
                     backgroundColor: '#008080',
                 },
@@ -243,6 +243,7 @@ class Navigation extends React.Component {
         NetInfo.addEventListener(state => {
             this.setState({
                 etatConnection: state.isConnected
+                // etatConnection: false
             });
         });
     }

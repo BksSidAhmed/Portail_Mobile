@@ -56,6 +56,13 @@ class Settings extends React.Component {
             this.state.text_password = 'Parola d\'ordine';
             this.props.navigation.setOptions({ title: 'Impostazioni' });
         }
+        //Néerlandais
+        if(this.props.langue === '135') {
+            this.state.text_localisation_active = 'Locatie ingeschakeld';
+            this.state.text_localisation_desactive = 'Locatie uitgeschakeld';
+            this.state.text_password = 'Wachtwoord';
+            this.props.navigation.setOptions({ title: 'Instellingen' });
+        }
     }
 
     componentDidMount() {
