@@ -1,6 +1,6 @@
-export const pointingAction = (pointingAction) => ({
+export const pointingAction = (pointing) => ({
     type: "SAVE_POINTING",
-    pointingAction: pointingAction,
+    pointingAction: pointing,
 });
 
 export const RESET_TABLE_ACTION = (ResetAction) => ({

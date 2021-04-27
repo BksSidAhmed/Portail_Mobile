@@ -1,6 +1,6 @@
-export const listeEmailAction = (listeEmailAction) => ({
+export const listeEmailAction = (listeEmail) => ({
     type: "SAVE_LISTE_EMAIL",
-    listeEmailAction: listeEmailAction,
+    listeEmailAction: listeEmail,
 });
 
 export const resetListMail = () => ({

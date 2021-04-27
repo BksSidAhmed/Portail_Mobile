@@ -1,4 +1,4 @@
-export const langueAction = (langueAction) => ({
+export const langueAction = (langue) => ({
     type: "SAVE_LANGUE",
-    langueAction: langueAction,
+    langueAction: langue,
 });

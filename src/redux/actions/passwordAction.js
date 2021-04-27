@@ -1,4 +1,4 @@
-export const passwordAction = (passwordAction) => ({
+export const passwordAction = (password) => ({
     type: "SAVE_PASSWORD",
-    passwordAction: passwordAction,
+    passwordAction: password,
 });

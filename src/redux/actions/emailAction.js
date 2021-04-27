@@ -1,4 +1,4 @@
-export const emailAction = (emailAction) => ({
+export const emailAction = (email) => ({
     type: "SAVE_EMAIL",
-    emailAction: emailAction,
+    emailAction: email,
 });
