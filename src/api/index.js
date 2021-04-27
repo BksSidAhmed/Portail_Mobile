@@ -1,146 +1,128 @@
-export const getToken = async (email,password) => {
-    const url = 'https://portail-e-rh.niva.tm.fr/api/login_check';
+export const getToken = async (email, password) => {
+    const url = "https://portail-e-rh.niva.tm.fr/api/login_check";
     try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Accept' : "application/json",
-                'Content-Type' : "application/json",
+                Accept: "application/json",
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
-	            username: email,
-                password: password
-            })
+                username: email,
+                password: password,
+            }),
         });
         const statusCode = response.status;
-        return await Promise.all([statusCode,response.json()]);
-
-    } 
-    catch(error) 
-    {
+        return await Promise.all([statusCode, response.json()]);
+    } catch (error) {
         return console.error(error);
     }
-}
+};
 
 export const postAction = async (token, indicateurTemps, email, date, heure, button, lat, lng, activite) => {
-    const url = 'https://portail-e-rh.niva.tm.fr/api/action';
-    try 
-    {
+    const url = "https://portail-e-rh.niva.tm.fr/api/action";
+    try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                Accept : "application/json",
-                'Content-Type' : "application/json",
-                'Authorization': 'Bearer ' + token,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
             },
             body: JSON.stringify({
-                indicateurTemps : indicateurTemps,
-                email : email,
-	            date: date,
+                indicateurTemps: indicateurTemps,
+                email: email,
+                date: date,
                 heure: heure,
-                button : button,
-                lat : lat,
-                lng : lng,
-                activite : activite
-            })
+                button: button,
+                lat: lat,
+                lng: lng,
+                activite: activite,
+            }),
         });
         const statusCode = response.status;
-        return await Promise.all([statusCode,response.json()]);
-    } 
-    catch(err) 
-    {
+        return await Promise.all([statusCode, response.json()]);
+    } catch (err) {
         return console.error(err);
     }
-}
+};
 
 export const getUser = async (token, email) => {
-    const url = 'https://portail-e-rh.niva.tm.fr/api/getUser';
-    try 
-    {
+    const url = "https://portail-e-rh.niva.tm.fr/api/getUser";
+    try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Accept' : "application/json",
-                'Content-Type' : "application/json",
-                'Authorization': 'Bearer ' + token,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
             },
             body: JSON.stringify({
-                email : email,
-            })
+                email: email,
+            }),
         });
         const statusCode = response.status;
-        return Promise.all([statusCode,response.json()]);
-    }
-    catch(err)
-    {
+        return Promise.all([statusCode, response.json()]);
+    } catch (err) {
         return console.error(err);
     }
-}
+};
 
-export const getIco = async (token,ico) => {
-    const url = 'https://portail-e-rh.niva.tm.fr/api/images/'+ico+'.png';
-    try 
-    {   
+export const getIco = async (token, ico) => {
+    const url = "https://portail-e-rh.niva.tm.fr/api/images/'+ico+'.png";
+    try {
         const response = await fetch(url, {
-            method: 'GET',
+            method: "GET",
             headers: {
-                'Content-Type' : "application/json",
-                'Authorization': 'Bearer ' + token,
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
             },
         });
         const statusCode = response.status;
-        return Promise.all([statusCode,response.json()]);
-    }
-    catch(err)
-    {
+        return Promise.all([statusCode, response.json()]);
+    } catch (err) {
         return console.error(err);
     }
-}
+};
 
 export const postLostPassword = async (email) => {
-    const url = 'https://portail-e-rh.niva.tm.fr/api/lost/password';
-    try 
-    {   
+    const url = "https://portail-e-rh.niva.tm.fr/api/lost/password";
+    try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type' : "application/json",
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                email : email,
-                code: 'AlphasysAPIMobileLostPasswordApi@69'
-            })
+                email: email,
+                code: "AlphasysAPIMobileLostPasswordApi@69",
+            }),
         });
         const statusCode = response.status;
-        return Promise.all([statusCode,response.json()]);
-    }
-    catch(err)
-    {
+        return Promise.all([statusCode, response.json()]);
+    } catch (err) {
         return console.error(err);
     }
-}
+};
 
-export const postEditPassword = async (token,email,newPassword,oldPassword) => {
-    const url = 'https://portail-e-rh.niva.tm.fr/api/password/edit';
-    try 
-    {   
+export const postEditPassword = async (token, email, newPassword, oldPassword) => {
+    const url = "https://portail-e-rh.niva.tm.fr/api/password/edit";
+    try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type' : "application/json",
-                'Authorization': 'Bearer ' + token,
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
             },
             body: JSON.stringify({
-                email : email,
-                new : newPassword,
-                old : oldPassword
-            })
+                email: email,
+                new: newPassword,
+                old: oldPassword,
+            }),
         });
         const statusCode = response.status;
-        return Promise.all([statusCode,response.json()]);
-    }
-    catch(err)
-    {
+        return Promise.all([statusCode, response.json()]);
+    } catch (err) {
         return console.error(err);
     }
-}
+};

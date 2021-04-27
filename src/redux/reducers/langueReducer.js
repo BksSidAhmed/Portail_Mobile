@@ -4,15 +4,15 @@ const initialState = {
 
 const langueReducer = (state = initialState, action) => {
     switch (action.type) {
-      	case 'SAVE_LANGUE': {
-			return {
-				...state,
-				langue: action.langueAction,
-			}
-      	}
-      	default: {
-       		return state;
-      	}
+        case "SAVE_LANGUE": {
+            return {
+                ...state,
+                langue: action.langueAction,
+            };
+        }
+        default: {
+            return state;
+        }
     }
 };
 

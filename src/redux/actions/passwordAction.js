@@ -1,4 +1,4 @@
 export const passwordAction = (passwordAction) => ({
-    type: 'SAVE_PASSWORD',
+    type: "SAVE_PASSWORD",
     passwordAction: passwordAction,
 });
