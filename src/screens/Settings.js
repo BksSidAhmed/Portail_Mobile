@@ -26,42 +26,42 @@ class Settings extends React.Component {
             this.state.text_localisation_active = "Localisation activé";
             this.state.text_localisation_desactive = "Localisation désactivé";
             this.state.text_password = "Mot de passe";
-            this.props.navigation.setOptions({ title: "Paramètres" });
+            this.props.navigation.setOptions({ title: "Niva - Paramètres" });
         }
 
         if (this.props.langue === "109") {
             this.state.text_localisation_active = "Lage aktiviert";
             this.state.text_localisation_desactive = "Lage deaktiviert";
             this.state.text_password = "Passwort";
-            this.props.navigation.setOptions({ title: "Einstellungen" });
+            this.props.navigation.setOptions({ title: "Niva - Einstellungen" });
         }
 
         if (this.props.langue === "134") {
             this.state.text_localisation_active = "Localización activado";
             this.state.text_localisation_desactive = "Localización desactivado";
             this.state.text_password = "Contraseña";
-            this.props.navigation.setOptions({ title: "Configuraciones" });
+            this.props.navigation.setOptions({ title: "Niva - Configuraciones" });
         }
 
         if (this.props.langue === "132") {
             this.state.text_localisation_active = "Location enabled";
             this.state.text_localisation_desactive = "Location disabled";
             this.state.text_password = "Password";
-            this.props.navigation.setOptions({ title: "Settings" });
+            this.props.navigation.setOptions({ title: "Niva - Settings" });
         }
 
         if (this.props.langue === "127") {
             this.state.text_localisation_active = "Posizione abilitato";
             this.state.text_localisation_desactive = "Posizione disattivato";
             this.state.text_password = "Parola d'ordine";
-            this.props.navigation.setOptions({ title: "Impostazioni" });
+            this.props.navigation.setOptions({ title: "Niva - Impostazioni" });
         }
         //Néerlandais
         if (this.props.langue === "135") {
             this.state.text_localisation_active = "Locatie ingeschakeld";
             this.state.text_localisation_desactive = "Locatie uitgeschakeld";
             this.state.text_password = "Wachtwoord";
-            this.props.navigation.setOptions({ title: "Instellingen" });
+            this.props.navigation.setOptions({ title: "Niva - Instellingen" });
         }
     }
 

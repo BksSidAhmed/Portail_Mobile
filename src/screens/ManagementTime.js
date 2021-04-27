@@ -54,27 +54,27 @@ class ManagementTime extends React.Component {
         };
 
         if (this.props.langue === "100") {
-            this.props.navigation.setOptions({ title: "Gestion du temps" });
+            this.props.navigation.setOptions({ title: "Niva - Gestion du temps" });
         }
 
         if (this.props.langue === "109") {
-            this.props.navigation.setOptions({ title: "Zeiteinteilung" });
+            this.props.navigation.setOptions({ title: "Niva - Zeiteinteilung" });
         }
 
         if (this.props.langue === "134") {
-            this.props.navigation.setOptions({ title: "Gestión del tiempo" });
+            this.props.navigation.setOptions({ title: "Niva - Gestión del tiempo" });
         }
 
         if (this.props.langue === "132") {
-            this.props.navigation.setOptions({ title: "Time management" });
+            this.props.navigation.setOptions({ title: "Niva - Time management" });
         }
 
         if (this.props.langue === "127") {
-            this.props.navigation.setOptions({ title: "Gestione del tempo" });
+            this.props.navigation.setOptions({ title: "Niva - Gestione del tempo" });
         }
 
         if (this.props.langue === "135") {
-            this.props.navigation.setOptions({ title: "Tijdsbeheer" });
+            this.props.navigation.setOptions({ title: "Niva - Tijdsbeheer" });
         }
     }
 

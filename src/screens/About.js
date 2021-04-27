@@ -5,10 +5,14 @@ import { listeEmailAction } from "../redux/actions/listeEmailAction";
 import { pointingAction } from "../redux/actions/pointingHorsLigneAction";
 import * as Animatable from "react-native-animatable";
 class About extends React.Component {
-    render() {
-        let list_about = [];
+    constructor(props) {
+        super(props);
+        this.state = {
+            list_about: [],
+        };
+
         if (this.props.langue === "100") {
-            list_about = [
+            this.state.list_about = [
                 { key: 1, text: "NIVA® version V1.0 2021" },
                 { key: 2, text: "Cette application a été réalisée par ALPHASYS - Lyon - France." },
                 { key: 3, text: "NIVA est une marque déposée par ALPHASYS - Lyon - France." },
@@ -18,11 +22,11 @@ class About extends React.Component {
                 { key: 7, text: " - Informer l'utilisateur sur le décompte d'un certain nombre de compteurs affichés" },
                 { key: 8, text: " - Le calcul du temps écoulé ainsi que le choix des compteurs affichés sont de la responsabilité de votre employeur" },
             ];
-            this.props.navigation.setOptions({ title: "À propos" });
+            this.props.navigation.setOptions({ title: "Niva - À propos" });
         }
 
         if (this.props.langue === "109") {
-            list_about = [
+            this.state.list_about = [
                 { key: 1, text: "NIVA® fassung V3.0 2021" },
                 { key: 2, text: "Diese Anwendung wurde von ALPHASYS erstellt - Lyon - France." },
                 { key: 3, text: "NIVA ist eine eingetragene Marke von ALPHASYS - Lyon - France." },
@@ -32,11 +36,11 @@ class About extends React.Component {
                 { key: 7, text: " - Informieren Sie den Benutzer über die Anzahl einer bestimmten Anzahl angezeigter Zähler" },
                 { key: 8, text: " - Die Berechnung der verstrichenen Zeit sowie die Auswahl der angezeigten Zähler liegen in der Verantwortung Ihres Arbeitgebers" },
             ];
-            this.props.navigation.setOptions({ title: "Etwa" });
+            this.props.navigation.setOptions({ title: "Niva - Etwa" });
         }
 
         if (this.props.langue === "134") {
-            list_about = [
+            this.state.list_about = [
                 { key: 1, text: "NIVA® versión V3.0 2021" },
                 { key: 2, text: "Esta aplicación fue producida por ALPHASYS - Lyon - France." },
                 { key: 3, text: "NIVA es una marca registrada de ALPHASYS - Lyon - France." },
@@ -46,11 +50,11 @@ class About extends React.Component {
                 { key: 7, text: " - Informar al usuario sobre el recuento de un cierto número de contadores mostrados" },
                 { key: 8, text: " - El cálculo del tiempo transcurrido, así como la elección de los contadores mostrados, son responsabilidad de su empleador" },
             ];
-            this.props.navigation.setOptions({ title: "A proposito" });
+            this.props.navigation.setOptions({ title: "Niva - A proposito" });
         }
 
         if (this.props.langue === "132") {
-            list_about = [
+            this.state.list_about = [
                 { key: 1, text: "NIVA® fassung V3.0 2021" },
                 { key: 2, text: "This application was produced by ALPHASYS - Lyon - France." },
                 { key: 3, text: "NIVA is a registered trademark by ALPHASYS - Lyon - France." },
@@ -60,11 +64,11 @@ class About extends React.Component {
                 { key: 7, text: " - Inform the user about the count of a certain number of counters displayed" },
                 { key: 8, text: " - The calculation of the elapsed time as well as the choice of the displayed counters are the responsibility of your employer" },
             ];
-            this.props.navigation.setOptions({ title: "About" });
+            this.props.navigation.setOptions({ title: "Niva - About" });
         }
 
         if (this.props.langue === "127") {
-            list_about = [
+            this.state.list_about = [
                 { key: 1, text: "NIVA® versione V3.0 2021" },
                 { key: 2, text: "Questa applicazione è stata prodotta da ALPHASYS - Lyon - France." },
                 { key: 3, text: "NIVA è un marchio registrato di ALPHASYS - Lyon - France." },
@@ -74,11 +78,11 @@ class About extends React.Component {
                 { key: 7, text: " - Informare l'utente sul conteggio di un certo numero di contatori visualizzati" },
                 { key: 8, text: " - Il calcolo del tempo trascorso e la scelta dei contatori visualizzati sono a carico del vostro datore di lavoro." },
             ];
-            this.props.navigation.setOptions({ title: "A proposito" });
+            this.props.navigation.setOptions({ title: "Niva - A proposito" });
         }
 
         if (this.props.langue === "135") {
-            list_about = [
+            this.state.list_about = [
                 { key: 1, text: "NIVA® versie V1.0 2021" },
                 { key: 2, text: "Deze applicatie is gemaakt door ALPHASYS - Lyon - Frankrijk." },
                 { key: 3, text: "NIVA is een handelsmerk geregistreerd door ALPHASYS - Lyon - Frankrijk." },
@@ -88,8 +92,11 @@ class About extends React.Component {
                 { key: 7, text: " - Informeer de gebruiker over het aantal getoonde tellers" },
                 { key: 8, text: " - De berekening van de verstreken tijd en de keuze van de weergegeven tellers zijn de verantwoordelijkheid van uw werkgever." },
             ];
-            this.props.navigation.setOptions({ title: "Over" });
+            this.props.navigation.setOptions({ title: "Niva - Over" });
         }
+    }
+
+    render() {
         return (
             <View style={styles.container}>
                 <Animatable.View animation="bounceIn" style={styles.container_header}>
@@ -101,7 +108,7 @@ class About extends React.Component {
                 </Animatable.View>
                 <View style={styles.container_body}>
                     <Animatable.View animation="bounceIn" delay={300} style={styles.text_body}>
-                        <FlatList data={list_about} renderItem={({ item }) => <Text style={styles.text_about}>{item.text}</Text>} />
+                        <FlatList data={this.state.list_about} renderItem={({ item }) => <Text style={styles.text_about}>{item.text}</Text>} />
                     </Animatable.View>
                 </View>
             </View>
