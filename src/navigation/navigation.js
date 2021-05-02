@@ -18,6 +18,7 @@ import { langueAction } from "../redux/actions/langueAction";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import NetInfo from "@react-native-community/netinfo";
 import Confidential from "../screens/Confidential";
+import InitialComponent from "../component/InitialComponent"
 
 const ManagementNoConnectionTimeStack = createStackNavigator();
 const ManagementNoConnectionStackScreen = () => (
@@ -49,18 +50,19 @@ const ManagementTimeStackScreen = ({ navigation }) => (
             options={{
                 title: "Niva - Gestion du temps",
                 headerStyle: {
-                    backgroundColor: "#008080",
+                    backgroundColor: "#31859C",
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
-                headerTitleStyle: {
-                    fontWeight: "bold",
+                headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
+                headerRight: () => <InitialComponent></InitialComponent>,
+                headerLeftContainerStyle: {
+                    marginLeft: 20,
                 },
-                headerRight: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRightContainerStyle: {
-                    marginRight: 20,
-                    marginTop: 5,
-                },
+                // headerRightContainerStyle: {
+                //     marginRight: 20,
+                // },
+                
             }}
         />
     </ManagementTimeStack.Navigator>
@@ -79,13 +81,10 @@ const ParameterStackScreen = ({ navigation }) => (
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
-                headerTitleStyle: {
-                    fontWeight: "bold",
-                },
-                headerRight: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRightContainerStyle: {
-                    marginRight: 20,
-                    marginTop: 5,
+
+                headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
+                headerLeftContainerStyle: {
+                    marginLeft: 20,
                 },
             }}
         />
@@ -99,13 +98,9 @@ const ParameterStackScreen = ({ navigation }) => (
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
-                headerTitleStyle: {
-                    fontWeight: "bold",
-                },
-                headerRight: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRightContainerStyle: {
-                    marginRight: 20,
-                    marginTop: 5,
+                headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
+                headerLeftContainerStyle: {
+                    marginLeft: 20,
                 },
             }}
         />
@@ -119,13 +114,9 @@ const ParameterStackScreen = ({ navigation }) => (
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
-                headerTitleStyle: {
-                    fontWeight: "bold",
-                },
-                headerRight: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRightContainerStyle: {
-                    marginRight: 20,
-                    marginTop: 5,
+                headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
+                headerLeftContainerStyle: {
+                    marginLeft: 20,
                 },
             }}
         />
@@ -145,13 +136,9 @@ const AboutStackScreen = ({ navigation }) => (
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
-                headerTitleStyle: {
-                    fontWeight: "bold",
-                },
-                headerRight: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRightContainerStyle: {
-                    marginRight: 20,
-                    marginTop: 5,
+                headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
+                headerLeftContainerStyle: {
+                    marginLeft: 20,
                 },
             }}
         />
@@ -171,13 +158,9 @@ const ConfidentialStackScreen = ({ navigation }) => (
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
-                headerTitleStyle: {
-                    fontWeight: "bold",
-                },
-                headerRight: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRightContainerStyle: {
-                    marginRight: 20,
-                    marginTop: 5,
+                headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
+                headerLeftContainerStyle: {
+                    marginLeft: 20,
                 },
             }}
         />
@@ -193,7 +176,7 @@ const AuthStackScreen = () => (
 
 const Drawer = createDrawerNavigator();
 const DrawerScreen = () => (
-    <Drawer.Navigator initialRouteName="Gestion du temps" drawerPosition="right" drawerContent={(props) => <DrawerComponent {...props} />}>
+    <Drawer.Navigator initialRouteName="Gestion du temps" drawerContent={(props) => <DrawerComponent {...props} />}>
         <Drawer.Screen name="Gestion du temps" component={ManagementTimeStackScreen} />
         <Drawer.Screen name="Parametre" component={ParameterStackScreen} />
         <Drawer.Screen name="A propos" component={AboutStackScreen} />

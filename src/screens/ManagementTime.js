@@ -866,7 +866,7 @@ class ManagementTime extends React.Component {
         const { loadingList, currentIco, currentLibelle, currentText, user, activitesButton, activitesLibelle, activitesLocalisation } = this.state;
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor="#008080" barStyle="light-content" />
+                <StatusBar backgroundColor="#31859C" barStyle="light-content" />
                 <View style={styles.container_global_header}>
                     <Animatable.View animation="bounceIn" style={styles.container_header}>
                         <View style={styles.container_clock}>
