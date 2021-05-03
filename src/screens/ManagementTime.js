@@ -13,6 +13,7 @@ import LocationServicesDialogBox from "react-native-android-location-services-di
 import { PermissionsAndroid } from "react-native";
 import { getDistance } from "geolib";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { Collapse, CollapseHeader, CollapseBody } from "accordion-collapse-react-native";
 
 class ManagementTime extends React.Component {
     constructor(props) {
@@ -51,6 +52,13 @@ class ManagementTime extends React.Component {
             mouvements: null,
             mouvementText: "",
             disableBoutonMouvements: true,
+            text_welcome: "Bonjour, ",
+            expanded_0: false,
+            expanded_1: false,
+            expanded_2: false,
+            expanded_3: false,
+            expanded_4: false,
+            expanded_5: false,
         };
 
         if (this.props.langue === "100") {
@@ -59,22 +67,27 @@ class ManagementTime extends React.Component {
 
         if (this.props.langue === "109") {
             this.props.navigation.setOptions({ title: "Niva - Zeiteinteilung" });
+            this.state.text_welcome = "Hallo, ";
         }
 
         if (this.props.langue === "134") {
             this.props.navigation.setOptions({ title: "Niva - Gestión del tiempo" });
+            this.state.text_welcome = "Buenos dias, ";
         }
 
         if (this.props.langue === "132") {
             this.props.navigation.setOptions({ title: "Niva - Time management" });
+            this.state.text_welcome = "Hello, ";
         }
 
         if (this.props.langue === "127") {
             this.props.navigation.setOptions({ title: "Niva - Gestione del tempo" });
+            this.state.text_welcome = "Buongiorno, ";
         }
 
         if (this.props.langue === "135") {
             this.props.navigation.setOptions({ title: "Niva - Tijdsbeheer" });
+            this.state.text_welcome = "Hallo, ";
         }
     }
 
@@ -235,6 +248,8 @@ class ManagementTime extends React.Component {
                         refreshing: false,
                         user: {
                             email: response[1].user.email,
+                            prenom: response[1].user.prenom,
+                            nom: response[1].user.nom,
                             profil: {
                                 action0: {
                                     active: response[1].user.profil.action_0.active,
@@ -704,6 +719,89 @@ class ManagementTime extends React.Component {
         );
     };
 
+    // renderButtonSection = (section) => {
+    //     return (
+    //         <Animatable.View animation="bounceIn" delay={section.delay} style={styles.container_button_animation}>
+    //         <TouchableOpacity
+    //                             // onPress={() => {
+    //                             //     if (section.activite === "O") {
+    //                             //         this.showActiviteList(section.button, section.libelle, section.localisation);
+    //                             //     } else {
+    //                             //         this.actionButton(section.button, section.libelle, section.localisation, null);
+    //                             //     }
+    //                             // }}
+    //                             style={styles.button}>
+    //                             <View style={styles.container_ico}>
+    //                                 {section.ico !== "" ? <Image style={styles.image} source={{ uri: `data:image/png;base64,${section.ico}` }} /> : <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />}
+    //                                 <Text style={styles.text_button}>{section.libelle}</Text>
+    //                             </View>
+    //                         </TouchableOpacity></Animatable.View>
+    //     );
+    // };
+
+    showCollapse = (button) => {
+        if (button === "F00") {
+            this.setState({
+                expanded_0: !this.state.expanded_0,
+                expanded_1: false,
+                expanded_2: false,
+                expanded_3: false,
+                expanded_4: false,
+                expanded_5: false,
+            });
+        }
+        if (button === "F01") {
+            this.setState({
+                expanded_0: false,
+                expanded_1: !this.state.expanded_1,
+                expanded_2: false,
+                expanded_3: false,
+                expanded_4: false,
+                expanded_5: false,
+            });
+        }
+        if (button === "F02") {
+            this.setState({
+                expanded_0: false,
+                expanded_1: false,
+                expanded_2: !this.state.expanded_2,
+                expanded_3: false,
+                expanded_4: false,
+                expanded_5: false,
+            });
+        }
+        if (button === "F03") {
+            this.setState({
+                expanded_0: false,
+                expanded_1: false,
+                expanded_2: false,
+                expanded_3: !this.state.expanded_3,
+                expanded_4: false,
+                expanded_5: false,
+            });
+        }
+        if (button === "F04") {
+            this.setState({
+                expanded_0: false,
+                expanded_1: false,
+                expanded_2: false,
+                expanded_3: false,
+                expanded_4: !this.state.expanded_4,
+                expanded_5: false,
+            });
+        }
+        if (button === "F05") {
+            this.setState({
+                expanded_0: false,
+                expanded_1: false,
+                expanded_2: false,
+                expanded_3: false,
+                expanded_4: false,
+                expanded_5: !this.state.expanded_5,
+            });
+        }
+    };
+
     buttons = (user) => {
         let libelles = [];
 
@@ -713,49 +811,157 @@ class ManagementTime extends React.Component {
 
         if (user.profil.action0.active) {
             if (this.state.statutUser) {
-                libelles.push({ key: 1, libelle: user.profil.action0.libellePresent, ico: user.profil.action0.icoPresent, button: "F00", delay: 0, localisation: user.profil.action0.localisation, activite: user.profil.action0.activite });
+                libelles.push({
+                    key: 1,
+                    libelle: user.profil.action0.libellePresent,
+                    ico: user.profil.action0.icoPresent,
+                    button: "F00",
+                    delay: 0,
+                    localisation: user.profil.action0.localisation,
+                    activite: user.profil.action0.activite,
+                    expanded: this.state.expanded_0,
+                });
             } else {
-                libelles.push({ key: 1, libelle: user.profil.action0.libelleAbsent, ico: user.profil.action0.icoAbsent, button: "F00", delay: 0, localisation: user.profil.action0.localisation, activite: user.profil.action0.activite });
+                libelles.push({
+                    key: 1,
+                    libelle: user.profil.action0.libelleAbsent,
+                    ico: user.profil.action0.icoAbsent,
+                    button: "F00",
+                    delay: 0,
+                    localisation: user.profil.action0.localisation,
+                    activite: user.profil.action0.activite,
+                    expanded: this.state.expanded_0,
+                });
             }
         }
 
         if (user.profil.action1.active) {
             if (this.state.statut1) {
-                libelles.push({ key: 2, libelle: user.profil.action1.libellePresent, ico: user.profil.action1.icoPresent, button: "F01", delay: 200, localisation: user.profil.action1.localisation, activite: user.profil.action1.activite });
+                libelles.push({
+                    key: 2,
+                    libelle: user.profil.action1.libellePresent,
+                    ico: user.profil.action1.icoPresent,
+                    button: "F01",
+                    delay: 200,
+                    localisation: user.profil.action1.localisation,
+                    activite: user.profil.action1.activite,
+                    expanded: this.state.expanded_1,
+                });
             } else {
-                libelles.push({ key: 2, libelle: user.profil.action1.libelleAbsent, ico: user.profil.action1.icoAbsent, button: "F01", delay: 200, localisation: user.profil.action1.localisation, activite: user.profil.action1.activite });
+                libelles.push({
+                    key: 2,
+                    libelle: user.profil.action1.libelleAbsent,
+                    ico: user.profil.action1.icoAbsent,
+                    button: "F01",
+                    delay: 200,
+                    localisation: user.profil.action1.localisation,
+                    activite: user.profil.action1.activite,
+                    expanded: this.state.expanded_1,
+                });
             }
         }
 
         if (user.profil.action2.active) {
             if (this.state.statut2) {
-                libelles.push({ key: 3, libelle: user.profil.action2.libellePresent, ico: user.profil.action2.icoPresent, button: "F02", delay: 400, localisation: user.profil.action2.localisation, activite: user.profil.action2.activite });
+                libelles.push({
+                    key: 3,
+                    libelle: user.profil.action2.libellePresent,
+                    ico: user.profil.action2.icoPresent,
+                    button: "F02",
+                    delay: 400,
+                    localisation: user.profil.action2.localisation,
+                    activite: user.profil.action2.activite,
+                    expanded: this.state.expanded_2,
+                });
             } else {
-                libelles.push({ key: 3, libelle: user.profil.action2.libelleAbsent, ico: user.profil.action2.icoAbsent, button: "F02", delay: 400, localisation: user.profil.action2.localisation, activite: user.profil.action2.activite });
+                libelles.push({
+                    key: 3,
+                    libelle: user.profil.action2.libelleAbsent,
+                    ico: user.profil.action2.icoAbsent,
+                    button: "F02",
+                    delay: 400,
+                    localisation: user.profil.action2.localisation,
+                    activite: user.profil.action2.activite,
+                    expanded: this.state.expanded_2,
+                });
             }
         }
 
         if (user.profil.action3.active) {
             if (this.state.statut3) {
-                libelles.push({ key: 4, libelle: user.profil.action3.libellePresent, ico: user.profil.action3.icoPresent, button: "F03", delay: 600, localisation: user.profil.action3.localisation, activite: user.profil.action3.activite });
+                libelles.push({
+                    key: 4,
+                    libelle: user.profil.action3.libellePresent,
+                    ico: user.profil.action3.icoPresent,
+                    button: "F03",
+                    delay: 600,
+                    localisation: user.profil.action3.localisation,
+                    activite: user.profil.action3.activite,
+                    expanded: this.state.expanded_3,
+                });
             } else {
-                libelles.push({ key: 4, libelle: user.profil.action3.libelleAbsent, ico: user.profil.action3.icoAbsent, button: "F03", delay: 600, localisation: user.profil.action3.localisation, activite: user.profil.action3.activite });
+                libelles.push({
+                    key: 4,
+                    libelle: user.profil.action3.libelleAbsent,
+                    ico: user.profil.action3.icoAbsent,
+                    button: "F03",
+                    delay: 600,
+                    localisation: user.profil.action3.localisation,
+                    activite: user.profil.action3.activite,
+                    expanded: this.state.expanded_3,
+                });
             }
         }
 
         if (user.profil.action4.active) {
             if (this.state.statut4) {
-                libelles.push({ key: 5, libelle: user.profil.action4.libellePresent, ico: user.profil.action4.icoPresent, button: "F04", delay: 800, localisation: user.profil.action4.localisation, activite: user.profil.action4.activite });
+                libelles.push({
+                    key: 5,
+                    libelle: user.profil.action4.libellePresent,
+                    ico: user.profil.action4.icoPresent,
+                    button: "F04",
+                    delay: 800,
+                    localisation: user.profil.action4.localisation,
+                    activite: user.profil.action4.activite,
+                    expanded: this.state.expanded_4,
+                });
             } else {
-                libelles.push({ key: 5, libelle: user.profil.action4.libelleAbsent, ico: user.profil.action4.icoAbsent, button: "F04", delay: 800, localisation: user.profil.action4.localisation, activite: user.profil.action4.activite });
+                libelles.push({
+                    key: 5,
+                    libelle: user.profil.action4.libelleAbsent,
+                    ico: user.profil.action4.icoAbsent,
+                    button: "F04",
+                    delay: 800,
+                    localisation: user.profil.action4.localisation,
+                    activite: user.profil.action4.activite,
+                    expanded: this.state.expanded_4,
+                });
             }
         }
 
         if (user.profil.action5.active) {
             if (this.state.statut5) {
-                libelles.push({ key: 6, libelle: user.profil.action5.libellePresent, ico: user.profil.action5.icoPresent, button: "F05", delay: 1000, localisation: user.profil.action5.localisation, activite: user.profil.action5.activite });
+                libelles.push({
+                    key: 6,
+                    libelle: user.profil.action5.libellePresent,
+                    ico: user.profil.action5.icoPresent,
+                    button: "F05",
+                    delay: 1000,
+                    localisation: user.profil.action5.localisation,
+                    activite: user.profil.action5.activite,
+                    expanded: this.state.expanded_5,
+                });
             } else {
-                libelles.push({ key: 6, libelle: user.profil.action5.libelleAbsent, ico: user.profil.action5.icoAbsent, button: "F05", delay: 1000, localisation: user.profil.action5.localisation, activite: user.profil.action5.activite });
+                libelles.push({
+                    key: 6,
+                    libelle: user.profil.action5.libelleAbsent,
+                    ico: user.profil.action5.icoAbsent,
+                    button: "F05",
+                    delay: 1000,
+                    localisation: user.profil.action5.localisation,
+                    activite: user.profil.action5.activite,
+                    expanded: this.state.expanded_5,
+                });
             }
         }
 
@@ -764,22 +970,30 @@ class ManagementTime extends React.Component {
                 <FlatList
                     data={libelles}
                     renderItem={({ item }) => (
-                        <Animatable.View animation="bounceIn" delay={item.delay} style={styles.container_button_animation}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    if (item.activite === "O") {
-                                        this.showActiviteList(item.button, item.libelle, item.localisation);
-                                    } else {
-                                        this.actionButton(item.button, item.libelle, item.localisation, null);
-                                    }
-                                }}
-                                style={styles.button}>
-                                <View style={styles.container_ico}>
-                                    {item.ico !== "" ? <Image style={styles.image} source={{ uri: `data:image/png;base64,${item.ico}` }} /> : <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />}
-                                    <Text>{item.libelle}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </Animatable.View>
+                        <Collapse isExpanded={item.expanded}>
+                            <CollapseHeader>
+                                <Animatable.View animation="bounceIn" delay={item.delay} style={styles.container_button_animation}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            if (item.activite === "O" || item.activite === "F" || item.button === "F00") {
+                                                this.showCollapse(item.button);
+                                                // this.showActiviteList(item.button, item.libelle, item.localisation);
+                                            } else {
+                                                // this.actionButton(item.button, item.libelle, item.localisation, null);
+                                            }
+                                        }}
+                                        style={styles.button}>
+                                        <View style={styles.container_ico}>
+                                            {item.ico !== "" ? <Image style={styles.image} source={{ uri: `data:image/png;base64,${item.ico}` }} /> : <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />}
+                                            <Text style={styles.text_button}>{item.libelle}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </Animatable.View>
+                            </CollapseHeader>
+                            <CollapseBody>
+                                <Text>Aaron Bennet</Text>
+                            </CollapseBody>
+                        </Collapse>
                     )}
                     refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.onRefresh()} />}
                 />
@@ -867,15 +1081,31 @@ class ManagementTime extends React.Component {
         return (
             <View style={styles.container}>
                 <StatusBar backgroundColor="#008080" barStyle="light-content" />
-                <View style={styles.container_global_header}>
-                    <Animatable.View animation="bounceIn" style={styles.container_header}>
-                        <View style={styles.container_clock}>
-                            <Text style={styles.text_date}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
-                            <Text style={styles.text_heure}>{this.state.time}</Text>
+                {loadingList ? (
+                    <ActivityIndicator size="large" color="#008080" style={styles.container_loader} />
+                ) : (
+                    <View style={styles.container}>
+                        <View style={styles.container_global_header}>
+                            <View style={styles.container_global_header_welcome}>
+                                <Animatable.View animation="slideInLeft">
+                                    <Text style={styles.text_welcome}>
+                                        {this.state.text_welcome}
+                                        <Text style={styles.text_welcome_name}>
+                                            {this.state.user.prenom} {this.state.user.nom}
+                                        </Text>
+                                    </Text>
+                                </Animatable.View>
+                            </View>
+                            <View style={styles.container_global_header_date}>
+                                <Animatable.View animation="bounceIn">
+                                    <Text style={styles.text_date}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
+                                    <Text style={styles.text_heure}>{this.state.time}</Text>
+                                </Animatable.View>
+                            </View>
                         </View>
-                    </Animatable.View>
-                </View>
-                <View style={styles.container_global_tiles}>{loadingList ? <ActivityIndicator size="large" color="#008080" style={styles.container_loader} /> : this.buttons(user)}</View>
+                        <View style={styles.container_global_tiles}>{this.buttons(user)}</View>
+                    </View>
+                )}
                 {this.dialogPopup(currentIco, currentLibelle, currentText)}
                 {this.activitesList(activitesButton, activitesLibelle, activitesLocalisation, user.activites)}
                 {this.mouvementsEnAttente()}
@@ -886,6 +1116,7 @@ class ManagementTime extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "white",
     },
     container_loader: {
         flex: 1,
@@ -893,9 +1124,6 @@ const styles = StyleSheet.create({
     container_clock: {
         flex: 1,
         padding: 20,
-        backgroundColor: "#008080",
-        elevation: 5,
-        borderRadius: 5,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -908,24 +1136,27 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    container_header: {
-        flex: 1,
-        paddingTop: 20,
-        padding: 10,
-    },
     container_animation_header_overlay: {
         flex: 1,
         paddingTop: 20,
         padding: 10,
     },
     container_global_tiles: {
-        flex: 2,
+        flex: 4,
     },
     container_global_tiles_overlay: {
         flex: 3,
     },
-    container_global_header: {
+    container_global_header_welcome: {
         flex: 1,
+        paddingLeft: 20,
+        paddingTop: 20,
+    },
+    container_global_header: {
+        flex: 2,
+    },
+    container_global_header_date: {
+        flex: 2,
     },
     container_global_header_overlay: {
         flex: 1,
@@ -953,8 +1184,8 @@ const styles = StyleSheet.create({
     },
     container_ico: {
         flex: 1,
+        flexDirection: "row",
         alignItems: "center",
-        justifyContent: "center",
     },
     container_overlay: {
         flex: 1,
@@ -973,9 +1204,11 @@ const styles = StyleSheet.create({
     },
     button: {
         padding: 20,
-        backgroundColor: "white",
         elevation: 5,
-        borderRadius: 5,
+        backgroundColor: "white",
+        borderRadius: 0,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     container_ico_overlay: {
         padding: 20,
@@ -1005,7 +1238,8 @@ const styles = StyleSheet.create({
     image: {
         height: 50,
         width: 50,
-        marginVertical: 10,
+        padding: 10,
+        marginRight: 30,
     },
     ico_overlay: {
         height: 50,
@@ -1014,7 +1248,6 @@ const styles = StyleSheet.create({
     },
     text_date: {
         textAlign: "center",
-        color: "#fff",
         fontSize: 20,
     },
     text_errorServeur: {
@@ -1024,8 +1257,14 @@ const styles = StyleSheet.create({
     },
     text_heure: {
         textAlign: "center",
-        fontSize: 40,
-        color: "#fff",
+        fontSize: 35,
+        padding: 10,
+    },
+    text_welcome: {
+        fontSize: 20,
+    },
+    text_welcome_name: {
+        fontWeight: "bold",
     },
     dialog: {
         textAlign: "center",
@@ -1035,21 +1274,6 @@ const styles = StyleSheet.create({
     },
     spinnerTextStyle: {
         color: "#FFF",
-    },
-    button1: {
-        flex: 0.25,
-        backgroundColor: "#FFF",
-        paddingVertical: 20,
-        marginVertical: 2,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.24,
-        shadowRadius: 3.8,
-        elevation: 5,
-        borderRadius: 3,
     },
     text_title_overlay: {
         textAlign: "center",
@@ -1069,6 +1293,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: "center",
         color: "white",
+    },
+    text_button: {
+        fontSize: 17,
     },
     buttons_list_activites: {
         padding: 20,
