@@ -119,6 +119,7 @@ class About extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "white",
     },
     container_header: {
         flex: 1,
@@ -126,32 +127,25 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     },
     container_body: {
-        flex: 2,
-        padding: 10,
+        flex: 4,
     },
     container_logo: {
         flex: 1,
         padding: 20,
-        backgroundColor: "#008080",
-        elevation: 5,
-        borderRadius: 5,
         justifyContent: "center",
         alignItems: "center",
     },
     container_ico: {
-        backgroundColor: "#ECEFEC",
-        borderRadius: 50,
         justifyContent: "center",
         alignItems: "center",
     },
     text_about: {
         padding: 5,
+        fontSize: 17,
     },
     text_body: {
-        padding: 30,
+        padding: 20,
         backgroundColor: "white",
-        elevation: 5,
-        borderRadius: 5,
         marginBottom: 10,
     },
 });

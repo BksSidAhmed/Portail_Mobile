@@ -13,6 +13,7 @@ import { resetListMail } from "../redux/actions/listeEmailAction";
 import { RESET_TABLE_ACTION } from "../redux/actions/pointingHorsLigneAction";
 import { emailAction } from "../redux/actions/emailAction";
 import { passwordAction } from "../redux/actions/passwordAction";
+import { langueAction } from "../redux/actions/langueAction";
 class ManagementNoConnection extends React.Component {
     constructor(props) {
         super(props);
@@ -30,8 +31,10 @@ class ManagementNoConnection extends React.Component {
             text_pointing_error: "Pour utiliser la fonctionnalité hors ligne, veuillez vous connecter en ligne au moins une fois avec vos identifiants.",
             color: {},
             errorMail: null,
-            text_hors_ligne: "En mode Hors ligne vous pouvez réaliser une transaction d'entrée ou de sortie, si vous souhaitez profiter de toutes les fonctionnalités que Niva Mobile vous propose, veuillez vous connecter à un réseau internet.",
+            text_hors_ligne:
+                "Il semble y avoir eu une erreur lors de la tentative de connexion. Il peut s'avérer d'une erreur serveur ou vous n'avez plus accès à une connexion Internet. Mais en mode Hors ligne vous pouvez réaliser une transaction d'entrée ou de sortie, si vous souhaitez profiter de toutes les fonctionnalités que Niva Mobile vous propose.",
             text_bouton_hors_ligne: "Enregistrer un mouvement",
+            text_bouton_hors_ligne_connexion: "Connexion",
             text_input_email: "Email",
             text_bouton_enregistrer: "Enregistrer",
             text_bouton_annuler: "Annuler",
@@ -45,8 +48,10 @@ class ManagementNoConnection extends React.Component {
 
         if (locale === "de_DE") {
             this.setState({
-                text_hors_ligne: "Im Offline-Modus können Sie eine Ein- oder Ausstiegstransaktion durchführen. Wenn Sie alle Funktionen von Niva Mobile nutzen möchten, stellen Sie bitte eine Verbindung zu einem Internetnetzwerk her.",
+                text_hors_ligne:
+                    "Beim Versuch, eine Verbindung herzustellen, scheint ein Fehler aufgetreten zu sein. Möglicherweise liegt ein Serverfehler vor oder Sie haben keinen Zugriff mehr auf eine Internetverbindung. Aber im Offline-Modus können Sie eine Ein- oder Ausstiegstransaktion durchführen. Wenn Sie alle Funktionen von Niva Mobile nutzen möchten, stellen Sie bitte eine Verbindung zu einem Internetnetzwerk her.",
                 text_bouton_hors_ligne: "Nehmen Sie eine Bewegung auf",
+                text_bouton_hors_ligne_connexion: "Verbindung",
                 text_input_email: "Email",
                 text_bouton_enregistrer: "Aufzeichnung",
                 text_bouton_annuler: "Abbrechen",
@@ -60,8 +65,10 @@ class ManagementNoConnection extends React.Component {
 
         if (locale === "es_ES") {
             this.setState({
-                text_hors_ligne: "En el modo Offline puedes realizar una transacción de entrada o salida, si quieres aprovechar todas las funcionalidades que te ofrece Niva Mobile, por favor conéctate a una red de internet.",
+                text_hors_ligne:
+                    "Parece que se ha producido un error al intentar conectarse. Puede ser un error del servidor o ya no tiene acceso a una conexión a Internet. Pero en el modo Offline puedes realizar una transacción de entrada o salida, si quieres aprovechar todas las funcionalidades que te ofrece Niva Mobile, por favor conéctate a una red de internet.",
                 text_bouton_hors_ligne: "Graba un movimiento",
+                text_bouton_hors_ligne_connexion: "Conexión",
                 text_input_email: "Correo electrónico",
                 text_bouton_enregistrer: "Registro",
                 text_bouton_annuler: "Anular",
@@ -72,11 +79,13 @@ class ManagementNoConnection extends React.Component {
             });
             this.props.navigation.setOptions({ title: "Niva - Gestión del tiempo fuera de linea" });
         }
-        //Anglais
+
         if (locale === "en_GB") {
             this.setState({
-                text_hors_ligne: "In Offline mode you can carry out an entry or exit transaction, if you want to take advantage of all the features that Niva Mobile offers you, please connect to an internet network.",
+                text_hors_ligne:
+                    "There seems to have been an error trying to connect. It may be a server error or you no longer have access to an Internet connection. But in Offline mode you can carry out an entry or exit transaction, if you want to take advantage of all the features that Niva Mobile offers you, please connect to an internet network.",
                 text_bouton_hors_ligne: "Record a movement",
+                text_bouton_hors_ligne_connexion: "Login",
                 text_input_email: "E-mail",
                 text_bouton_enregistrer: "Record",
                 text_bouton_annuler: "Cancel",
@@ -87,11 +96,13 @@ class ManagementNoConnection extends React.Component {
             });
             this.props.navigation.setOptions({ title: "Niva - Time management offline" });
         }
-        //Italien
+
         if (locale === "it_IT") {
             this.setState({
-                text_hors_ligne: "In modalità Offline puoi effettuare una transazione in entrata o in uscita, se vuoi usufruire di tutte le funzionalità che ti offre Niva Mobile ti preghiamo di collegarti ad una rete internet.",
+                text_hors_ligne:
+                    "Sembra che si sia verificato un errore durante il tentativo di connessione. Potrebbe trattarsi di un errore del server o non hai più accesso a una connessione Internet. Ma in modalità Offline puoi effettuare una transazione in entrata o in uscita, se vuoi usufruire di tutte le funzionalità che ti offre Niva Mobile ti preghiamo di collegarti ad una rete internet.",
                 text_bouton_hors_ligne: "Registra un movimento",
+                text_bouton_hors_ligne_connexion: "Connessione",
                 text_input_email: "E-mail",
                 text_bouton_enregistrer: "Registrare",
                 text_bouton_annuler: "Per cancellare",
@@ -102,11 +113,13 @@ class ManagementNoConnection extends React.Component {
             });
             this.props.navigation.setOptions({ title: "Niva - Gestione del tempo disconnesso" });
         }
-        //Néerlandais
+
         if (locale === "nl_NL") {
             this.setState({
-                text_hors_ligne: "In de offline modus kunt u een in- of uitgangstransactie uitvoeren. Als u gebruik wilt maken van alle functies die Niva Mobile u biedt, maak dan verbinding met een internetnetwerk.",
+                text_hors_ligne:
+                    "Er lijkt een fout te zijn opgetreden bij het maken van verbinding. Het kan een serverfout zijn of u heeft geen toegang meer tot een internetverbinding. Maar in de offline modus kunt u een in- of uitgangstransactie uitvoeren. Als u gebruik wilt maken van alle functies die Niva Mobile u biedt, maak dan verbinding met een internetnetwerk.",
                 text_bouton_hors_ligne: "Leg een beweging vast",
+                text_bouton_hors_ligne_connexion: "Verbinding",
                 text_input_email: "E-mail",
                 text_bouton_enregistrer: "Opnemen",
                 text_bouton_annuler: "Annuleren",
@@ -171,7 +184,7 @@ class ManagementNoConnection extends React.Component {
 
     overlay = () => {
         return (
-            <Overlay isVisible={this.state.isVisible} onBackdropPress={() => this.setState({ isVisible: false, loading: false })} overlayStyle={styles.overlay_padding} animationType="slide">
+            <Overlay isVisible={this.state.isVisible} onBackdropPress={() => this.setState({ isVisible: false, loading: false })} overlayStyle={styles.overlay_popup} animationType="slide">
                 <View style={styles.view_overlay}>
                     <View>
                         <Text style={styles.text_overlay}>{this.state.text_overlay}</Text>
@@ -217,11 +230,21 @@ class ManagementNoConnection extends React.Component {
                                 <Text style={styles.text_body_overlay}>{this.state.text_pointing}</Text>
                             </View>
                         </Animatable.View>
-                        <Button buttonStyle={styles.button_overlay_accept} title="OK" onPress={() => this.setState({ visible: false, visibleListActivites: false })} />
+                        <Button buttonStyle={styles.button_overlay_accept} title="Fermer" onPress={() => this.setState({ visible: false, visibleListActivites: false })} />
                     </View>
                 </View>
             </Overlay>
         );
+    };
+
+    logOut = () => {
+        this.props.emailAction("");
+        this.props.passwordAction("");
+        this.props.langueAction("100");
+    };
+
+    _renderButtonConnexion = () => {
+        return <Button onPress={() => this.logOut()} disabled={this.state.disabled} buttonStyle={styles.button_mouvement} title={this.state.text_bouton_hors_ligne_connexion} />;
     };
 
     _validatePointing = () => {
@@ -241,7 +264,7 @@ class ManagementNoConnection extends React.Component {
                         if (data[i].email === this.email.trim()) {
                             data[i].pointage.push([0, this.email.trim(), this.getFullDate(), this.getFullHeure(), "F00", 0, 0]);
                             compteurTrouve++;
-                            console.log(data[i]);
+
                             this.props.pointingAction(data);
 
                             this.setState({
@@ -251,7 +274,7 @@ class ManagementNoConnection extends React.Component {
                                 timers: true,
                                 visible: true,
                                 errorMail: false,
-                                color: { alignItems: "center", justifyContent: "center", borderBottomWidth: 1, backgroundColor: "#35C724", height: 60 },
+                                color: { alignItems: "center", justifyContent: "center", borderBottomWidth: 1, backgroundColor: "#31859C", height: 60 },
                                 text_pointing: this.state.text_pointing_success,
                             });
 
@@ -273,7 +296,7 @@ class ManagementNoConnection extends React.Component {
                             timers: true,
                             visible: true,
                             errorMail: false,
-                            color: { alignItems: "center", justifyContent: "center", borderBottomWidth: 1, backgroundColor: "#35C724", height: 60 },
+                            color: { alignItems: "center", justifyContent: "center", borderBottomWidth: 1, backgroundColor: "#31959C", height: 60 },
                             text_pointing: this.state.text_pointing_success,
                         });
 
@@ -290,7 +313,7 @@ class ManagementNoConnection extends React.Component {
                     isVisible: false,
                     visible: true,
                     errorMail: true,
-                    color: { alignItems: "center", justifyContent: "center", borderBottomWidth: 1, backgroundColor: "#F94040", height: 60 },
+                    color: { alignItems: "center", justifyContent: "center", borderBottomWidth: 1, backgroundColor: "#C72C41", height: 60 },
                     text_pointing: this.state.text_pointing_error,
                 });
 
@@ -302,25 +325,20 @@ class ManagementNoConnection extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor="#008080" barStyle="light-content" />
-                <View style={styles.container}>
-                    <Animatable.View animation="bounceIn" style={styles.container_header}>
-                        <View style={styles.container_clock}>
-                            <Text style={styles.text_date}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
-                            <Text style={styles.text_heure}>{this.state.time}</Text>
-                        </View>
-                    </Animatable.View>
-                </View>
-                <View style={styles.container_global_button_animation}>
-                    <Animatable.View animation="bounceIn" delay={300} style={styles.container_text_animation}>
-                        <View style={styles.text_animation}>
-                            <Text style={styles.text_horsLigne}>{this.state.text_hors_ligne}</Text>
-                        </View>
-                    </Animatable.View>
-                    <Animatable.View animation="bounceIn" delay={600} style={styles.container_button_animation}>
-                        <Button onPress={() => this.actionButton()} disabled={this.state.disabled} buttonStyle={styles.button_mouvement} title={this.state.timers ? this.state.timer : this.state.text_bouton_hors_ligne} />
-                    </Animatable.View>
-                </View>
+                <StatusBar backgroundColor="#31859C" barStyle="light-content" />
+                <Animatable.View animation="bounceIn" style={styles.container_clock}>
+                    <Text style={styles.text_date}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
+                    <Text style={styles.text_heure}>{this.state.time}</Text>
+                </Animatable.View>
+                <Animatable.View animation="bounceIn" delay={300} style={styles.container_text_animation}>
+                    <View style={styles.text_animation}>
+                        <Text style={styles.text_horsLigne}>{this.state.text_hors_ligne}</Text>
+                    </View>
+                </Animatable.View>
+                <Animatable.View animation="bounceIn" delay={600} style={styles.container_button_animation}>
+                    <Button onPress={() => this.actionButton()} disabled={this.state.disabled} buttonStyle={styles.button_mouvement} title={this.state.timers ? this.state.timer : this.state.text_bouton_hors_ligne} />
+                    {this.props.email !== "" ? this._renderButtonConnexion() : null}
+                </Animatable.View>
                 {this.overlay()}
                 {this.dialogPopup()}
             </View>
@@ -331,13 +349,11 @@ class ManagementNoConnection extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "white",
     },
     container_clock: {
         flex: 1,
         padding: 20,
-        backgroundColor: "#008080",
-        elevation: 5,
-        borderRadius: 5,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -347,12 +363,11 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
     },
     container_button_animation: {
-        flex: 1,
+        flex: 2,
         padding: 10,
     },
     container_text_animation: {
-        flex: 2,
-        padding: 10,
+        flex: 3,
     },
     container_global_button_animation: {
         flex: 3,
@@ -360,34 +375,32 @@ const styles = StyleSheet.create({
     overlay_padding: {
         padding: 0,
     },
+    overlay_popup: {
+        padding: 10,
+    },
     button_mouvement: {
-        backgroundColor: "#008080",
+        backgroundColor: "#31859C",
         padding: 20,
+        marginVertical: 5,
         elevation: 5,
         borderRadius: 5,
     },
     text_animation: {
         padding: 20,
-        backgroundColor: "white",
-        elevation: 5,
-        borderRadius: 5,
         flex: 1,
-        justifyContent: "center",
         alignItems: "center",
     },
     text_date: {
         textAlign: "center",
-        color: "#fff",
         fontSize: 20,
     },
     text_heure: {
         textAlign: "center",
-        fontSize: 40,
-        color: "#fff",
+        fontSize: 35,
     },
     text_horsLigne: {
-        textAlign: "center",
-        fontSize: 15,
+        textAlign: "justify",
+        fontSize: 20,
     },
     dialog: {
         textAlign: "center",
@@ -400,7 +413,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     text_input: {
-        color: "#05375a",
+        color: "#05375A",
     },
     text_overlay: {
         marginBottom: 20,
@@ -408,14 +421,14 @@ const styles = StyleSheet.create({
     },
     button_overlay_accept: {
         borderRadius: 50,
-        backgroundColor: "#008080",
+        backgroundColor: "#31859C",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
     },
     button_overlay_refuse: {
         borderRadius: 50,
-        backgroundColor: "#b22222",
+        backgroundColor: "#C72C41",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
@@ -459,7 +472,7 @@ const styles = StyleSheet.create({
     container_title_overlay: {
         flex: 1,
         padding: 20,
-        backgroundColor: "#008080",
+        backgroundColor: "#31859C",
         elevation: 5,
         borderRadius: 5,
         justifyContent: "center",
@@ -485,4 +498,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { pointingAction, RESET_ACTION, listeEmailAction, resetListMail, RESET_TABLE_ACTION, emailAction, passwordAction })(ManagementNoConnection);
+export default connect(mapStateToProps, { pointingAction, RESET_ACTION, listeEmailAction, resetListMail, RESET_TABLE_ACTION, emailAction, passwordAction, langueAction })(ManagementNoConnection);

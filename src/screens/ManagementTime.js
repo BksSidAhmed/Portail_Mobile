@@ -8,6 +8,9 @@ import { getToken, postAction, getUser } from "../api/index";
 import Geolocation from "react-native-geolocation-service";
 import { listeEmailAction } from "../redux/actions/listeEmailAction";
 import { pointingAction } from "../redux/actions/pointingHorsLigneAction";
+import { emailAction } from "../redux/actions/emailAction";
+import { passwordAction } from "../redux/actions/passwordAction";
+import { langueAction } from "../redux/actions/langueAction";
 import { Button, Overlay } from "react-native-elements";
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import { PermissionsAndroid } from "react-native";
@@ -20,20 +23,19 @@ class ManagementTime extends React.Component {
         super(props);
         this.state = {
             time: "",
+            timeFixed: "",
+            loaderResponse: false,
             loadingList: true,
+            loadingResponse: false,
             latitude: "",
             longitude: "",
             visible: false,
-            visibleListActivites: false,
             visibleMouvementsEnAttente: false,
             user: "",
             currentIco: "",
             currentLibelle: "",
             currentText: "",
             compteurDelete: 0,
-            activeGeolocalisation: null,
-            lieuxGeolocalisation: null,
-            distance: false,
             statutUser: null,
             statut1: null,
             statut2: null,
@@ -43,9 +45,6 @@ class ManagementTime extends React.Component {
             errorServeur: false,
             activite: null,
             activites: null,
-            activitesButton: null,
-            activitesLibelle: null,
-            activitesLocalisation: null,
             loaderOverlayResponse: false,
             refreshing: false,
             mouvementsEnAttente: false,
@@ -92,10 +91,10 @@ class ManagementTime extends React.Component {
     }
 
     UNSAFE_componentWillMount() {
-        this.renderClock();
-        this.sendPointingDeconnection();
-        this.getDataCust();
-        this.getMouvementsEnAttente();
+        this._renderClock();
+        this._sendMouvements();
+        this._getUserData();
+        this._getMouvementsEnAttente();
     }
 
     componentWillUnmount = () => {
@@ -103,16 +102,7 @@ class ManagementTime extends React.Component {
         LocationServicesDialogBox.stopListener();
     };
 
-    onRefresh = () => {
-        this.setState({
-            refreshing: true,
-            loadingList: true,
-        });
-        this.getDataCust();
-        this.getMouvementsEnAttente();
-    };
-
-    getMouvementsEnAttente = () => {
+    _getMouvementsEnAttente = () => {
         var dataPointing = this.props.pointing;
         if (dataPointing.length === 0) {
             this.setState({
@@ -125,7 +115,7 @@ class ManagementTime extends React.Component {
         }
     };
 
-    getMouvementsEnAttenteByEmail = () => {
+    _getMouvementsEnAttenteByEmail = () => {
         var dataPointing = this.props.pointing;
         var mouvements = [];
         var compteur = 0;
@@ -144,102 +134,7 @@ class ManagementTime extends React.Component {
         return mouvements;
     };
 
-    sendPointingDeconnection() {
-        var dataPointing = this.props.pointing;
-        var compteurDelete = 0;
-
-        this.setState({
-            mouvements: this.getMouvementsEnAttenteByEmail(),
-            mouvementText: "Début de la séquence d'envoi",
-            disableBoutonMouvements: true,
-        });
-        console.log(this.state.disableBoutonMouvements);
-
-        dataPointing.forEach((element) => {
-            if (element.email === this.props.email) {
-                this.setState({
-                    visibleMouvementsEnAttente: true,
-                });
-
-                var compteur = 0;
-
-                element.pointage.forEach((pointing) => {
-                    getToken(this.props.email, this.props.password).then((token) => {
-                        if (token[0] === 200) {
-                            postAction(token[1].token, pointing[0], pointing[1], pointing[2], pointing[3], pointing[4], pointing[5], pointing[6], null).then((action) => {
-                                if (action[0] === 200 && action[1].code === 200) {
-                                    this.state.mouvements[compteur].ico = "check-circle";
-                                    this.state.mouvements[compteur].colorIco = "#008080";
-                                    this.state.mouvements[compteur].loadingMouvement = false;
-
-                                    this.setState({
-                                        mouvementText: "Envoi du mouvement " + (compteur + 1) + " réussi",
-                                    });
-
-                                    compteurDelete++;
-                                    compteur++;
-                                    if (compteurDelete === element.pointage.length) {
-                                        var removeIndex = dataPointing
-                                            .map(function (item) {
-                                                return item.email;
-                                            })
-                                            .indexOf(this.props.email);
-                                        dataPointing.splice(removeIndex, 1);
-                                        this.props.pointingAction(dataPointing);
-                                        this.setState({
-                                            errorServeur: false,
-                                            disableBoutonMouvements: false,
-                                        });
-                                    }
-
-                                    this.onRefresh();
-                                } else {
-                                    this.state.mouvements[compteur].ico = "times-circle";
-                                    this.state.mouvements[compteur].colorIco = "#C72C41";
-                                    this.state.mouvements[compteur].loadingMouvement = false;
-
-                                    this.setState({
-                                        mouvementText: "Envoi du mouvement " + (compteur + 1) + " echoué",
-                                    });
-
-                                    compteur++;
-
-                                    if (compteur === element.pointage.length) {
-                                        this.setState({
-                                            disableBoutonMouvements: false,
-                                        });
-                                    }
-
-                                    this.onRefresh();
-                                }
-                            });
-                        } else {
-                            this.state.mouvements[compteur].ico = "times-circle";
-                            this.state.mouvements[compteur].colorIco = "#C72C41";
-                            this.state.mouvements[compteur].loadingMouvement = false;
-
-                            this.setState({
-                                mouvementText: "Envoi du mouvement " + (compteur + 1) + " echoué",
-                                disableBoutonMouvements: false,
-                            });
-
-                            compteur++;
-
-                            if (compteur === element.pointage.length) {
-                                this.setState({
-                                    disableBoutonMouvements: false,
-                                });
-                            }
-
-                            this.onRefresh();
-                        }
-                    });
-                });
-            }
-        });
-    }
-
-    getDataCust() {
+    _getUserData() {
         getToken(this.props.email, this.props.password).then((token) => {
             if (token[0] === 200) {
                 getUser(token[1].token, this.props.email).then((response) => {
@@ -325,421 +220,47 @@ class ManagementTime extends React.Component {
                     });
                 });
             } else {
-                this.setState({
-                    loadingList: false,
-                    refreshing: false,
-                    loaderOverlayResponse: true,
-                    currentIco: null,
-                    currentLibelle: "Erreur serveur",
-                    currentText: "La liste n'a pas été mise à jour. Une erreur est survenue.",
-                });
+                this.props.navigation.navigate("Gestion du temps hors connection");
             }
         });
     }
 
-    getFullHeure = () => {
+    _getFullHeure = () => {
         var now = new moment().format("HHmmss");
         return now;
     };
 
-    getFullDate = () => {
+    _getFullDate = () => {
         var now = new moment().format("YYYYMMDD");
         return now;
     };
 
-    renderClock = () => {
-        this.IntervalClock = setInterval(() => {
-            this.setState({
-                time: moment().format("HH:mm:ss"),
-            });
-        }, 1000);
-    };
-
-    requestLocationPermission = async () => {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-        return granted;
-    };
-
-    errorServeur = async (buttonError, lat, long, activite) => {
+    _refresh = () => {
         this.setState({
-            errorServeur: true,
-            loadingList: false,
-            loaderOverlayResponse: false,
-            currentIco: null,
-            currentLibelle: "Erreur serveur",
-            currentText: "Serveur actuellement indisponible.\nLe mouvement a été enregistré dans votre mobile.",
-        });
-
-        if (buttonError === "F00" || activite != null) {
-            var dataPointing = this.props.pointing;
-            var compteurTrouve = 0;
-            for (var i = 0; i < dataPointing.length; i++) {
-                if (dataPointing[i].email === this.props.email) {
-                    dataPointing[i].pointage.push(["0", this.props.email, this.getFullDate(), this.getFullHeure(), buttonError, lat, long, activite]);
-                    compteurTrouve++;
-
-                    this.props.pointingAction(dataPointing);
-
-                    Vibration.vibrate(500);
-                }
-            }
-
-            if (compteurTrouve === 0) {
-                dataPointing.push({ email: this.props.email, pointage: [["0", this.props.email, this.getFullDate(), this.getFullHeure(), buttonError, lat, long, activite]] });
-
-                this.props.pointingAction(dataPointing);
-
-                Vibration.vibrate(500);
-            }
-
-            this.onRefresh();
-        } else {
-            this.setState({
-                currentText: "Serveur actuellement indisponible.",
-            });
-        }
-    };
-
-    actionButton = async (button, libelle, localisation, activite) => {
-        this.setState({
+            refreshing: true,
             loadingList: true,
-            visible: true,
-            loaderOverlayResponse: true,
+        });
+        this._getUserData();
+        this._getMouvementsEnAttente();
+        this._resetCollapse();
+    };
+
+    _resetCollapse = () => {
+        this.setState({
+            expanded_0: false,
+            expanded_1: false,
+            expanded_2: false,
+            expanded_3: false,
+            expanded_4: false,
+            expanded_5: false,
+        });
+    };
+
+    _toggleCollapse = (button) => {
+        this.setState({
+            timeFixed: moment().format("LTS"),
         });
 
-        let ligne_1 = "";
-        let ligne_2 = "";
-        let ligne_3 = "";
-        let ligne_4 = "";
-        let dataIco = null;
-        let indicateurTemps = "1";
-
-        if (button === "P00") {
-            this.setState({
-                loadingList: false,
-                visible: false,
-                loaderOverlayResponse: false,
-            });
-            this.sendPointingDeconnection();
-        }
-
-        if (!this.state.user.activeGeolocalisation) {
-            getToken(this.props.email, this.props.password).then((token) => {
-                if (token[0] === 200) {
-                    postAction(token[1].token, indicateurTemps, this.props.email, this.getFullDate(), this.getFullHeure(), button, null, null, activite).then((action) => {
-                        if (action[0] === 200 && action[1].code === 200) {
-                            if (button === "F00") {
-                                Vibration.vibrate(500);
-                            }
-
-                            ligne_1 = action[1].message.ligne_1;
-                            ligne_2 = action[1].message.ligne_2;
-                            ligne_3 = action[1].message.ligne_3;
-                            ligne_4 = action[1].message.ligne_4;
-
-                            if (ligne_1 !== "") {
-                                ligne_1 = ligne_1 + "\n";
-                            }
-                            if (ligne_2 !== "") {
-                                ligne_2 = ligne_2 + "\n";
-                            }
-                            if (ligne_3 !== "") {
-                                ligne_3 = ligne_3 + "\n";
-                            }
-                            if (action[1].ico !== "") {
-                                dataIco = action[1].ico;
-                            }
-
-                            this.setState({
-                                loadingList: false,
-                                loaderOverlayResponse: false,
-                                statutUser: action[1].statut0,
-                                statut1: action[1].statut1,
-                                statut2: action[1].statut2,
-                                statut3: action[1].statut3,
-                                statut4: action[1].statut4,
-                                statut5: action[1].statut5,
-                                currentIco: dataIco,
-                                currentLibelle: libelle,
-                                currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                            });
-                        } else {
-                            this.errorServeur(button, this.state.latitude, this.state.longitude, activite);
-                        }
-                    });
-                } else {
-                    this.errorServeur(button, this.state.latitude, this.state.longitude, activite);
-                }
-            });
-        } else {
-            if (localisation) {
-                this.requestLocationPermission().then((granted) => {
-                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                        Geolocation.getCurrentPosition((info) =>
-                            this.setState(
-                                {
-                                    latitude: info.coords.latitude.toString(),
-                                    longitude: info.coords.longitude.toString(),
-                                },
-                                () => {
-                                    var test = false;
-
-                                    this.state.user.lieuxGeolocalisation.forEach((lieu) => {
-                                        var dis = getDistance({ latitude: this.state.latitude, longitude: this.state.longitude }, { latitude: lieu.latitude, longitude: lieu.longitude });
-                                        if (dis <= lieu.marge) {
-                                            test = true;
-                                        }
-                                    });
-
-                                    if (test) {
-                                        getToken(this.props.email, this.props.password).then((token) => {
-                                            if (token[0] === 200) {
-                                                postAction(token[1].token, indicateurTemps, this.props.email, this.getFullDate(), this.getFullHeure(), button, this.state.latitude, this.state.longitude, activite).then((action) => {
-                                                    if (action[0] === 200 && action[1].code === 200) {
-                                                        if (button === "F00") {
-                                                            Vibration.vibrate(500);
-                                                        }
-
-                                                        ligne_1 = action[1].message.ligne_1;
-                                                        ligne_2 = action[1].message.ligne_2;
-                                                        ligne_3 = action[1].message.ligne_3;
-                                                        ligne_4 = action[1].message.ligne_4;
-
-                                                        if (ligne_1 !== "") {
-                                                            ligne_1 = ligne_1 + "\n";
-                                                        }
-                                                        if (ligne_2 !== "") {
-                                                            ligne_2 = ligne_2 + "\n";
-                                                        }
-                                                        if (ligne_3 !== "") {
-                                                            ligne_3 = ligne_3 + "\n";
-                                                        }
-                                                        if (action[1].ico !== "") {
-                                                            dataIco = action[1].ico;
-                                                        }
-
-                                                        this.setState({
-                                                            loadingList: false,
-                                                            loaderOverlayResponse: false,
-                                                            statutUser: action[1].statut0,
-                                                            statut1: action[1].statut1,
-                                                            statut2: action[1].statut2,
-                                                            statut3: action[1].statut3,
-                                                            statut4: action[1].statut4,
-                                                            statut5: action[1].statut5,
-                                                            currentIco: dataIco,
-                                                            currentLibelle: libelle,
-                                                            currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                                        });
-                                                    } else {
-                                                        this.errorServeur(button, this.state.latitude, this.state.longitude, activite);
-                                                    }
-                                                });
-                                            } else {
-                                                this.errorServeur(button, this.state.latitude, this.state.longitude, activite);
-                                            }
-                                        });
-                                    } else {
-                                        getToken(this.props.email, this.props.password).then((token) => {
-                                            if (token[0] === 200) {
-                                                postAction(token[1].token, indicateurTemps, this.props.email, this.getFullDate(), this.getFullHeure(), "E01", this.state.latitude, this.state.longitude, activite).then((action) => {
-                                                    if (action[0] === 200 && action[1].code === 200) {
-                                                        if (button === "F00") {
-                                                            Vibration.vibrate(500);
-                                                        }
-
-                                                        ligne_1 = action[1].message.ligne_1;
-                                                        ligne_2 = action[1].message.ligne_2;
-                                                        ligne_3 = action[1].message.ligne_3;
-                                                        ligne_4 = action[1].message.ligne_4;
-
-                                                        if (ligne_1 !== "") {
-                                                            ligne_1 = ligne_1 + "\n";
-                                                        }
-                                                        if (ligne_2 !== "") {
-                                                            ligne_2 = ligne_2 + "\n";
-                                                        }
-                                                        if (ligne_3 !== "") {
-                                                            ligne_3 = ligne_3 + "\n";
-                                                        }
-
-                                                        this.setState({
-                                                            loadingList: false,
-                                                            loaderOverlayResponse: false,
-                                                            statutUser: action[1].statut0,
-                                                            statut1: action[1].statut1,
-                                                            statut2: action[1].statut2,
-                                                            statut3: action[1].statut3,
-                                                            statut4: action[1].statut4,
-                                                            statut5: action[1].statut5,
-                                                            currentIco: null,
-                                                            currentLibelle: libelle,
-                                                            currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                                        });
-                                                    } else {
-                                                        this.errorServeur(button, this.state.latitude, this.state.longitude, activite);
-                                                    }
-                                                });
-                                            } else {
-                                                this.errorServeur(button, this.state.latitude, this.state.longitude, activite);
-                                            }
-                                        });
-                                    }
-                                }
-                            )
-                        );
-                    } else {
-                        getToken(this.props.email, this.props.password).then((token) => {
-                            if (token[0] === 200) {
-                                postAction(token[1].token, indicateurTemps, this.props.email, this.getFullDate(), this.getFullHeure(), "E00", null, null, null).then((action) => {
-                                    if (action[0] === 200 && action[1].code === 200) {
-                                        if (button === "F00") {
-                                            Vibration.vibrate(500);
-                                        }
-
-                                        ligne_1 = action[1].message.ligne_1;
-                                        ligne_2 = action[1].message.ligne_2;
-                                        ligne_3 = action[1].message.ligne_3;
-                                        ligne_4 = action[1].message.ligne_4;
-
-                                        if (ligne_1 !== "") {
-                                            ligne_1 = ligne_1 + "\n";
-                                        }
-                                        if (ligne_2 !== "") {
-                                            ligne_2 = ligne_2 + "\n";
-                                        }
-                                        if (ligne_3 !== "") {
-                                            ligne_3 = ligne_3 + "\n";
-                                        }
-
-                                        this.setState({
-                                            loadingList: false,
-                                            loaderOverlayResponse: false,
-                                            statutUser: action[1].statut0,
-                                            statut1: action[1].statut1,
-                                            statut2: action[1].statut2,
-                                            statut3: action[1].statut3,
-                                            statut4: action[1].statut4,
-                                            statut5: action[1].statut5,
-                                            currentIco: null,
-                                            currentLibelle: libelle,
-                                            currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                        });
-                                    } else {
-                                        this.errorServeur(button, null, null, activite);
-                                    }
-                                });
-                            } else {
-                                this.errorServeur(button, null, null, activite);
-                            }
-                        });
-                    }
-                });
-            } else {
-                getToken(this.props.email, this.props.password).then((token) => {
-                    if (token[0] === 200) {
-                        postAction(token[1].token, indicateurTemps, this.props.email, this.getFullDate(), this.getFullHeure(), button, null, null, activite).then((action) => {
-                            if (action[0] === 200 && action[1].code === 200) {
-                                if (button === "F00") {
-                                    Vibration.vibrate(500);
-                                }
-
-                                ligne_1 = action[1].message.ligne_1;
-                                ligne_2 = action[1].message.ligne_2;
-                                ligne_3 = action[1].message.ligne_3;
-                                ligne_4 = action[1].message.ligne_4;
-
-                                if (ligne_1 !== "") {
-                                    ligne_1 = ligne_1 + "\n";
-                                }
-                                if (ligne_2 !== "") {
-                                    ligne_2 = ligne_2 + "\n";
-                                }
-                                if (ligne_3 !== "") {
-                                    ligne_3 = ligne_3 + "\n";
-                                }
-                                if (action[1].ico !== "") {
-                                    dataIco = action[1].ico;
-                                }
-
-                                this.setState({
-                                    loadingList: false,
-                                    loaderOverlayResponse: false,
-                                    statutUser: action[1].statut0,
-                                    currentIco: dataIco,
-                                    currentLibelle: libelle,
-                                    currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                });
-                            } else {
-                                this.errorServeur(button, null, null, activite);
-                            }
-                        });
-                    } else {
-                        this.errorServeur(button, null, null, activite);
-                    }
-                });
-            }
-        }
-    };
-
-    dialogPopup = (ico, title, text) => {
-        return (
-            <Overlay isVisible={this.state.visible} overlayStyle={styles.overlay_padding_0} fullScreen={true} animationType="slide">
-                {this.state.loaderOverlayResponse ? (
-                    <View style={styles.container_overlay}>
-                        <View style={styles.loader_overlay}>
-                            <ActivityIndicator size="large" color="#008080" />
-                        </View>
-                    </View>
-                ) : (
-                    <View style={styles.container_overlay}>
-                        <View style={styles.container_global_header_overlay}>
-                            <Animatable.View animation="bounceIn" delay={0} style={styles.container_animation_header_overlay}>
-                                <View style={styles.container_title_overlay}>
-                                    <Text style={styles.text_title_overlay}>{title}</Text>
-                                </View>
-                            </Animatable.View>
-                        </View>
-                        <View style={styles.container_global_tiles_overlay}>
-                            <Animatable.View animation="bounceIn" delay={300} style={styles.container_animation_overlay_ico}>
-                                <View style={styles.container_ico_overlay}>
-                                    {this.state.errorServeur || ico === null ? <FontAwesome5 name="exclamation-triangle" color="#C72C41" size={50} /> : <Image style={styles.ico_overlay} source={{ uri: `data:image/png;base64,${ico}` }} />}
-                                </View>
-                            </Animatable.View>
-                            <Animatable.View animation="bounceIn" delay={600} style={styles.container_animation_overlay_text}>
-                                <View style={styles.container_text_overlay}>
-                                    <Text style={styles.text_body_overlay}>{text}</Text>
-                                </View>
-                            </Animatable.View>
-                            <Button buttonStyle={styles.button_overlay_accept} title="OK" onPress={() => this.setState({ visible: false, visibleListActivites: false })} />
-                        </View>
-                    </View>
-                )}
-            </Overlay>
-        );
-    };
-
-    // renderButtonSection = (section) => {
-    //     return (
-    //         <Animatable.View animation="bounceIn" delay={section.delay} style={styles.container_button_animation}>
-    //         <TouchableOpacity
-    //                             // onPress={() => {
-    //                             //     if (section.activite === "O") {
-    //                             //         this.showActiviteList(section.button, section.libelle, section.localisation);
-    //                             //     } else {
-    //                             //         this.actionButton(section.button, section.libelle, section.localisation, null);
-    //                             //     }
-    //                             // }}
-    //                             style={styles.button}>
-    //                             <View style={styles.container_ico}>
-    //                                 {section.ico !== "" ? <Image style={styles.image} source={{ uri: `data:image/png;base64,${section.ico}` }} /> : <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />}
-    //                                 <Text style={styles.text_button}>{section.libelle}</Text>
-    //                             </View>
-    //                         </TouchableOpacity></Animatable.View>
-    //     );
-    // };
-
-    showCollapse = (button) => {
         if (button === "F00") {
             this.setState({
                 expanded_0: !this.state.expanded_0,
@@ -800,9 +321,491 @@ class ManagementTime extends React.Component {
                 expanded_5: !this.state.expanded_5,
             });
         }
+
+        this.setState({
+            loadingResponse: false,
+            loaderResponse: false,
+        });
     };
 
-    buttons = (user) => {
+    _sendMouvements() {
+        var dataPointing = this.props.pointing;
+        var compteurDelete = 0;
+
+        this.setState({
+            mouvements: this._getMouvementsEnAttenteByEmail(),
+            mouvementText: "Début de la séquence d'envoi",
+            disableBoutonMouvements: true,
+        });
+
+        dataPointing.forEach((element) => {
+            if (element.email === this.props.email) {
+                this.setState({
+                    visibleMouvementsEnAttente: true,
+                });
+
+                var compteur = 0;
+
+                element.pointage.forEach((pointing) => {
+                    getToken(this.props.email, this.props.password).then((token) => {
+                        if (token[0] === 200) {
+                            postAction(token[1].token, pointing[0], pointing[1], pointing[2], pointing[3], pointing[4], pointing[5], pointing[6], null).then((action) => {
+                                if (action[0] === 200 && action[1].code === 200) {
+                                    this.state.mouvements[compteur].ico = "check-circle";
+                                    this.state.mouvements[compteur].colorIco = "#31859C";
+                                    this.state.mouvements[compteur].loadingMouvement = false;
+
+                                    this.setState({
+                                        mouvementText: "Envoi du mouvement " + (compteur + 1) + " réussi",
+                                    });
+
+                                    compteurDelete++;
+                                    compteur++;
+                                    if (compteurDelete === element.pointage.length) {
+                                        var removeIndex = dataPointing
+                                            .map(function (item) {
+                                                return item.email;
+                                            })
+                                            .indexOf(this.props.email);
+                                        dataPointing.splice(removeIndex, 1);
+                                        this.props.pointingAction(dataPointing);
+                                        this.setState({
+                                            errorServeur: false,
+                                            disableBoutonMouvements: false,
+                                        });
+                                    }
+
+                                    this._refresh();
+                                } else {
+                                    this.state.mouvements[compteur].ico = "times-circle";
+                                    this.state.mouvements[compteur].colorIco = "#C72C41";
+                                    this.state.mouvements[compteur].loadingMouvement = false;
+
+                                    this.setState({
+                                        mouvementText: "Envoi du mouvement " + (compteur + 1) + " echoué",
+                                    });
+
+                                    compteur++;
+
+                                    if (compteur === element.pointage.length) {
+                                        this.setState({
+                                            disableBoutonMouvements: false,
+                                        });
+                                    }
+
+                                    this._refresh();
+                                }
+                            });
+                        } else {
+                            this.state.mouvements[compteur].ico = "times-circle";
+                            this.state.mouvements[compteur].colorIco = "#C72C41";
+                            this.state.mouvements[compteur].loadingMouvement = false;
+
+                            this.setState({
+                                mouvementText: "Envoi du mouvement " + (compteur + 1) + " echoué",
+                                disableBoutonMouvements: false,
+                            });
+
+                            compteur++;
+
+                            if (compteur === element.pointage.length) {
+                                this.setState({
+                                    disableBoutonMouvements: false,
+                                });
+                            }
+
+                            this._refresh();
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    _renderClock = () => {
+        this.IntervalClock = setInterval(() => {
+            this.setState({
+                time: moment().format("LTS"),
+            });
+        }, 1000);
+    };
+
+    _requestLocationPermission = async () => {
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+        return granted;
+    };
+
+    _errorServeur = async (buttonError, lat, long, activite) => {
+        this.setState({
+            loadingList: false,
+            loaderResponse: false,
+            loadingResponse: true,
+            currentIco: null,
+            currentLibelle: "Erreur serveur",
+            currentText: "Serveur actuellement indisponible.\nLe mouvement a été enregistré dans votre mobile.",
+        });
+
+        if (buttonError === "F00" || activite != null) {
+            var dataPointing = this.props.pointing;
+            var compteurTrouve = 0;
+            for (var i = 0; i < dataPointing.length; i++) {
+                if (dataPointing[i].email === this.props.email) {
+                    dataPointing[i].pointage.push(["0", this.props.email, this._getFullDate(), this._getFullHeure(), buttonError, lat, long, activite]);
+                    compteurTrouve++;
+
+                    this.props.pointingAction(dataPointing);
+
+                    Vibration.vibrate(500);
+                }
+            }
+
+            if (compteurTrouve === 0) {
+                dataPointing.push({ email: this.props.email, pointage: [["0", this.props.email, this._getFullDate(), this._getFullHeure(), buttonError, lat, long, activite]] });
+
+                this.props.pointingAction(dataPointing);
+
+                Vibration.vibrate(500);
+            }
+        } else {
+            this.setState({
+                currentText: "Serveur actuellement indisponible.",
+            });
+        }
+    };
+
+    _sendAction = async (button, libelle, localisation, activite) => {
+        this.setState({
+            loaderResponse: true,
+            loadingResponse: false,
+        });
+
+        let ligne_1 = "";
+        let ligne_2 = "";
+        let ligne_3 = "";
+        let ligne_4 = "";
+        let dataIco = null;
+        let indicateurTemps = "1";
+
+        if (button === "P00") {
+            this.setState({
+                loadingList: false,
+                visible: false,
+                loaderOverlayResponse: false,
+            });
+            this._sendMouvements();
+        }
+
+        if (!this.state.user.activeGeolocalisation) {
+            getToken(this.props.email, this.props.password).then((token) => {
+                if (token[0] === 200) {
+                    postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, null, null, activite).then((action) => {
+                        if (action[0] === 200) {
+                            if (action[1].code === 200) {
+                                if (button === "F00") {
+                                    Vibration.vibrate(500);
+                                }
+
+                                ligne_1 = action[1].message.ligne_1;
+                                ligne_2 = action[1].message.ligne_2;
+                                ligne_3 = action[1].message.ligne_3;
+                                ligne_4 = action[1].message.ligne_4;
+
+                                if (ligne_1 !== "") {
+                                    ligne_1 = ligne_1 + "\n";
+                                }
+                                if (ligne_2 !== "") {
+                                    ligne_2 = ligne_2 + "\n";
+                                }
+                                if (ligne_3 !== "") {
+                                    ligne_3 = ligne_3 + "\n";
+                                }
+                                if (action[1].ico !== "") {
+                                    dataIco = action[1].ico;
+                                }
+
+                                this.setState({
+                                    loadingList: false,
+                                    loaderResponse: false,
+                                    loadingResponse: true,
+                                    statutUser: action[1].statut0,
+                                    statut1: action[1].statut1,
+                                    statut2: action[1].statut2,
+                                    statut3: action[1].statut3,
+                                    statut4: action[1].statut4,
+                                    statut5: action[1].statut5,
+                                    currentIco: dataIco,
+                                    currentLibelle: libelle,
+                                    currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                });
+                            } else {
+                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
+                            }
+                        } else {
+                            this.props.navigation.navigate("Gestion du temps hors connection");
+                        }
+                    });
+                } else {
+                    this.props.navigation.navigate("Gestion du temps hors connection");
+                }
+            });
+        } else {
+            if (localisation) {
+                this._requestLocationPermission().then((granted) => {
+                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                        Geolocation.getCurrentPosition((info) =>
+                            this.setState(
+                                {
+                                    latitude: info.coords.latitude.toString(),
+                                    longitude: info.coords.longitude.toString(),
+                                },
+                                () => {
+                                    var test = false;
+
+                                    this.state.user.lieuxGeolocalisation.forEach((lieu) => {
+                                        var dis = getDistance({ latitude: this.state.latitude, longitude: this.state.longitude }, { latitude: lieu.latitude, longitude: lieu.longitude });
+                                        if (dis <= lieu.marge) {
+                                            test = true;
+                                        }
+                                    });
+
+                                    if (test) {
+                                        getToken(this.props.email, this.props.password).then((token) => {
+                                            if (token[0] === 200) {
+                                                postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, this.state.latitude, this.state.longitude, activite).then((action) => {
+                                                    if (action[0] === 200) {
+                                                        if (action[1].code === 200) {
+                                                            if (button === "F00") {
+                                                                Vibration.vibrate(500);
+                                                            }
+
+                                                            ligne_1 = action[1].message.ligne_1;
+                                                            ligne_2 = action[1].message.ligne_2;
+                                                            ligne_3 = action[1].message.ligne_3;
+                                                            ligne_4 = action[1].message.ligne_4;
+
+                                                            if (ligne_1 !== "") {
+                                                                ligne_1 = ligne_1 + "\n";
+                                                            }
+                                                            if (ligne_2 !== "") {
+                                                                ligne_2 = ligne_2 + "\n";
+                                                            }
+                                                            if (ligne_3 !== "") {
+                                                                ligne_3 = ligne_3 + "\n";
+                                                            }
+                                                            if (action[1].ico !== "") {
+                                                                dataIco = action[1].ico;
+                                                            }
+
+                                                            this.setState({
+                                                                loadingList: false,
+                                                                loaderResponse: false,
+                                                                loadingResponse: true,
+                                                                statutUser: action[1].statut0,
+                                                                statut1: action[1].statut1,
+                                                                statut2: action[1].statut2,
+                                                                statut3: action[1].statut3,
+                                                                statut4: action[1].statut4,
+                                                                statut5: action[1].statut5,
+                                                                currentIco: dataIco,
+                                                                currentLibelle: libelle,
+                                                                currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                                            });
+                                                        } else {
+                                                            this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
+                                                        }
+                                                    } else {
+                                                        this.props.navigation.navigate("Gestion du temps hors connection");
+                                                    }
+                                                });
+                                            } else {
+                                                this.props.navigation.navigate("Gestion du temps hors connection");
+                                            }
+                                        });
+                                    } else {
+                                        getToken(this.props.email, this.props.password).then((token) => {
+                                            if (token[0] === 200) {
+                                                postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), "E01", this.state.latitude, this.state.longitude, activite).then((action) => {
+                                                    if (action[0] === 200) {
+                                                        if (action[1].code === 200) {
+                                                            if (button === "F00") {
+                                                                Vibration.vibrate(500);
+                                                            }
+
+                                                            ligne_1 = action[1].message.ligne_1;
+                                                            ligne_2 = action[1].message.ligne_2;
+                                                            ligne_3 = action[1].message.ligne_3;
+                                                            ligne_4 = action[1].message.ligne_4;
+
+                                                            if (ligne_1 !== "") {
+                                                                ligne_1 = ligne_1 + "\n";
+                                                            }
+                                                            if (ligne_2 !== "") {
+                                                                ligne_2 = ligne_2 + "\n";
+                                                            }
+                                                            if (ligne_3 !== "") {
+                                                                ligne_3 = ligne_3 + "\n";
+                                                            }
+
+                                                            this.setState({
+                                                                loadingList: false,
+                                                                loaderResponse: false,
+                                                                loadingResponse: true,
+                                                                statutUser: action[1].statut0,
+                                                                statut1: action[1].statut1,
+                                                                statut2: action[1].statut2,
+                                                                statut3: action[1].statut3,
+                                                                statut4: action[1].statut4,
+                                                                statut5: action[1].statut5,
+                                                                currentIco: null,
+                                                                currentLibelle: libelle,
+                                                                currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                                            });
+                                                        } else {
+                                                            this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
+                                                        }
+                                                    } else {
+                                                        this.props.navigation.navigate("Gestion du temps hors connection");
+                                                    }
+                                                });
+                                            } else {
+                                                this.props.navigation.navigate("Gestion du temps hors connection");
+                                            }
+                                        });
+                                    }
+                                }
+                            )
+                        );
+                    } else {
+                        getToken(this.props.email, this.props.password).then((token) => {
+                            if (token[0] === 200) {
+                                postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), "E00", null, null, null).then((action) => {
+                                    if (action[0] === 200) {
+                                        if (action[1].code === 200) {
+                                            if (button === "F00") {
+                                                Vibration.vibrate(500);
+                                            }
+
+                                            ligne_1 = action[1].message.ligne_1;
+                                            ligne_2 = action[1].message.ligne_2;
+                                            ligne_3 = action[1].message.ligne_3;
+                                            ligne_4 = action[1].message.ligne_4;
+
+                                            if (ligne_1 !== "") {
+                                                ligne_1 = ligne_1 + "\n";
+                                            }
+                                            if (ligne_2 !== "") {
+                                                ligne_2 = ligne_2 + "\n";
+                                            }
+                                            if (ligne_3 !== "") {
+                                                ligne_3 = ligne_3 + "\n";
+                                            }
+
+                                            this.setState({
+                                                loadingList: false,
+                                                loaderResponse: false,
+                                                loadingResponse: true,
+                                                statutUser: action[1].statut0,
+                                                statut1: action[1].statut1,
+                                                statut2: action[1].statut2,
+                                                statut3: action[1].statut3,
+                                                statut4: action[1].statut4,
+                                                statut5: action[1].statut5,
+                                                currentIco: null,
+                                                currentLibelle: libelle,
+                                                currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                            });
+                                        } else {
+                                            this._errorServeur(button, null, null, activite);
+                                        }
+                                    } else {
+                                        this.props.navigation.navigate("Gestion du temps hors connection");
+                                    }
+                                });
+                            } else {
+                                this.props.navigation.navigate("Gestion du temps hors connection");
+                            }
+                        });
+                    }
+                });
+            } else {
+                getToken(this.props.email, this.props.password).then((token) => {
+                    if (token[0] === 200) {
+                        postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, null, null, activite).then((action) => {
+                            if (action[0] === 200) {
+                                if (action[1].code === 200) {
+                                    if (button === "F00") {
+                                        Vibration.vibrate(500);
+                                    }
+
+                                    ligne_1 = action[1].message.ligne_1;
+                                    ligne_2 = action[1].message.ligne_2;
+                                    ligne_3 = action[1].message.ligne_3;
+                                    ligne_4 = action[1].message.ligne_4;
+
+                                    if (ligne_1 !== "") {
+                                        ligne_1 = ligne_1 + "\n";
+                                    }
+                                    if (ligne_2 !== "") {
+                                        ligne_2 = ligne_2 + "\n";
+                                    }
+                                    if (ligne_3 !== "") {
+                                        ligne_3 = ligne_3 + "\n";
+                                    }
+                                    if (action[1].ico !== "") {
+                                        dataIco = action[1].ico;
+                                    }
+
+                                    this.setState({
+                                        loadingList: false,
+                                        loaderResponse: false,
+                                        loadingResponse: true,
+                                        statutUser: action[1].statut0,
+                                        currentIco: dataIco,
+                                        currentLibelle: libelle,
+                                        currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                    });
+                                } else {
+                                    this._errorServeur(button, null, null, activite);
+                                }
+                            } else {
+                                this.props.navigation.navigate("Gestion du temps hors connection");
+                            }
+                        });
+                    } else {
+                        this.props.navigation.navigate("Gestion du temps hors connection");
+                    }
+                });
+            }
+        }
+    };
+
+    _renderRetour = (button, typeButton, icoBase64, libelle, text) => {
+        let ico = <Image style={styles.image} source={{ uri: `data:image/png;base64,${icoBase64}` }} />;
+        if (icoBase64 === null) {
+            ico = <FontAwesome5 name="exclamation-circle" color="#C72C41" size={50} />;
+        } else {
+            if (button === "F00" || typeButton === "O" || typeButton === "F") {
+                libelle = "Transaction validé";
+                ico = <FontAwesome5 name="check-circle" color="#62B554" size={50} />;
+            }
+        }
+        return (
+            <View style={styles.container_overlay}>
+                <View style={styles.container_titre_response}>
+                    <Text style={styles.text_title_overlay}>{libelle}</Text>
+                </View>
+                <View style={styles.container_ico_response}>{ico}</View>
+                <View style={styles.container_text_response}>
+                    <Text style={styles.text_body_overlay}>{text}</Text>
+                </View>
+                <View style={styles.container_button_response}>
+                    <Button buttonStyle={styles.button_cancel_collapse} title="Fermer" onPress={() => this._refresh()} />
+                </View>
+            </View>
+        );
+    };
+
+    _renderButtons = (user) => {
         let libelles = [];
 
         if (this.state.mouvementsEnAttente) {
@@ -970,65 +973,89 @@ class ManagementTime extends React.Component {
                 <FlatList
                     data={libelles}
                     renderItem={({ item }) => (
-                        <Collapse isExpanded={item.expanded}>
-                            <CollapseHeader>
-                                <Animatable.View animation="bounceIn" delay={item.delay} style={styles.container_button_animation}>
+                        <Animatable.View animation="bounceIn" delay={item.delay} style={styles.container_button_animation}>
+                            <Collapse isExpanded={item.expanded}>
+                                <CollapseHeader>
                                     <TouchableOpacity
                                         onPress={() => {
                                             if (item.activite === "O" || item.activite === "F" || item.button === "F00") {
-                                                this.showCollapse(item.button);
-                                                // this.showActiviteList(item.button, item.libelle, item.localisation);
+                                                this._toggleCollapse(item.button);
                                             } else {
-                                                // this.actionButton(item.button, item.libelle, item.localisation, null);
+                                                this._toggleCollapse(item.button);
+                                                this._sendAction(item.button, item.libelle, item.localisation, null);
                                             }
                                         }}
-                                        style={styles.button}>
+                                        style={styles.button_tiles}>
                                         <View style={styles.container_ico}>
                                             {item.ico !== "" ? <Image style={styles.image} source={{ uri: `data:image/png;base64,${item.ico}` }} /> : <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />}
                                             <Text style={styles.text_button}>{item.libelle}</Text>
                                         </View>
                                     </TouchableOpacity>
-                                </Animatable.View>
-                            </CollapseHeader>
-                            <CollapseBody>
-                                <Text>Aaron Bennet</Text>
-                            </CollapseBody>
-                        </Collapse>
+                                </CollapseHeader>
+                                <CollapseBody style={styles.collapse_button_body}>
+                                    {this.state.loaderResponse ? (
+                                        <View style={styles.view_collapse}>
+                                            <ActivityIndicator color="#008080" size={40} />
+                                        </View>
+                                    ) : this.state.loadingResponse ? (
+                                        this._renderRetour(item.button, item.activite, this.state.currentIco, this.state.currentLibelle, this.state.currentText)
+                                    ) : item.activite === "O" ? (
+                                        this._renderActivites(item.button, item.libelle, item.localisation, this.state.user.activites)
+                                    ) : (
+                                        <View style={styles.view_flex_direction_row_flex}>
+                                            <View style={styles.view_collapse}>
+                                                <Text style={styles.text_collapse}>Date</Text>
+                                                <Text style={styles.text_collapse}>Heure</Text>
+                                                <Text style={styles.text_collapse}>Confirmation ?</Text>
+                                            </View>
+                                            <View style={styles.view_collapse}>
+                                                <Text style={styles.text_padding_5}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
+                                                <Text style={styles.text_padding_5}>{this.state.timeFixed}</Text>
+                                                <View style={styles.view_flow_direction_row}>
+                                                    <Button
+                                                        buttonStyle={styles.button_cancel_collapse}
+                                                        title="Annuler"
+                                                        onPress={() => {
+                                                            this._toggleCollapse(item.button);
+                                                        }}
+                                                    />
+                                                    <Button
+                                                        buttonStyle={styles.button_validate_collapse}
+                                                        title="Valider"
+                                                        onPress={() => {
+                                                            this._sendAction(item.button, item.libelle, item.localisation, null);
+                                                        }}
+                                                    />
+                                                </View>
+                                            </View>
+                                        </View>
+                                    )}
+                                </CollapseBody>
+                            </Collapse>
+                        </Animatable.View>
                     )}
-                    refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this.onRefresh()} />}
+                    refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this._refresh()} />}
                 />
             </SafeAreaView>
         );
     };
 
-    showActiviteList = (button, libelle, localisation) => {
-        this.setState({
-            visibleListActivites: true,
-            activitesButton: button,
-            activitesLibelle: libelle,
-            activitesLocalisation: localisation,
-        });
-    };
-
-    activitesList = (button, libelle, localisation, activites) => {
+    _renderActivites = (button, libelle, localisation, activites) => {
         return (
-            <Overlay isVisible={this.state.visibleListActivites} overlayStyle={styles.overlay_padding_0} fullScreen={true} animationType="slide">
-                <View style={styles.container_overlay}>
-                    <View style={styles.container_text_activite}>
-                        <Text style={styles.text_activite}>Activités disponibles</Text>
-                    </View>
-                    <FlatList
-                        data={activites}
-                        renderItem={({ item, index }) => (
-                            <Animatable.View animation="bounceIn" delay={index * 300} style={styles.container_button_animation}>
-                                <Button onPress={() => this.actionButton(button, libelle, localisation, item.code)} buttonStyle={styles.buttons_list_activites} title={item.nom} />
-                            </Animatable.View>
-                        )}
-                        keyExtractor={(item) => item.code}
-                    />
-                    <Button buttonStyle={styles.button_overlay_accept} title="Retour" onPress={() => this.setState({ visibleListActivites: false })} />
+            <View style={styles.container_overlay}>
+                <FlatList
+                    data={activites}
+                    renderItem={({ item, index }) => (
+                        <View style={styles.container_button_animation}>
+                            <Button onPress={() => this._sendAction(button, libelle, localisation, item.code)} title={item.nom} titleStyle={styles.text_button_tiles_activite} buttonStyle={styles.button_tiles_activite} />
+                        </View>
+                    )}
+                    keyExtractor={(item) => item.code}
+                />
+                <View style={styles.container_button_animation}>
+                    <Button onPress={() => this._toggleCollapse(button)} title="Annuler" buttonStyle={styles.button_cancel_collapse_activite} />
                 </View>
-            </Overlay>
+            </View>
         );
     };
 
@@ -1040,7 +1067,7 @@ class ManagementTime extends React.Component {
                         <Animatable.View animation="bounceIn" delay={0} style={styles.container_animation_header_overlay}>
                             <View style={styles.container_title_overlay}>
                                 <FontAwesome5 name="arrow-alt-circle-up" color="white" size={50} style={styles.ico_margin_10} />
-                                <Text style={styles.text_title_overlay}>Envoi des mouvements en attente en cours. Merci de bien vouloir patienter.</Text>
+                                <Text style={styles.text_title_overlay_mouvement}>Envoi des mouvements en attente en cours. Merci de bien vouloir patienter.</Text>
                             </View>
                         </Animatable.View>
                         <View style={styles.container_global_tiles_overlay}>
@@ -1068,7 +1095,7 @@ class ManagementTime extends React.Component {
                                     <Text>{this.state.mouvementText}</Text>
                                 </View>
                             </Animatable.View>
-                            <Button disabled={this.state.disableBoutonMouvements} buttonStyle={styles.button_overlay_accept} title="Ok" onPress={() => this.setState({ visibleMouvementsEnAttente: false })} />
+                            <Button disabled={this.state.disableBoutonMouvements} buttonStyle={styles.button_overlay_accept} title="Fermer" onPress={() => this.setState({ visibleMouvementsEnAttente: false })} />
                         </View>
                     </View>
                 </View>
@@ -1077,10 +1104,10 @@ class ManagementTime extends React.Component {
     };
 
     render() {
-        const { loadingList, currentIco, currentLibelle, currentText, user, activitesButton, activitesLibelle, activitesLocalisation } = this.state;
+        const { loadingList, user } = this.state;
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor="#008080" barStyle="light-content" />
+                <StatusBar backgroundColor="#31859C" barStyle="light-content" />
                 {loadingList ? (
                     <ActivityIndicator size="large" color="#008080" style={styles.container_loader} />
                 ) : (
@@ -1103,11 +1130,9 @@ class ManagementTime extends React.Component {
                                 </Animatable.View>
                             </View>
                         </View>
-                        <View style={styles.container_global_tiles}>{this.buttons(user)}</View>
+                        <View style={styles.container_global_tiles}>{this._renderButtons(user)}</View>
                     </View>
                 )}
-                {this.dialogPopup(currentIco, currentLibelle, currentText)}
-                {this.activitesList(activitesButton, activitesLibelle, activitesLocalisation, user.activites)}
                 {this.mouvementsEnAttente()}
             </View>
         );
@@ -1163,7 +1188,12 @@ const styles = StyleSheet.create({
     },
     container_button_animation: {
         flex: 1,
-        padding: 10,
+        margin: 10,
+        elevation: 5,
+        backgroundColor: "white",
+        borderRadius: 0,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     container_animation_overlay: {
         flex: 1,
@@ -1202,13 +1232,12 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "white",
     },
-    button: {
+    collapse_button_body: {
+        flex: 1,
+        flexDirection: "row",
+        backgroundColor: "#D0D0D0",
         padding: 20,
-        elevation: 5,
-        backgroundColor: "white",
-        borderRadius: 0,
-        borderWidth: 1,
-        borderColor: "#D0D0D0",
+        margin: 10,
     },
     container_ico_overlay: {
         padding: 20,
@@ -1234,6 +1263,28 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius: 5,
         flex: 1,
+    },
+    container_titre_response: {
+        flex: 1,
+        fontSize: 20,
+        paddingHorizontal: 10,
+        paddingTop: 10,
+        paddingBottom: 5,
+    },
+    container_ico_response: {
+        flex: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+    },
+    container_text_response: {
+        flex: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+    },
+    container_button_response: {
+        flexDirection: "row",
+        paddingHorizontal: 10,
+        paddingTop: 5,
     },
     image: {
         height: 50,
@@ -1266,6 +1317,13 @@ const styles = StyleSheet.create({
     text_welcome_name: {
         fontWeight: "bold",
     },
+    text_collapse: {
+        paddingVertical: 5,
+        fontWeight: "bold",
+    },
+    text_padding_5: {
+        paddingVertical: 5,
+    },
     dialog: {
         textAlign: "center",
     },
@@ -1275,19 +1333,21 @@ const styles = StyleSheet.create({
     spinnerTextStyle: {
         color: "#FFF",
     },
-    text_title_overlay: {
-        textAlign: "center",
+    text_title_overlay_mouvement: {
+        fontWeight: "bold",
         fontSize: 17,
         color: "white",
     },
+    text_title_overlay: {
+        fontWeight: "bold",
+        fontSize: 17,
+    },
     text_body_overlay: {
-        textAlign: "center",
-        fontSize: 15,
-        padding: 20,
+        fontSize: 17,
     },
     text_mouvement_overlay: {
         textAlign: "center",
-        fontSize: 15,
+        fontSize: 17,
     },
     text_envoi_hors_ligne: {
         fontSize: 20,
@@ -1310,6 +1370,16 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         paddingHorizontal: 20,
     },
+    button_cancel_collapse: {
+        marginRight: 5,
+        paddingHorizontal: 10,
+        backgroundColor: "#C72C41",
+    },
+    button_validate_collapse: {
+        marginLeft: 5,
+        paddingHorizontal: 10,
+        backgroundColor: "#62B554",
+    },
     loader_overlay: {
         flex: 1,
         justifyContent: "center",
@@ -1327,6 +1397,29 @@ const styles = StyleSheet.create({
     indicator_padding_horizontal_10: {
         paddingHorizontal: 10,
     },
+    view_collapse: {
+        flex: 1,
+        justifyContent: "center",
+    },
+    view_flow_direction_row: {
+        flexDirection: "row",
+    },
+    view_flex_direction_row_flex: {
+        flex: 1,
+        flexDirection: "row",
+    },
+    button_tiles_activite: {
+        backgroundColor: "white",
+    },
+    button_cancel_collapse_activite: {
+        backgroundColor: "#C72C41",
+    },
+    text_button_tiles_activite: {
+        color: "black",
+    },
+    button_tiles: {
+        padding: 20,
+    },
 });
 
 const mapStateToProps = (state) => {
@@ -1339,4 +1432,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { listeEmailAction, pointingAction })(ManagementTime);
+export default connect(mapStateToProps, { emailAction, passwordAction, langueAction, listeEmailAction, pointingAction })(ManagementTime);

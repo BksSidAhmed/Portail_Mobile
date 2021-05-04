@@ -56,7 +56,7 @@ class Confidential extends React.Component {
                 <Animatable.View animation="bounceIn" style={styles.container_header}>
                     <View style={styles.container_logo}>
                         <View style={styles.container_ico}>
-                            <FontAwesome5 name="user-lock" size={35} color="#008080" style={styles.ico_header} />
+                            <FontAwesome5 name="user-lock" size={35} color="#31859C" style={styles.ico_header} />
                         </View>
                     </View>
                 </Animatable.View>
@@ -76,6 +76,7 @@ class Confidential extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "white",
     },
     container_header: {
         flex: 1,
@@ -83,15 +84,12 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     },
     container_body: {
-        flex: 2,
+        flex: 4,
         padding: 10,
     },
     container_logo: {
         flex: 1,
         padding: 20,
-        backgroundColor: "#008080",
-        elevation: 5,
-        borderRadius: 5,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -107,12 +105,11 @@ const styles = StyleSheet.create({
     },
     text_confidential: {
         padding: 5,
+        fontSize: 17,
     },
     text_body: {
-        padding: 30,
+        padding: 20,
         backgroundColor: "white",
-        elevation: 5,
-        borderRadius: 5,
         marginBottom: 10,
     },
 });
