@@ -18,7 +18,7 @@ import { langueAction } from "../redux/actions/langueAction";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import NetInfo from "@react-native-community/netinfo";
 import Confidential from "../screens/Confidential";
-import InitialComponent from "../component/InitialComponent"
+import InitialComponent from "../component/InitialComponent";
 
 const ManagementNoConnectionTimeStack = createStackNavigator();
 const ManagementNoConnectionStackScreen = () => (
@@ -55,14 +55,13 @@ const ManagementTimeStackScreen = ({ navigation }) => (
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
                 headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRight: () => <InitialComponent/>,
+                headerRight: () => <InitialComponent />,
                 headerLeftContainerStyle: {
                     marginLeft: 20,
                 },
                 // headerRightContainerStyle: {
                 //     marginRight: 20,
                 // },
-                
             }}
         />
         <ManagementTimeStack.Screen name="Parametre" component={ParameterStackScreen} />
