@@ -132,12 +132,17 @@ class Settings extends React.Component {
     };
 
     render() {
+        const Initialnom = this.props.nom.substr(0,1)
+        const Initialprenom = this.props.prenom.substr(0,1)
         return (
             <View style={styles.container}>
                 <Animatable.View animation="bounceIn" style={styles.container_header}>
                     <View style={styles.container_logo_email}>
                         <View style={styles.container_ico}>
-                            <FontAwesome5 name="cogs" size={35} color="#008080" style={styles.ico_padding} />
+                            <Text style = {styles.Initialtext}>{Initialprenom+Initialnom}</Text>
+                        </View>
+                        <View style={styles.container_email}>
+                            <Text style={styles.Initialtext}>{this.props.prenom  + ' ' + this.props.nom}</Text>
                         </View>
                         <View style={styles.container_email}>
                             <Text style={styles.text_email}>{this.props.email}</Text>
@@ -151,7 +156,7 @@ class Settings extends React.Component {
                             <Text style={styles.text_button}>{this.state.text_password}</Text>
                         </TouchableOpacity>
                     </Animatable.View>
-                    <Animatable.View animation="bounceIn" delay={600}>
+                    {/* <Animatable.View animation="bounceIn" delay={600}>
                         <TouchableOpacity style={styles.button_body} onPress={() => this.toggleSwitch()}>
                             <View style={styles.button_localisation_left}>
                                 <FontAwesome5 name="map-marker-alt" color="black" size={20} />
@@ -161,7 +166,7 @@ class Settings extends React.Component {
                                 <Switch value={this.state.switchOn} onValueChange={() => this.toggleSwitch()} />
                             </View>
                         </TouchableOpacity>
-                    </Animatable.View>
+                    </Animatable.View> */}
                 </View>
             </View>
         );
@@ -183,8 +188,8 @@ const styles = StyleSheet.create({
     },
     container_logo_email: {
         flex: 1,
-        padding: 20,
-        backgroundColor: "#008080",
+        padding: 28,
+        backgroundColor: "#31859C",
         elevation: 5,
         borderRadius: 5,
         justifyContent: "center",
@@ -195,11 +200,17 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     container_ico: {
-        backgroundColor: "#ECEFEC",
+        backgroundColor: "#376092",
         borderRadius: 50,
         justifyContent: "center",
         alignItems: "center",
-        height: 70,
+        height: 90,
+        width : 90,
+        marginBottom : 10
+    },
+    Initialtext : {
+        color : "#fff",
+        fontSize : 20
     },
     button_body: {
         padding: 30,
@@ -225,7 +236,7 @@ const styles = StyleSheet.create({
     },
     text_email: {
         color: "white",
-        fontSize: 25,
+        fontSize: 15,
     },
     ico_padding: {
         padding: 15,
@@ -237,6 +248,8 @@ const mapStateToProps = (state) => {
         email: state.emailReducer.email,
         password: state.passwordReducer.password,
         langue: state.langueReducer.langue,
+        nom : state.nomReducer.nom,
+        prenom : state.prenomReducer.prenom
     };
 };
 

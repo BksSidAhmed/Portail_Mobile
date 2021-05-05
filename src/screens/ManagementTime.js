@@ -8,6 +8,8 @@ import { getToken, postAction, getUser } from "../api/index";
 import Geolocation from "react-native-geolocation-service";
 import { listeEmailAction } from "../redux/actions/listeEmailAction";
 import { pointingAction } from "../redux/actions/pointingHorsLigneAction";
+import { nomAction} from "../redux/actions/nomAction";
+import { prenomAction} from "../redux/actions/prenonAction";
 import { Button, Overlay } from "react-native-elements";
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import { PermissionsAndroid } from "react-native";
@@ -243,6 +245,8 @@ class ManagementTime extends React.Component {
         getToken(this.props.email, this.props.password).then((token) => {
             if (token[0] === 200) {
                 getUser(token[1].token, this.props.email).then((response) => {
+                    this.props.nomAction(response[1].user.nom)
+                    this.props.prenomAction(response[1].user.prenom)
                     this.setState({
                         loadingList: false,
                         refreshing: false,
@@ -1080,7 +1084,7 @@ class ManagementTime extends React.Component {
         const { loadingList, currentIco, currentLibelle, currentText, user, activitesButton, activitesLibelle, activitesLocalisation } = this.state;
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor="#008080" barStyle="light-content" />
+                <StatusBar backgroundColor="#31859C" barStyle="light-content" />
                 {loadingList ? (
                     <ActivityIndicator size="large" color="#008080" style={styles.container_loader} />
                 ) : (
@@ -1339,4 +1343,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { listeEmailAction, pointingAction })(ManagementTime);
+export default connect(mapStateToProps, { listeEmailAction, pointingAction, nomAction, prenomAction})(ManagementTime);

@@ -55,7 +55,7 @@ const ManagementTimeStackScreen = ({ navigation }) => (
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
                 headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRight: () => <InitialComponent></InitialComponent>,
+                headerRight: () => <InitialComponent/>,
                 headerLeftContainerStyle: {
                     marginLeft: 20,
                 },
@@ -65,6 +65,7 @@ const ManagementTimeStackScreen = ({ navigation }) => (
                 
             }}
         />
+        <ManagementTimeStack.Screen name="Parametre" component={ParameterStackScreen} />
     </ManagementTimeStack.Navigator>
 );
 
@@ -77,7 +78,7 @@ const ParameterStackScreen = ({ navigation }) => (
             options={{
                 title: "Niva - Paramètres",
                 headerStyle: {
-                    backgroundColor: "#008080",
+                    backgroundColor: "#31859C",
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
@@ -94,7 +95,7 @@ const ParameterStackScreen = ({ navigation }) => (
             options={{
                 title: "Niva - Mot de passe",
                 headerStyle: {
-                    backgroundColor: "#008080",
+                    backgroundColor: "#31859C",
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
@@ -110,7 +111,7 @@ const ParameterStackScreen = ({ navigation }) => (
             options={{
                 title: "Niva - Localisation GPS",
                 headerStyle: {
-                    backgroundColor: "#008080",
+                    backgroundColor: "#31859C",
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
@@ -132,7 +133,7 @@ const AboutStackScreen = ({ navigation }) => (
             options={{
                 title: "Niva - À propos",
                 headerStyle: {
-                    backgroundColor: "#008080",
+                    backgroundColor: "#31859C",
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
@@ -154,7 +155,7 @@ const ConfidentialStackScreen = ({ navigation }) => (
             options={{
                 title: "Niva - Confidentialite",
                 headerStyle: {
-                    backgroundColor: "#008080",
+                    backgroundColor: "#31859C",
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",

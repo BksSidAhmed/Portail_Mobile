@@ -1,13 +1,24 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-
+import { View, Text, StyleSheet,TouchableOpacity } from "react-native";
+import { getToken, getUser } from "../api/index";
+import { connect } from "react-redux";
 class InitialComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            nom: null,
+            prenom: null,
+        };
+    }
+
     render() {
+        const nom = this.props.nom.substr(0,1)
+        const prenom = this.props.prenom.substr(0,1)
         return (
             <View style = {styles.container}>
-                <View style = {styles.circle}>
-                    <Text style = {styles.initialText}>MM</Text>
-                </View>
+                <TouchableOpacity style = {styles.circle}>
+                    <Text style = {styles.initialText}>{prenom+nom}</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -33,5 +44,12 @@ const styles = StyleSheet.create({
     }
 
 });
-
-export default InitialComponent;
+const mapStateToProps = (state) => {
+    return {
+        email: state.emailReducer.email,
+        password: state.passwordReducer.password,
+        nom : state.nomReducer.nom,
+        prenom : state.prenomReducer.prenom
+    };
+};
+export default connect(mapStateToProps)(InitialComponent);

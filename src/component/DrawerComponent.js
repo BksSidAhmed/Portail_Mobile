@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { connect } from "react-redux";
 import { emailAction } from "../redux/actions/emailAction";
@@ -45,64 +45,60 @@ class DrawerComponent extends React.Component {
             list_item = [{ text: "Tijdsbeheer" }, { text: "Instellingen" }, { text: "Vertrouwelijkheid" }, { text: "Over" }, { text: "Uitloggen" }];
         }
 
+        const Initialnom = this.props.nom.substr(0,1)
+        const Initialprenom = this.props.prenom.substr(0,1)
+
         return (
             <View style={styles.container}>
                 <DrawerContentScrollView>
+                    <View style = {styles.container_header}>
+                        <TouchableOpacity 
+                            style = {styles.circle}
+                            onPress={() => {
+                                this.props.navigation.navigate("Parametre");
+                            }}>
+                            <Text style = {styles.initialText}>{Initialprenom+Initialnom}</Text>
+                        </TouchableOpacity>
+                        <View style = {{marginTop : 10, marginBottom : 10}}>
+                            <Text style = {styles.initialText}> {this.props.prenom  + ' ' + this.props.nom} </Text>
+                        </View>
+                    </View>
                     <View style={styles.container_body}>
-                        <View style={styles.container_top_body}>
-                            <Image style={styles.image_top_body} source={require("../image/logo_niva.png")} />
+                        <View style = {styles.container_button}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.navigation.navigate("Gestion du temps");
+                                }}>
+                                <Text style = {styles.buttonText}>Gestion du temps</Text>
+                            </TouchableOpacity>
                         </View>
-                        <View style={styles.container_items_body}>
-                            <View>
-                                <Button
-                                    title={list_item[0].text}
-                                    buttonStyle={styles.button_item}
-                                    onPress={() => {
-                                        this.props.navigation.navigate("Gestion du temps");
-                                    }}
-                                />
-                            </View>
-                            <View>
-                                <Button
-                                    title={list_item[1].text}
-                                    buttonStyle={styles.button_item}
-                                    onPress={() => {
-                                        this.props.navigation.navigate("Parametre");
-                                    }}
-                                />
-                            </View>
-                            <View>
-                                <Button
-                                    title={list_item[2].text}
-                                    buttonStyle={styles.button_item}
-                                    onPress={() => {
-                                        this.props.navigation.navigate("Confidentialite");
-                                    }}
-                                />
-                            </View>
-                            <View>
-                                <Button
-                                    title={list_item[3].text}
-                                    buttonStyle={styles.button_item}
-                                    onPress={() => {
-                                        this.props.navigation.navigate("A propos");
-                                    }}
-                                />
-                            </View>
+                        <View style = {styles.container_button}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.navigation.navigate("Confidentialite");
+                                }}>
+                                <Text style = {styles.buttonText}>Confidentialité</Text>
+                            </TouchableOpacity>
                         </View>
+                        <View style = {styles.container_button}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.navigation.navigate("A propos");
+                                }}>
+                                <Text style = {styles.buttonText}>A propos</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style = {styles.container_buttonDeconnexion}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.signOut();
+                                }}>
+                                <Text style = {styles.buttonText}>Déconnexion</Text>
+                            </TouchableOpacity>
+                        </View>
+
                     </View>
                 </DrawerContentScrollView>
-                <View style={styles.container_bottom}>
-                    <View>
-                        <Button
-                            title={list_item[4].text}
-                            buttonStyle={styles.button_item_deconnexion}
-                            onPress={() => {
-                                this.signOut();
-                            }}
-                        />
-                    </View>
-                </View>
             </View>
         );
     }
@@ -111,42 +107,49 @@ class DrawerComponent extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor : '#31859C'
+    },
+    container_header : {
+        flex : 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop : 35,
+        marginBottom : 20
     },
     container_body: {
         flex: 1,
     },
-    container_top_body: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        margin: 10,
-        marginBottom: 10,
+    circle : {
+        width: 90,
+        height: 90,
+        borderRadius: 150/2,
+        backgroundColor: '#376092',
+        justifyContent: 'center',
+        alignItems : 'center',
+        elevation : 7
     },
-    button_item_deconnexion: {
-        backgroundColor: "#C72C41",
-        marginHorizontal: 10,
-        marginVertical: 10,
-        borderRadius: 40,
-        padding: 10,
+    initialText : {       
+        color : "#fff",
+        fontSize : 20
     },
-    container_items_body: {
-        flex: 1,
+    buttonText : {       
+        color : "#fff",
+        fontSize : 15
     },
-    button_item: {
-        backgroundColor: "#008080",
-        marginHorizontal: 10,
-        marginVertical: 5,
-        borderRadius: 40,
-        padding: 10,
+    container_button : {
+        marginRight : 50,
+        marginLeft : 15,
+        padding : 15, 
+        borderTopWidth : 1,
+        borderColor : '#fff'
     },
-    text_top_body: {
-        fontSize: 20,
-        margin: 10,
-    },
-    image_top_body: {
-        height: 100,
-        width: "100%",
-        alignContent: "center",
+    container_buttonDeconnexion: {
+        marginRight : 50,
+        marginLeft : 15,
+        padding : 15, 
+        borderTopWidth : 1,
+        borderBottomWidth : 1,
+        borderColor : '#fff'
     },
 });
 
@@ -155,6 +158,8 @@ const mapStateToProps = (state) => {
         email: state.emailReducer.email,
         password: state.passwordReducer.password,
         langue: state.langueReducer.langue,
+        nom : state.nomReducer.nom,
+        prenom : state.prenomReducer.prenom
     };
 };
 
