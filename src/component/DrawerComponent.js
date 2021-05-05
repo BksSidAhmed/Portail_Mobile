@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { emailAction } from "../redux/actions/emailAction";
 import { passwordAction } from "../redux/actions/passwordAction";
 import { langueAction } from "../redux/actions/langueAction";
-import { Button } from "react-native-elements";
 
 class DrawerComponent extends React.Component {
     constructor(props) {
@@ -45,58 +44,57 @@ class DrawerComponent extends React.Component {
             list_item = [{ text: "Tijdsbeheer" }, { text: "Instellingen" }, { text: "Vertrouwelijkheid" }, { text: "Over" }, { text: "Uitloggen" }];
         }
 
-        const Initialnom = this.props.nom.substr(0,1)
-        const Initialprenom = this.props.prenom.substr(0,1)
+        const Initialnom = this.props.nom.substr(0, 1);
+        const Initialprenom = this.props.prenom.substr(0, 1);
 
         return (
             <View style={styles.container}>
                 <DrawerContentScrollView>
-                    <View style = {styles.container_header}>
-                        <TouchableOpacity 
-                            style = {styles.circle}
+                    <View style={styles.container_header}>
+                        <TouchableOpacity
+                            style={styles.circle}
                             onPress={() => {
                                 this.props.navigation.navigate("Parametre");
                             }}>
-                            <Text style = {styles.initialText}>{Initialprenom+Initialnom}</Text>
+                            <Text style={styles.initialText}>{Initialprenom + Initialnom}</Text>
                         </TouchableOpacity>
-                        <View style = {{marginTop : 10, marginBottom : 10}}>
-                            <Text style = {styles.initialText}> {this.props.prenom  + ' ' + this.props.nom} </Text>
+                        <View style={{ marginTop: 10, marginBottom: 10 }}>
+                            <Text style={styles.initialText}> {this.props.prenom + " " + this.props.nom} </Text>
                         </View>
                     </View>
                     <View style={styles.container_body}>
-                        <View style = {styles.container_button}>
+                        <View style={styles.container_button}>
                             <TouchableOpacity
                                 onPress={() => {
                                     this.props.navigation.navigate("Gestion du temps");
                                 }}>
-                                <Text style = {styles.buttonText}>Gestion du temps</Text>
+                                <Text style={styles.buttonText}>Gestion du temps</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style = {styles.container_button}>
+                        <View style={styles.container_button}>
                             <TouchableOpacity
                                 onPress={() => {
                                     this.props.navigation.navigate("Confidentialite");
                                 }}>
-                                <Text style = {styles.buttonText}>Confidentialité</Text>
+                                <Text style={styles.buttonText}>Confidentialité</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style = {styles.container_button}>
+                        <View style={styles.container_button}>
                             <TouchableOpacity
                                 onPress={() => {
                                     this.props.navigation.navigate("A propos");
                                 }}>
-                                <Text style = {styles.buttonText}>A propos</Text>
+                                <Text style={styles.buttonText}>A propos</Text>
                             </TouchableOpacity>
                         </View>
-                        <View style = {styles.container_buttonDeconnexion}>
+                        <View style={styles.container_buttonDeconnexion}>
                             <TouchableOpacity
                                 onPress={() => {
                                     this.signOut();
                                 }}>
-                                <Text style = {styles.buttonText}>Déconnexion</Text>
+                                <Text style={styles.buttonText}>Déconnexion</Text>
                             </TouchableOpacity>
                         </View>
-
                     </View>
                 </DrawerContentScrollView>
             </View>
@@ -107,49 +105,49 @@ class DrawerComponent extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor : '#31859C'
+        backgroundColor: "#31859C",
     },
-    container_header : {
-        flex : 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop : 35,
-        marginBottom : 20
+    container_header: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 35,
+        marginBottom: 20,
     },
     container_body: {
         flex: 1,
     },
-    circle : {
+    circle: {
         width: 90,
         height: 90,
-        borderRadius: 150/2,
-        backgroundColor: '#376092',
-        justifyContent: 'center',
-        alignItems : 'center',
-        elevation : 7
+        borderRadius: 150 / 2,
+        backgroundColor: "#376092",
+        justifyContent: "center",
+        alignItems: "center",
+        elevation: 7,
     },
-    initialText : {       
-        color : "#fff",
-        fontSize : 20
+    initialText: {
+        color: "#fff",
+        fontSize: 20,
     },
-    buttonText : {       
-        color : "#fff",
-        fontSize : 15
+    buttonText: {
+        color: "#fff",
+        fontSize: 15,
     },
-    container_button : {
-        marginRight : 50,
-        marginLeft : 15,
-        padding : 15, 
-        borderTopWidth : 1,
-        borderColor : '#fff'
+    container_button: {
+        marginRight: 50,
+        marginLeft: 15,
+        padding: 15,
+        borderTopWidth: 1,
+        borderColor: "#fff",
     },
     container_buttonDeconnexion: {
-        marginRight : 50,
-        marginLeft : 15,
-        padding : 15, 
-        borderTopWidth : 1,
-        borderBottomWidth : 1,
-        borderColor : '#fff'
+        marginRight: 50,
+        marginLeft: 15,
+        padding: 15,
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
+        borderColor: "#fff",
     },
 });
 
@@ -158,8 +156,8 @@ const mapStateToProps = (state) => {
         email: state.emailReducer.email,
         password: state.passwordReducer.password,
         langue: state.langueReducer.langue,
-        nom : state.nomReducer.nom,
-        prenom : state.prenomReducer.prenom
+        nom: state.nomReducer.nom,
+        prenom: state.prenomReducer.prenom,
     };
 };
 

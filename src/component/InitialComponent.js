@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet,TouchableOpacity } from "react-native";
-import { getToken, getUser } from "../api/index";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 class InitialComponent extends React.Component {
     constructor(props) {
@@ -12,12 +11,12 @@ class InitialComponent extends React.Component {
     }
 
     render() {
-        const nom = this.props.nom.substr(0,1)
-        const prenom = this.props.prenom.substr(0,1)
+        const nom = this.props.nom.substr(0, 1);
+        const prenom = this.props.prenom.substr(0, 1);
         return (
-            <View style = {styles.container}>
-                <TouchableOpacity style = {styles.circle}>
-                    <Text style = {styles.initialText}>{prenom+nom}</Text>
+            <View style={styles.container}>
+                <TouchableOpacity style={styles.circle}>
+                    <Text style={styles.initialText}>{prenom + nom}</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -26,30 +25,29 @@ class InitialComponent extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin : 10,
-        marginBottom : 15
+        justifyContent: "center",
+        alignItems: "center",
+        margin: 10,
+        marginBottom: 15,
     },
-    circle : {
+    circle: {
         width: 50,
         height: 50,
-        borderRadius: 150/2,
-        backgroundColor: '#376092',
-        justifyContent: 'center',
-        alignItems : 'center',
+        borderRadius: 150 / 2,
+        backgroundColor: "#376092",
+        justifyContent: "center",
+        alignItems: "center",
     },
-    initialText : {       
-        color : "#fff"
-    }
-
+    initialText: {
+        color: "#fff",
+    },
 });
 const mapStateToProps = (state) => {
     return {
         email: state.emailReducer.email,
         password: state.passwordReducer.password,
-        nom : state.nomReducer.nom,
-        prenom : state.prenomReducer.prenom
+        nom: state.nomReducer.nom,
+        prenom: state.prenomReducer.prenom,
     };
 };
 export default connect(mapStateToProps)(InitialComponent);
