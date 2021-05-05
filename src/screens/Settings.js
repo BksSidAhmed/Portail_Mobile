@@ -140,9 +140,9 @@ class Settings extends React.Component {
                         <View style={styles.container_ico}>
                             <Text style={styles.Initialtext}>{Initialprenom + Initialnom}</Text>
                         </View>
-                        <View style={styles.container_email}>
+                        {/* <View style={styles.container_email}>
                             <Text style={styles.Initialtext}>{this.props.prenom + " " + this.props.nom}</Text>
-                        </View>
+                        </View> */}
                         <View style={styles.container_email}>
                             <Text style={styles.text_email}>{this.props.email}</Text>
                         </View>
@@ -175,6 +175,7 @@ class Settings extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "white",
     },
     container_header: {
         flex: 1,
@@ -188,9 +189,9 @@ const styles = StyleSheet.create({
     container_logo_email: {
         flex: 1,
         padding: 28,
-        backgroundColor: "#31859C",
-        elevation: 5,
-        borderRadius: 5,
+        // backgroundColor: "#31859C",
+        // elevation: 5,
+        // borderRadius: 5,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -230,12 +231,11 @@ const styles = StyleSheet.create({
         justifyContent: "flex-end",
     },
     text_button: {
-        fontSize: 16,
+        fontSize: 17,
         marginLeft: 15,
     },
     text_email: {
-        color: "white",
-        fontSize: 15,
+        fontSize: 17,
     },
     ico_padding: {
         padding: 15,
