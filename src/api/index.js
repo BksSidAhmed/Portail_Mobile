@@ -15,7 +15,7 @@ export const getToken = async (email, password) => {
         const statusCode = response.status;
         return await Promise.all([statusCode, response.json()]);
     } catch (error) {
-        return console.error(error);
+        return await Promise.all([500, error]);
     }
 };
 
@@ -42,8 +42,8 @@ export const postAction = async (token, indicateurTemps, email, date, heure, but
         });
         const statusCode = response.status;
         return await Promise.all([statusCode, response.json()]);
-    } catch (err) {
-        return console.error(err);
+    } catch (error) {
+        return await Promise.all([500, error]);
     }
 };
 

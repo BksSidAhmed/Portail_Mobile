@@ -112,13 +112,13 @@ class SignIn extends React.Component {
                 if (found === undefined) {
                     this.props.listeEmailAction(this.email);
                 }
-            }
-
-            if (token[0] === 401) {
+            } else if (token[0] === 401) {
                 this.setState({
                     loading: false,
                     visibleError: true,
                 });
+            } else {
+                this.props.navigation.navigate("Gestion du temps hors connection");
             }
         });
     };
@@ -211,7 +211,7 @@ class SignIn extends React.Component {
 
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor="#008080" barStyle="light-content" />
+                <StatusBar backgroundColor="#31859C" barStyle="light-content" />
                 <View style={styles.view_title}>
                     <Animatable.Text animation="fadeInDown" style={styles.text_title}>
                         NIVA
@@ -267,7 +267,7 @@ class SignIn extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#008080",
+        backgroundColor: "#31859C",
     },
     container_button: {
         width: "100%",
@@ -316,11 +316,11 @@ const styles = StyleSheet.create({
         padding: 15,
         marginVertical: 5,
         borderRadius: 50,
-        backgroundColor: "#008080",
+        backgroundColor: "#31859C",
     },
     button_overlay_accept: {
         borderRadius: 50,
-        backgroundColor: "#008080",
+        backgroundColor: "#31859C",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
