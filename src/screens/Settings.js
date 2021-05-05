@@ -4,7 +4,6 @@ import { emailAction } from "../redux/actions/emailAction";
 import { passwordAction } from "../redux/actions/passwordAction";
 import { connect } from "react-redux";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { Switch } from "react-native-paper";
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import * as Animatable from "react-native-animatable";
 import { PermissionsAndroid } from "react-native";
@@ -132,17 +131,17 @@ class Settings extends React.Component {
     };
 
     render() {
-        const Initialnom = this.props.nom.substr(0,1)
-        const Initialprenom = this.props.prenom.substr(0,1)
+        const Initialnom = this.props.nom.substr(0, 1);
+        const Initialprenom = this.props.prenom.substr(0, 1);
         return (
             <View style={styles.container}>
                 <Animatable.View animation="bounceIn" style={styles.container_header}>
                     <View style={styles.container_logo_email}>
                         <View style={styles.container_ico}>
-                            <Text style = {styles.Initialtext}>{Initialprenom+Initialnom}</Text>
+                            <Text style={styles.Initialtext}>{Initialprenom + Initialnom}</Text>
                         </View>
                         <View style={styles.container_email}>
-                            <Text style={styles.Initialtext}>{this.props.prenom  + ' ' + this.props.nom}</Text>
+                            <Text style={styles.Initialtext}>{this.props.prenom + " " + this.props.nom}</Text>
                         </View>
                         <View style={styles.container_email}>
                             <Text style={styles.text_email}>{this.props.email}</Text>
@@ -205,12 +204,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         height: 90,
-        width : 90,
-        marginBottom : 10
+        width: 90,
+        marginBottom: 10,
     },
-    Initialtext : {
-        color : "#fff",
-        fontSize : 20
+    Initialtext: {
+        color: "#fff",
+        fontSize: 20,
     },
     button_body: {
         padding: 30,
@@ -248,8 +247,8 @@ const mapStateToProps = (state) => {
         email: state.emailReducer.email,
         password: state.passwordReducer.password,
         langue: state.langueReducer.langue,
-        nom : state.nomReducer.nom,
-        prenom : state.prenomReducer.prenom
+        nom: state.nomReducer.nom,
+        prenom: state.prenomReducer.prenom,
     };
 };
 
