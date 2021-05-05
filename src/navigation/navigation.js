@@ -18,7 +18,7 @@ import { langueAction } from "../redux/actions/langueAction";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import NetInfo from "@react-native-community/netinfo";
 import Confidential from "../screens/Confidential";
-import InitialComponent from "../component/InitialComponent"
+import InitialComponent from "../component/InitialComponent";
 
 const ManagementNoConnectionTimeStack = createStackNavigator();
 const ManagementNoConnectionStackScreen = () => (
@@ -55,14 +55,13 @@ const ManagementTimeStackScreen = ({ navigation }) => (
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
                 headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRight: () => <InitialComponent/>,
+                headerRight: () => <InitialComponent />,
                 headerLeftContainerStyle: {
                     marginLeft: 20,
                 },
                 // headerRightContainerStyle: {
                 //     marginRight: 20,
                 // },
-                
             }}
         />
         <ManagementTimeStack.Screen name="Parametre" component={ParameterStackScreen} />
@@ -172,6 +171,7 @@ const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
     <AuthStack.Navigator headerMode="none">
         <AuthStack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In" }} />
+        <AuthStack.Screen name="Gestion du temps hors connection" component={ManagementNoConnection} />
     </AuthStack.Navigator>
 );
 
@@ -182,6 +182,7 @@ const DrawerScreen = () => (
         <Drawer.Screen name="Parametre" component={ParameterStackScreen} />
         <Drawer.Screen name="A propos" component={AboutStackScreen} />
         <Drawer.Screen name="Confidentialite" component={ConfidentialStackScreen} />
+        <Drawer.Screen name="Gestion du temps hors connection" component={ManagementNoConnectionStackScreen} />
     </Drawer.Navigator>
 );
 
