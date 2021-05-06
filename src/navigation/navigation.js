@@ -29,7 +29,7 @@ const ManagementNoConnectionStackScreen = () => (
             options={{
                 title: "Niva - Gestion du temps hors ligne",
                 headerStyle: {
-                    backgroundColor: "#008080",
+                    backgroundColor: "#31859C",
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
@@ -171,7 +171,7 @@ const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
     <AuthStack.Navigator headerMode="none">
         <AuthStack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In" }} />
-        <AuthStack.Screen name="Gestion du temps hors connection" component={ManagementNoConnection} />
+        <AuthStack.Screen name="Gestion du temps hors connection" component={ManagementNoConnectionStackScreen} />
     </AuthStack.Navigator>
 );
 
