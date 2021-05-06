@@ -47,7 +47,7 @@ const ManagementTimeStackScreen = ({ navigation }) => (
         <ManagementTimeStack.Screen
             name="Gestion du temps"
             component={ManagementTime}
-            options={{
+            options={({}) => ({
                 title: "Niva - Gestion du temps",
                 headerStyle: {
                     backgroundColor: "#31859C",
@@ -55,16 +55,15 @@ const ManagementTimeStackScreen = ({ navigation }) => (
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
                 headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerRight: () => <InitialComponent />,
+                headerRight: () => <InitialComponent nav={navigation} />,
                 headerLeftContainerStyle: {
                     marginLeft: 20,
                 },
                 // headerRightContainerStyle: {
                 //     marginRight: 20,
                 // },
-            }}
+            })}
         />
-        <ManagementTimeStack.Screen name="Parametre" component={ParameterStackScreen} />
     </ManagementTimeStack.Navigator>
 );
 
@@ -137,6 +136,7 @@ const AboutStackScreen = ({ navigation }) => (
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
                 headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
+                headerRight: () => <InitialComponent nav={navigation} />,
                 headerLeftContainerStyle: {
                     marginLeft: 20,
                 },
@@ -159,6 +159,7 @@ const ConfidentialStackScreen = ({ navigation }) => (
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
                 headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
+                headerRight: () => <InitialComponent nav={navigation} />,
                 headerLeftContainerStyle: {
                     marginLeft: 20,
                 },
@@ -211,6 +212,7 @@ class Navigation extends React.Component {
     }
 
     UNSAFE_componentWillMount() {
+        console.log(this.props);
         NetInfo.addEventListener((state) => {
             this.setState({
                 etatConnection: state.isConnected,

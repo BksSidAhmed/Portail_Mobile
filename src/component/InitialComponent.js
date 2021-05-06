@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
+
 class InitialComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -10,12 +11,16 @@ class InitialComponent extends React.Component {
         };
     }
 
+    parametre() {
+        this.props.nav.navigate("Parametre");
+    }
+
     render() {
         const nom = this.props.nom.substr(0, 1);
         const prenom = this.props.prenom.substr(0, 1);
         return (
             <View style={styles.container}>
-                <TouchableOpacity style={styles.circle}>
+                <TouchableOpacity style={styles.circle} onPress={() => this.parametre()}>
                     <Text style={styles.initialText}>{prenom + nom}</Text>
                 </TouchableOpacity>
             </View>

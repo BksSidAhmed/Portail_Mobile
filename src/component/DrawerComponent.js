@@ -18,6 +18,7 @@ class DrawerComponent extends React.Component {
     };
 
     render() {
+        console.log(this.props);
         let list_item = [];
 
         if (this.props.langue === "100") {
