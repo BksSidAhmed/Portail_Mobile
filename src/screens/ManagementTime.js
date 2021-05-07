@@ -61,6 +61,7 @@ class ManagementTime extends React.Component {
             expanded_4: false,
             expanded_5: false,
         };
+        this.flatListRef = null;
 
         if (this.props.langue === "100") {
             this.props.navigation.setOptions({ title: "Niva - Gestion du temps" });
@@ -274,6 +275,7 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: false,
             });
+            this.flatListRef.scrollToIndex({ animated: true, index: 0 });
         }
         if (button === "F01") {
             this.setState({
@@ -284,6 +286,7 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: false,
             });
+            this.flatListRef.scrollToIndex({ animated: true, index: 1 });
         }
         if (button === "F02") {
             this.setState({
@@ -294,6 +297,7 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: false,
             });
+            this.flatListRef.scrollToIndex({ animated: true, index: 2 });
         }
         if (button === "F03") {
             this.setState({
@@ -304,6 +308,7 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: false,
             });
+            this.flatListRef.scrollToIndex({ animated: true, index: 3 });
         }
         if (button === "F04") {
             this.setState({
@@ -314,6 +319,7 @@ class ManagementTime extends React.Component {
                 expanded_4: !this.state.expanded_4,
                 expanded_5: false,
             });
+            this.flatListRef.scrollToIndex({ animated: true, index: 4 });
         }
         if (button === "F05") {
             this.setState({
@@ -324,6 +330,7 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: !this.state.expanded_5,
             });
+            this.flatListRef.scrollToIndex({ animated: true, index: 5 });
         }
 
         this.setState({
@@ -382,7 +389,7 @@ class ManagementTime extends React.Component {
                                     this._refresh();
                                 } else {
                                     this.state.mouvements[compteur].ico = "times-circle";
-                                    this.state.mouvements[compteur].colorIco = "#C72C41";
+                                    this.state.mouvements[compteur].colorIco = "#AC6867";
                                     this.state.mouvements[compteur].loadingMouvement = false;
 
                                     this.setState({
@@ -402,7 +409,7 @@ class ManagementTime extends React.Component {
                             });
                         } else {
                             this.state.mouvements[compteur].ico = "times-circle";
-                            this.state.mouvements[compteur].colorIco = "#C72C41";
+                            this.state.mouvements[compteur].colorIco = "#AC6867";
                             this.state.mouvements[compteur].loadingMouvement = false;
 
                             this.setState({
@@ -786,7 +793,7 @@ class ManagementTime extends React.Component {
     _renderRetour = (button, typeButton, icoBase64, libelle, text) => {
         let ico = <Image style={styles.image} source={{ uri: `data:image/png;base64,${icoBase64}` }} />;
         if (icoBase64 === null) {
-            ico = <FontAwesome5 name="exclamation-circle" color="#C72C41" size={50} />;
+            ico = <FontAwesome5 name="exclamation-circle" color="#AC6867" size={50} />;
         } else {
             if (button === "F00" || typeButton === "O" || typeButton === "F") {
                 libelle = "Transaction validé";
@@ -977,13 +984,13 @@ class ManagementTime extends React.Component {
                 <FlatList
                     data={libelles}
                     renderItem={({ item }) =>
-                        item.activite !== "F" && item.activite !== "O" ? (
+                        this.state.statutUser ? (
                             <Animatable.View animation="bounceIn" delay={item.delay} style={styles.container_button_animation}>
                                 <Collapse isExpanded={item.expanded}>
                                     <CollapseHeader>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                if (item.activite === "O" || item.activite === "F" || item.button === "F00") {
+                                                if (item.button === "F00" || item.activite === "O" || item.activite === "F") {
                                                     this._toggleCollapse(item.button);
                                                 } else {
                                                     this._toggleCollapse(item.button);
@@ -995,7 +1002,7 @@ class ManagementTime extends React.Component {
                                                 {item.ico !== "" ? (
                                                     <Image style={styles.image} source={{ uri: `data:image/png;base64,${item.ico}` }} />
                                                 ) : (
-                                                    <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />
+                                                    <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#AC6867" size={40} />
                                                 )}
                                                 <Text style={styles.text_button}>{item.libelle}</Text>
                                             </View>
@@ -1042,13 +1049,13 @@ class ManagementTime extends React.Component {
                                     </CollapseBody>
                                 </Collapse>
                             </Animatable.View>
-                        ) : user.statutUser ? (
+                        ) : item.activite === "O" || item.activite === "F" ? null : (
                             <Animatable.View animation="bounceIn" delay={item.delay} style={styles.container_button_animation}>
                                 <Collapse isExpanded={item.expanded}>
                                     <CollapseHeader>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                if (item.activite === "O" || item.activite === "F" || item.button === "F00") {
+                                                if (item.button === "F00") {
                                                     this._toggleCollapse(item.button);
                                                 } else {
                                                     this._toggleCollapse(item.button);
@@ -1060,7 +1067,7 @@ class ManagementTime extends React.Component {
                                                 {item.ico !== "" ? (
                                                     <Image style={styles.image} source={{ uri: `data:image/png;base64,${item.ico}` }} />
                                                 ) : (
-                                                    <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />
+                                                    <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#AC6867" size={40} />
                                                 )}
                                                 <Text style={styles.text_button}>{item.libelle}</Text>
                                             </View>
@@ -1107,9 +1114,11 @@ class ManagementTime extends React.Component {
                                     </CollapseBody>
                                 </Collapse>
                             </Animatable.View>
-                        ) : null
+                        )
                     }
                     refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this._refresh()} />}
+                    keyExtractor={(item) => item.key}
+                    ref={(ref) => (this.flatListRef = ref)}
                 />
             </SafeAreaView>
         );
@@ -1378,7 +1387,7 @@ const styles = StyleSheet.create({
     },
     text_errorServeur: {
         textAlign: "center",
-        color: "#F25431",
+        color: "#AC6867",
         fontSize: 18,
     },
     text_heure: {
@@ -1487,7 +1496,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
     },
     button_cancel_collapse_activite: {
-        backgroundColor: "#C72C41",
+        backgroundColor: "#AC6867",
     },
     text_button_tiles_activite: {
         color: "black",
