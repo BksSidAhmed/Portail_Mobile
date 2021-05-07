@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { emailAction } from "../redux/actions/emailAction";
 import { passwordAction } from "../redux/actions/passwordAction";
 import { connect } from "react-redux";
@@ -24,42 +24,42 @@ class Settings extends React.Component {
         if (this.props.langue === "100") {
             this.state.text_localisation_active = "Localisation activé";
             this.state.text_localisation_desactive = "Localisation désactivé";
-            this.state.text_password = "Mot de passe";
+            this.state.text_password = "Changer le mot de passe";
             this.props.navigation.setOptions({ title: "Niva - Paramètres" });
         }
 
         if (this.props.langue === "109") {
             this.state.text_localisation_active = "Lage aktiviert";
             this.state.text_localisation_desactive = "Lage deaktiviert";
-            this.state.text_password = "Passwort";
+            this.state.text_password = "Kennwort ändern";
             this.props.navigation.setOptions({ title: "Niva - Einstellungen" });
         }
 
         if (this.props.langue === "134") {
             this.state.text_localisation_active = "Localización activado";
             this.state.text_localisation_desactive = "Localización desactivado";
-            this.state.text_password = "Contraseña";
+            this.state.text_password = "Cambiar la contraseña";
             this.props.navigation.setOptions({ title: "Niva - Configuraciones" });
         }
 
         if (this.props.langue === "132") {
             this.state.text_localisation_active = "Location enabled";
             this.state.text_localisation_desactive = "Location disabled";
-            this.state.text_password = "Password";
+            this.state.text_password = "Change password";
             this.props.navigation.setOptions({ title: "Niva - Settings" });
         }
 
         if (this.props.langue === "127") {
             this.state.text_localisation_active = "Posizione abilitato";
             this.state.text_localisation_desactive = "Posizione disattivato";
-            this.state.text_password = "Parola d'ordine";
+            this.state.text_password = "Cambia la password";
             this.props.navigation.setOptions({ title: "Niva - Impostazioni" });
         }
-        //Néerlandais
+
         if (this.props.langue === "135") {
             this.state.text_localisation_active = "Locatie ingeschakeld";
             this.state.text_localisation_desactive = "Locatie uitgeschakeld";
-            this.state.text_password = "Wachtwoord";
+            this.state.text_password = "Wachtwoord wijzigen";
             this.props.navigation.setOptions({ title: "Niva - Instellingen" });
         }
     }
@@ -98,30 +98,6 @@ class Settings extends React.Component {
         return granted;
     };
 
-    toggleSwitch = () => {
-        Geolocation.getCurrentPosition(
-            (position) => {
-                Alert.alert(
-                    "Désactivation de localisation",
-                    "Pour désactiver la localisation rendez vous dans les paramètres de votre téléphone.\n" +
-                        "Séléctionner ensuite la localisation par application.\n" +
-                        "Une fois que vous verrez l'application Niva dans la liste désactiver sa localisation.",
-                    [{ text: "OK" }]
-                );
-            },
-            (error) => {
-                this.requestLocationPermission().then((granted) => {
-                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                        this.setState({
-                            switchOn: true,
-                            text_localisation: this.state.text_localisation_active,
-                        });
-                    }
-                });
-            }
-        );
-    };
-
     onPressPassword = () => {
         this.props.navigation.navigate("Mot de passe");
     };
@@ -136,13 +112,15 @@ class Settings extends React.Component {
         return (
             <View style={styles.container}>
                 <Animatable.View animation="bounceIn" style={styles.container_header}>
-                    <View style={styles.container_logo_email}>
+                    <View style={styles.container_ico_logo_email}>
                         <View style={styles.container_ico}>
-                            <Text style={styles.Initialtext}>{Initialprenom + Initialnom}</Text>
+                            <Text style={styles.initial_text}>{Initialprenom + Initialnom}</Text>
                         </View>
-                        {/* <View style={styles.container_email}>
-                            <Text style={styles.Initialtext}>{this.props.prenom + " " + this.props.nom}</Text>
-                        </View> */}
+                    </View>
+                    <View style={styles.container_logo_email}>
+                        <View style={styles.container_email}>
+                            <Text style={styles.text_email}>{this.props.prenom + " " + this.props.nom}</Text>
+                        </View>
                         <View style={styles.container_email}>
                             <Text style={styles.text_email}>{this.props.email}</Text>
                         </View>
@@ -151,21 +129,10 @@ class Settings extends React.Component {
                 <View style={styles.container_body}>
                     <Animatable.View animation="bounceIn" delay={300}>
                         <TouchableOpacity style={styles.button_body} onPress={() => this.onPressPassword()}>
-                            <FontAwesome5 name="key" color="black" size={20} />
+                            <FontAwesome5 name="key" color="#31859C" size={20} />
                             <Text style={styles.text_button}>{this.state.text_password}</Text>
                         </TouchableOpacity>
                     </Animatable.View>
-                    {/* <Animatable.View animation="bounceIn" delay={600}>
-                        <TouchableOpacity style={styles.button_body} onPress={() => this.toggleSwitch()}>
-                            <View style={styles.button_localisation_left}>
-                                <FontAwesome5 name="map-marker-alt" color="black" size={20} />
-                                <Text style={styles.text_button}>{this.state.text_localisation}</Text>
-                            </View>
-                            <View style={styles.button_localisation_right}>
-                                <Switch value={this.state.switchOn} onValueChange={() => this.toggleSwitch()} />
-                            </View>
-                        </TouchableOpacity>
-                    </Animatable.View> */}
                 </View>
             </View>
         );
@@ -186,13 +153,22 @@ const styles = StyleSheet.create({
         flex: 2,
         padding: 10,
     },
-    container_logo_email: {
+    container_ico_logo_email: {
         flex: 1,
         padding: 28,
         // backgroundColor: "#31859C",
         // elevation: 5,
         // borderRadius: 5,
         justifyContent: "center",
+        alignItems: "center",
+    },
+    container_logo_email: {
+        flex: 1,
+        // padding: 28,
+        // backgroundColor: "#31859C",
+        // elevation: 5,
+        // borderRadius: 5,
+        // justifyContent: "center",
         alignItems: "center",
     },
     container_email: {
@@ -208,7 +184,7 @@ const styles = StyleSheet.create({
         width: 90,
         marginBottom: 10,
     },
-    Initialtext: {
+    initial_text: {
         color: "#fff",
         fontSize: 20,
     },
@@ -216,7 +192,9 @@ const styles = StyleSheet.create({
         padding: 30,
         backgroundColor: "white",
         elevation: 5,
-        borderRadius: 5,
+        borderRadius: 0,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
         flexDirection: "row",
         alignItems: "center",
         marginBottom: 10,

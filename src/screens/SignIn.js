@@ -239,8 +239,8 @@ class SignIn extends React.Component {
                                 />
                             </View>
                             <View style={styles.view_button}>
-                                <Button containerStyle={styles.container_button} buttonStyle={styles.button_style} title={this.state.text_bouton_connexion} onPress={() => this.connexion()} />
-                                <Button containerStyle={styles.container_button} buttonStyle={styles.button_style} title={this.state.text_bouton_lost_password} onPress={() => this.toggleOverlay("lost-password")} />
+                                <Button containerStyle={styles.container_button} buttonStyle={styles.button_style} title={this.state.text_bouton_connexion} titleStyle={styles.text_button} onPress={() => this.connexion()} />
+                                <Button containerStyle={styles.container_button} buttonStyle={styles.button_style} title={this.state.text_bouton_lost_password} titleStyle={styles.text_button} onPress={() => this.toggleOverlay("lost-password")} />
                             </View>
                         </Animatable.View>
                     </ScrollView>
@@ -305,6 +305,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 60,
     },
+    text_button: {
+        color: "black",
+        // fontWeight: "bold",
+        // fontSize: 60,
+    },
     text_input: {
         color: "#05375a",
     },
@@ -315,8 +320,11 @@ const styles = StyleSheet.create({
     button_style: {
         padding: 15,
         marginVertical: 5,
-        borderRadius: 50,
-        backgroundColor: "#31859C",
+        borderRadius: 0,
+        backgroundColor: "white",
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     button_overlay_accept: {
         borderRadius: 50,

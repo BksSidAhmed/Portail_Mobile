@@ -976,68 +976,139 @@ class ManagementTime extends React.Component {
             <SafeAreaView>
                 <FlatList
                     data={libelles}
-                    renderItem={({ item }) => (
-                        <Animatable.View animation="bounceIn" delay={item.delay} style={styles.container_button_animation}>
-                            <Collapse isExpanded={item.expanded}>
-                                <CollapseHeader>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            if (item.activite === "O" || item.activite === "F" || item.button === "F00") {
-                                                this._toggleCollapse(item.button);
-                                            } else {
-                                                this._toggleCollapse(item.button);
-                                                this._sendAction(item.button, item.libelle, item.localisation, null);
-                                            }
-                                        }}
-                                        style={styles.button_tiles}>
-                                        <View style={styles.container_ico}>
-                                            {item.ico !== "" ? <Image style={styles.image} source={{ uri: `data:image/png;base64,${item.ico}` }} /> : <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />}
-                                            <Text style={styles.text_button}>{item.libelle}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </CollapseHeader>
-                                <CollapseBody style={styles.collapse_button_body}>
-                                    {this.state.loaderResponse ? (
-                                        <View style={styles.view_collapse}>
-                                            <ActivityIndicator color="#008080" size={40} />
-                                        </View>
-                                    ) : this.state.loadingResponse ? (
-                                        this._renderRetour(item.button, item.activite, this.state.currentIco, this.state.currentLibelle, this.state.currentText)
-                                    ) : item.activite === "O" ? (
-                                        this._renderActivites(item.button, item.libelle, item.localisation, this.state.user.activites)
-                                    ) : (
-                                        <View style={styles.view_flex_direction_row_flex}>
-                                            <View style={styles.view_collapse}>
-                                                <Text style={styles.text_collapse}>Date</Text>
-                                                <Text style={styles.text_collapse}>Heure</Text>
-                                                <Text style={styles.text_collapse}>Confirmation ?</Text>
+                    renderItem={({ item }) =>
+                        item.activite !== "F" && item.activite !== "O" ? (
+                            <Animatable.View animation="bounceIn" delay={item.delay} style={styles.container_button_animation}>
+                                <Collapse isExpanded={item.expanded}>
+                                    <CollapseHeader>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                if (item.activite === "O" || item.activite === "F" || item.button === "F00") {
+                                                    this._toggleCollapse(item.button);
+                                                } else {
+                                                    this._toggleCollapse(item.button);
+                                                    this._sendAction(item.button, item.libelle, item.localisation, null);
+                                                }
+                                            }}
+                                            style={styles.button_tiles}>
+                                            <View style={styles.container_ico}>
+                                                {item.ico !== "" ? (
+                                                    <Image style={styles.image} source={{ uri: `data:image/png;base64,${item.ico}` }} />
+                                                ) : (
+                                                    <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />
+                                                )}
+                                                <Text style={styles.text_button}>{item.libelle}</Text>
                                             </View>
+                                        </TouchableOpacity>
+                                    </CollapseHeader>
+                                    <CollapseBody style={styles.collapse_button_body}>
+                                        {this.state.loaderResponse ? (
                                             <View style={styles.view_collapse}>
-                                                <Text style={styles.text_padding_5}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
-                                                <Text style={styles.text_padding_5}>{this.state.timeFixed}</Text>
-                                                <View style={styles.view_flow_direction_row}>
-                                                    <Button
-                                                        buttonStyle={styles.button_cancel_collapse}
-                                                        title="Annuler"
-                                                        onPress={() => {
-                                                            this._toggleCollapse(item.button);
-                                                        }}
-                                                    />
-                                                    <Button
-                                                        buttonStyle={styles.button_validate_collapse}
-                                                        title="Valider"
-                                                        onPress={() => {
-                                                            this._sendAction(item.button, item.libelle, item.localisation, null);
-                                                        }}
-                                                    />
+                                                <ActivityIndicator color="#008080" size={40} />
+                                            </View>
+                                        ) : this.state.loadingResponse ? (
+                                            this._renderRetour(item.button, item.activite, this.state.currentIco, this.state.currentLibelle, this.state.currentText)
+                                        ) : item.activite === "O" ? (
+                                            this._renderActivites(item.button, item.libelle, item.localisation, this.state.user.activites)
+                                        ) : (
+                                            <View style={styles.view_flex_direction_row_flex}>
+                                                <View style={styles.view_collapse}>
+                                                    <Text style={styles.text_collapse}>Date</Text>
+                                                    <Text style={styles.text_collapse}>Heure</Text>
+                                                    <Text style={styles.text_collapse}>Confirmation ?</Text>
+                                                </View>
+                                                <View style={styles.view_collapse}>
+                                                    <Text style={styles.text_padding_5}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
+                                                    <Text style={styles.text_padding_5}>{this.state.timeFixed}</Text>
+                                                    <View style={styles.view_flow_direction_row}>
+                                                        <Button
+                                                            buttonStyle={styles.button_cancel_collapse}
+                                                            title="Annuler"
+                                                            onPress={() => {
+                                                                this._toggleCollapse(item.button);
+                                                            }}
+                                                        />
+                                                        <Button
+                                                            buttonStyle={styles.button_validate_collapse}
+                                                            title="Valider"
+                                                            onPress={() => {
+                                                                this._sendAction(item.button, item.libelle, item.localisation, null);
+                                                            }}
+                                                        />
+                                                    </View>
                                                 </View>
                                             </View>
-                                        </View>
-                                    )}
-                                </CollapseBody>
-                            </Collapse>
-                        </Animatable.View>
-                    )}
+                                        )}
+                                    </CollapseBody>
+                                </Collapse>
+                            </Animatable.View>
+                        ) : user.statutUser ? (
+                            <Animatable.View animation="bounceIn" delay={item.delay} style={styles.container_button_animation}>
+                                <Collapse isExpanded={item.expanded}>
+                                    <CollapseHeader>
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                if (item.activite === "O" || item.activite === "F" || item.button === "F00") {
+                                                    this._toggleCollapse(item.button);
+                                                } else {
+                                                    this._toggleCollapse(item.button);
+                                                    this._sendAction(item.button, item.libelle, item.localisation, null);
+                                                }
+                                            }}
+                                            style={styles.button_tiles}>
+                                            <View style={styles.container_ico}>
+                                                {item.ico !== "" ? (
+                                                    <Image style={styles.image} source={{ uri: `data:image/png;base64,${item.ico}` }} />
+                                                ) : (
+                                                    <FontAwesome5 style={styles.ico_padding_10} name="exclamation-circle" color="#C72C41" size={40} />
+                                                )}
+                                                <Text style={styles.text_button}>{item.libelle}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </CollapseHeader>
+                                    <CollapseBody style={styles.collapse_button_body}>
+                                        {this.state.loaderResponse ? (
+                                            <View style={styles.view_collapse}>
+                                                <ActivityIndicator color="#008080" size={40} />
+                                            </View>
+                                        ) : this.state.loadingResponse ? (
+                                            this._renderRetour(item.button, item.activite, this.state.currentIco, this.state.currentLibelle, this.state.currentText)
+                                        ) : item.activite === "O" ? (
+                                            this._renderActivites(item.button, item.libelle, item.localisation, this.state.user.activites)
+                                        ) : (
+                                            <View style={styles.view_flex_direction_row_flex}>
+                                                <View style={styles.view_collapse}>
+                                                    <Text style={styles.text_collapse}>Date</Text>
+                                                    <Text style={styles.text_collapse}>Heure</Text>
+                                                    <Text style={styles.text_collapse}>Confirmation ?</Text>
+                                                </View>
+                                                <View style={styles.view_collapse}>
+                                                    <Text style={styles.text_padding_5}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
+                                                    <Text style={styles.text_padding_5}>{this.state.timeFixed}</Text>
+                                                    <View style={styles.view_flow_direction_row}>
+                                                        <Button
+                                                            buttonStyle={styles.button_cancel_collapse}
+                                                            title="Annuler"
+                                                            onPress={() => {
+                                                                this._toggleCollapse(item.button);
+                                                            }}
+                                                        />
+                                                        <Button
+                                                            buttonStyle={styles.button_validate_collapse}
+                                                            title="Valider"
+                                                            onPress={() => {
+                                                                this._sendAction(item.button, item.libelle, item.localisation, null);
+                                                            }}
+                                                        />
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        )}
+                                    </CollapseBody>
+                                </Collapse>
+                            </Animatable.View>
+                        ) : null
+                    }
                     refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this._refresh()} />}
                 />
             </SafeAreaView>
@@ -1377,7 +1448,7 @@ const styles = StyleSheet.create({
     button_cancel_collapse: {
         marginRight: 5,
         paddingHorizontal: 10,
-        backgroundColor: "#C72C41",
+        backgroundColor: "#AC6867",
     },
     button_validate_collapse: {
         marginLeft: 5,
