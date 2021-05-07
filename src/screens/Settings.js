@@ -99,12 +99,13 @@ class Settings extends React.Component {
     };
 
     onPressPassword = () => {
+        // console.log(this.props.navigation.navigate);
         this.props.navigation.navigate("Mot de passe");
     };
 
-    onPressLocation = () => {
-        this.props.navigation.navigate("Location");
-    };
+    // onPressLocation = () => {
+    //     this.props.navigation.navigate("Location");
+    // };
 
     render() {
         const Initialnom = this.props.nom.substr(0, 1);
