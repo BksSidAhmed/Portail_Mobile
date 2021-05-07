@@ -326,7 +326,7 @@ class ManagementTime extends React.Component {
                 expanded_5: !this.state.expanded_5,
             });
         }
-        this._scrollToIndex(button); 
+        this._scrollToIndex(button);
         this.setState({
             loadingResponse: false,
             loaderResponse: false,
