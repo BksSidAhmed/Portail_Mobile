@@ -275,7 +275,6 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: false,
             });
-            this.flatListRef.scrollToIndex({ animated: true, index: 0 });
         }
         if (button === "F01") {
             this.setState({
@@ -286,7 +285,6 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: false,
             });
-            this.flatListRef.scrollToIndex({ animated: true, index: 1 });
         }
         if (button === "F02") {
             this.setState({
@@ -297,7 +295,6 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: false,
             });
-            this.flatListRef.scrollToIndex({ animated: true, index: 2 });
         }
         if (button === "F03") {
             this.setState({
@@ -308,7 +305,6 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: false,
             });
-            this.flatListRef.scrollToIndex({ animated: true, index: 3 });
         }
         if (button === "F04") {
             this.setState({
@@ -319,7 +315,6 @@ class ManagementTime extends React.Component {
                 expanded_4: !this.state.expanded_4,
                 expanded_5: false,
             });
-            this.flatListRef.scrollToIndex({ animated: true, index: 4 });
         }
         if (button === "F05") {
             this.setState({
@@ -330,13 +325,33 @@ class ManagementTime extends React.Component {
                 expanded_4: false,
                 expanded_5: !this.state.expanded_5,
             });
-            this.flatListRef.scrollToIndex({ animated: true, index: 5 });
         }
-
+        this._scrollToIndex(button);
         this.setState({
             loadingResponse: false,
             loaderResponse: false,
         });
+    };
+
+    _scrollToIndex = (button) => {
+        if (button === "F00") {
+            this.flatListRef.scrollToIndex({ animated: true, index: 0 });
+        }
+        if (button === "F01") {
+            this.flatListRef.scrollToIndex({ animated: true, index: 1 });
+        }
+        if (button === "F02") {
+            this.flatListRef.scrollToIndex({ animated: true, index: 2 });
+        }
+        if (button === "F03") {
+            this.flatListRef.scrollToIndex({ animated: true, index: 3 });
+        }
+        if (button === "F04") {
+            this.flatListRef.scrollToIndex({ animated: true, index: 4 });
+        }
+        if (button === "F05") {
+            this.flatListRef.scrollToIndex({ animated: true, index: 5 });
+        }
     };
 
     _sendMouvements() {
@@ -455,6 +470,7 @@ class ManagementTime extends React.Component {
             currentLibelle: "Erreur serveur",
             currentText: "Serveur actuellement indisponible.\nLe mouvement a été enregistré dans votre mobile.",
         });
+        this._scrollToIndex(buttonError);
 
         if (buttonError === "F00" || activite != null) {
             var dataPointing = this.props.pointing;
@@ -481,6 +497,7 @@ class ManagementTime extends React.Component {
             this.setState({
                 currentText: "Serveur actuellement indisponible.",
             });
+            this._scrollToIndex(buttonError);
         }
     };
 
@@ -548,6 +565,7 @@ class ManagementTime extends React.Component {
                                     currentLibelle: libelle,
                                     currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
                                 });
+                                this._scrollToIndex(button);
                             } else {
                                 this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
                             }
@@ -621,6 +639,7 @@ class ManagementTime extends React.Component {
                                                                 currentLibelle: libelle,
                                                                 currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
                                                             });
+                                                            this._scrollToIndex(button);
                                                         } else {
                                                             this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
                                                         }
@@ -671,6 +690,7 @@ class ManagementTime extends React.Component {
                                                                 currentLibelle: libelle,
                                                                 currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
                                                             });
+                                                            this._scrollToIndex(button);
                                                         } else {
                                                             this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
                                                         }
@@ -725,6 +745,7 @@ class ManagementTime extends React.Component {
                                                 currentLibelle: libelle,
                                                 currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
                                             });
+                                            this._scrollToIndex(button);
                                         } else {
                                             this._errorServeur(button, null, null, activite);
                                         }
@@ -775,6 +796,7 @@ class ManagementTime extends React.Component {
                                         currentLibelle: libelle,
                                         currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
                                     });
+                                    this._scrollToIndex(button);
                                 } else {
                                     this._errorServeur(button, null, null, activite);
                                 }
