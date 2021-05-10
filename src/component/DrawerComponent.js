@@ -18,31 +18,30 @@ class DrawerComponent extends React.Component {
     };
 
     render() {
-        console.log(this.props);
         let list_item = [];
 
         if (this.props.langue === "100") {
-            list_item = [{ text: "Gestion du temps" }, { text: "Paramètres" }, { text: "Confidentialité" }, { text: "À propos" }, { text: "Déconnexion" }];
+            list_item = [{ text: "Gestion du temps" }, { text: "Confidentialité" }, { text: "À propos" }, { text: "Déconnexion" }];
         }
 
         if (this.props.langue === "109") {
-            list_item = [{ text: "Zeitmanagement" }, { text: "Einstellungen" }, { text: "Vertraulichkeit" }, { text: "Etwa" }, { text: "Ausloggen" }];
+            list_item = [{ text: "Zeitmanagement" }, { text: "Vertraulichkeit" }, { text: "Etwa" }, { text: "Ausloggen" }];
         }
 
         if (this.props.langue === "134") {
-            list_item = [{ text: "Gestión del tiempo" }, { text: "Configuraciones" }, { text: "Confidencialidad" }, { text: "A proposito" }, { text: "Cerrar sesión" }];
+            list_item = [{ text: "Gestión del tiempo" }, { text: "Confidencialidad" }, { text: "A proposito" }, { text: "Cerrar sesión" }];
         }
 
         if (this.props.langue === "132") {
-            list_item = [{ text: "Time management" }, { text: "Settings" }, { text: "Confidentiality" }, { text: "About" }, { text: "Logout" }];
+            list_item = [{ text: "Time management" }, { text: "Confidentiality" }, { text: "About" }, { text: "Logout" }];
         }
 
         if (this.props.langue === "127") {
-            list_item = [{ text: "Gestione del tempo" }, { text: "Impostazioni" }, { text: "Riservatezza" }, { text: "A proposito" }, { text: "Disconnettersi" }];
+            list_item = [{ text: "Gestione del tempo" }, { text: "Riservatezza" }, { text: "A proposito" }, { text: "Disconnettersi" }];
         }
 
         if (this.props.langue === "135") {
-            list_item = [{ text: "Tijdsbeheer" }, { text: "Instellingen" }, { text: "Vertrouwelijkheid" }, { text: "Over" }, { text: "Uitloggen" }];
+            list_item = [{ text: "Tijdsbeheer" }, { text: "Vertrouwelijkheid" }, { text: "Over" }, { text: "Uitloggen" }];
         }
 
         const Initialnom = this.props.nom.substr(0, 1);
@@ -59,7 +58,7 @@ class DrawerComponent extends React.Component {
                             }}>
                             <Text style={styles.initialText}>{Initialprenom + Initialnom}</Text>
                         </TouchableOpacity>
-                        <View style={{ marginTop: 10, marginBottom: 10 }}>
+                        <View style={styles.margin_vertical_10}>
                             <Text style={styles.initialText}> {this.props.prenom + " " + this.props.nom} </Text>
                         </View>
                     </View>
@@ -69,7 +68,7 @@ class DrawerComponent extends React.Component {
                                 onPress={() => {
                                     this.props.navigation.navigate("Gestion du temps");
                                 }}>
-                                <Text style={styles.buttonText}>Gestion du temps</Text>
+                                <Text style={styles.buttonText}>{list_item[0].text}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.container_button}>
@@ -77,7 +76,7 @@ class DrawerComponent extends React.Component {
                                 onPress={() => {
                                     this.props.navigation.navigate("Confidentialite");
                                 }}>
-                                <Text style={styles.buttonText}>Confidentialité</Text>
+                                <Text style={styles.buttonText}>{list_item[1].text}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.container_button}>
@@ -85,7 +84,7 @@ class DrawerComponent extends React.Component {
                                 onPress={() => {
                                     this.props.navigation.navigate("A propos");
                                 }}>
-                                <Text style={styles.buttonText}>A propos</Text>
+                                <Text style={styles.buttonText}>{list_item[2].text}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.container_buttonDeconnexion}>
@@ -93,7 +92,7 @@ class DrawerComponent extends React.Component {
                                 onPress={() => {
                                     this.signOut();
                                 }}>
-                                <Text style={styles.buttonText}>Déconnexion</Text>
+                                <Text style={styles.buttonText}>{list_item[3].text}</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -149,6 +148,9 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderBottomWidth: 1,
         borderColor: "#fff",
+    },
+    margin_vertical_10: {
+        marginVertical: 10,
     },
 });
 
