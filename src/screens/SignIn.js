@@ -249,7 +249,7 @@ class SignIn extends React.Component {
                     <View style={styles.view_overlay}>
                         <Text style={styles.text_overlay}>Le nom d'utilisateur et/ou le mot de passe est incorrect.</Text>
                         <View style={styles.view_button_overlay}>
-                            <Button buttonStyle={styles.button_overlay_accept} title="OK" onPress={() => this.toggleOverlay("error")} />
+                            <Button buttonStyle={styles.button_overlay_accept} title="Fermer" onPress={() => this.toggleOverlay("error")} />
                         </View>
                     </View>
                 </Overlay>
@@ -327,18 +327,24 @@ const styles = StyleSheet.create({
         borderColor: "#D0D0D0",
     },
     button_overlay_accept: {
-        borderRadius: 50,
-        backgroundColor: "#31859C",
+        borderRadius: 0,
+        backgroundColor: "#62B554",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     button_overlay_refuse: {
-        borderRadius: 50,
-        backgroundColor: "#b22222",
+        borderRadius: 0,
+        backgroundColor: "#AC6867",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
 });
 

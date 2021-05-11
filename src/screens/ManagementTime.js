@@ -1497,11 +1497,17 @@ const styles = StyleSheet.create({
         marginRight: 5,
         paddingHorizontal: 10,
         backgroundColor: "#AC6867",
+        borderRadius: 0,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     button_validate_collapse: {
         marginLeft: 5,
         paddingHorizontal: 10,
         backgroundColor: "#62B554",
+        borderRadius: 0,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     loader_overlay: {
         flex: 1,

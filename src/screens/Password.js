@@ -112,7 +112,7 @@ class Password extends React.Component {
                                     <Text style={styles.text_dialog}>{text}</Text>
                                 </View>
                             </Animatable.View>
-                            <Button buttonStyle={styles.button_overlay_accept} title="OK" onPress={() => this.setState({ visible: false })} />
+                            <Button buttonStyle={styles.button_overlay_accept} title="Fermer" titleStyle={styles.text_button_validate} onPress={() => this.setState({ visible: false })} />
                         </View>
                     )}
                 </View>
@@ -125,13 +125,13 @@ class Password extends React.Component {
             <View style={styles.view_form}>
                 <ScrollView style={styles.container_flex_1}>
                     <View style={styles.view_input}>
-                        <Input placeholder="Mot de passe actuelle" rightIcon={{ type: "font-awesome", name: "unlock" }} style={styles.text_input} secureTextEntry={true} autoCapitalize="none" onChangeText={(text) => this.editOldPassword(text)} />
+                        <Input placeholder="Mot de passe actuel" rightIcon={{ type: "font-awesome", name: "unlock" }} style={styles.text_input} secureTextEntry={true} autoCapitalize="none" onChangeText={(text) => this.editOldPassword(text)} />
                         <Input placeholder="Nouveau Mot de Passe" rightIcon={{ type: "font-awesome", name: "lock" }} style={styles.text_input} secureTextEntry={true} autoCapitalize="none" onChangeText={(text) => this.editNewPassword(text)} />
                         <Input placeholder="Saisir à nouveau" rightIcon={{ type: "font-awesome", name: "lock" }} style={styles.text_input} secureTextEntry={true} autoCapitalize="none" onChangeText={(text) => this.editSamePassword(text)} />
                     </View>
                 </ScrollView>
                 <View style={styles.view_button}>
-                    <Button containerStyle={styles.button_container} buttonStyle={styles.button_style} title="Valider" onPress={() => this.valider(this.newPassword, this.oldPassword, this.samePassword)} />
+                    <Button containerStyle={styles.button_container} buttonStyle={styles.button_style} title="Valider" titleStyle={styles.text_button_validate} onPress={() => this.valider(this.newPassword, this.oldPassword, this.samePassword)} />
                 </View>
                 {this.dialogPopup(this.state.currentIco, this.state.currentLibelle, this.state.currentText)}
             </View>
@@ -142,7 +142,7 @@ class Password extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#008080",
+        backgroundColor: "white",
     },
     container_button_animation: {
         flex: 1,
@@ -220,22 +220,31 @@ const styles = StyleSheet.create({
     button_style: {
         padding: 15,
         marginVertical: 5,
-        borderRadius: 50,
-        backgroundColor: "#008080",
+        borderRadius: 0,
+        backgroundColor: "white",
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
+    },
+    text_button_validate: {
+        color: "black",
     },
     button_container: {
         width: "100%",
     },
     button_overlay_accept: {
-        borderRadius: 50,
-        backgroundColor: "#008080",
+        borderRadius: 0,
+        backgroundColor: "white",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     button_overlay_refuse: {
         borderRadius: 50,
-        backgroundColor: "#b22222",
+        backgroundColor: "#AC6867",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,

@@ -336,7 +336,13 @@ class ManagementNoConnection extends React.Component {
                     </View>
                 </Animatable.View>
                 <Animatable.View animation="bounceIn" delay={600} style={styles.container_button_animation}>
-                    <Button onPress={() => this.actionButton()} disabled={this.state.disabled} buttonStyle={styles.button_mouvement} title={this.state.timers ? this.state.timer : this.state.text_bouton_hors_ligne} />
+                    <Button
+                        onPress={() => this.actionButton()}
+                        disabled={this.state.disabled}
+                        buttonStyle={styles.button_mouvement}
+                        titleStyle={styles.text_mouvement}
+                        title={this.state.timers ? this.state.timer : this.state.text_bouton_hors_ligne}
+                    />
                     {this.props.email !== "" ? this._renderButtonConnexion() : null}
                 </Animatable.View>
                 {this.overlay()}
@@ -379,11 +385,13 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     button_mouvement: {
-        backgroundColor: "#31859C",
+        backgroundColor: "white",
         padding: 20,
         marginVertical: 5,
         elevation: 5,
-        borderRadius: 5,
+        borderRadius: 0,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     text_animation: {
         padding: 20,
@@ -420,18 +428,24 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     button_overlay_accept: {
-        borderRadius: 50,
-        backgroundColor: "#31859C",
+        borderRadius: 0,
+        backgroundColor: "#62B554",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     button_overlay_refuse: {
-        borderRadius: 50,
-        backgroundColor: "#C72C41",
+        borderRadius: 0,
+        backgroundColor: "#AC6867",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     container_animation_header_overlay: {
         flex: 1,
@@ -485,6 +499,9 @@ const styles = StyleSheet.create({
     },
     container_global_tiles_overlay: {
         flex: 3,
+    },
+    text_mouvement: {
+        color: "black",
     },
 });
 
