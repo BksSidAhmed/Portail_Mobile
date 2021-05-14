@@ -1,9 +1,7 @@
 import React from "react";
-import { Text, View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import { Text, View, StyleSheet, ScrollView } from "react-native";
 import { Button, Input, Overlay } from "react-native-elements";
 import { getToken, postEditPassword } from "../api";
-import * as Animatable from "react-native-animatable";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { connect } from "react-redux";
 import { passwordAction } from "../redux/actions/passwordAction";
 
@@ -14,110 +12,144 @@ class Password extends React.Component {
         this.newPassword = "";
         this.samePassword = "";
         this.state = {
-            currentIco: "",
-            currentLibelle: "",
-            currentText: "",
-            visible: false,
-            loaderOverlayResponse: false,
+            loader_button_send_request: false,
+            disable_buttons_send_request: false,
+            visible_modal_error_unknown: false,
+            visible_modal_response_edit_password: false,
+            text_modal_button_close: "Fermer",
+            text_modal_error_unknown: "Il semblerait y avoir un problème avec le serveur distant. Veuillez réessayer plus tard.",
+            text_modal_response_edit_password: "",
+            error_input_old_password: "",
+            error_input_new_password_1: "",
+            error_input_new_password_2: "",
             error: false,
         };
     }
 
     valider(newPassword, oldPassword, samePassword) {
-        this.setState({
-            error: false,
-            visible: true,
-            loaderOverlayResponse: true,
-            currentLibelle: "",
-        });
-
-        if (newPassword === samePassword) {
-            if (this.props.password === this.oldPassword) {
-                getToken(this.props.email, this.props.password).then((token) => {
-                    if (token[0] === 200) {
-                        postEditPassword(token[1].token, this.props.email, newPassword, oldPassword).then((data) => {
-                            if (data[0] === 200) {
-                                this.setState({
-                                    loaderOverlayResponse: false,
-                                    currentLibelle: "Information",
-                                    currentText: data[1].message,
-                                });
-                                this.props.passwordAction(newPassword);
-                            } else {
-                                this.setState({
-                                    error: true,
-                                    loaderOverlayResponse: false,
-                                    currentLibelle: "Erreur",
-                                    currentText: "Erreur côté serveur. Veuillez réessayer ultérieurement.",
-                                });
-                            }
-                        });
+        if (oldPassword !== "") {
+            if (newPassword !== "") {
+                if (samePassword !== "") {
+                    if (newPassword === samePassword) {
+                        if (this.props.password === this.oldPassword) {
+                            this.setState({
+                                error: false,
+                                loader_button_send_request: true,
+                                disable_buttons_send_request: true,
+                            });
+                            getToken(this.props.email, this.props.password).then((token) => {
+                                if (token[0] === 200) {
+                                    postEditPassword(token[1].token, this.props.email, newPassword, oldPassword).then((data) => {
+                                        if (data[0] === 200) {
+                                            this.setState({
+                                                text_modal_response_edit_password: data[1].message,
+                                                loader_button_send_request: false,
+                                                disable_buttons_send_request: false,
+                                                visible_modal_response_edit_password: true,
+                                            });
+                                            this.oldPassword = "";
+                                            this.newPassword = "";
+                                            this.samePassword = "";
+                                            this.props.passwordAction(newPassword);
+                                        } else {
+                                            this.setState({
+                                                error: true,
+                                                text_modal_response_edit_password: "Erreur côté serveur. Veuillez réessayer ultérieurement.",
+                                                loader_button_send_request: false,
+                                                disable_buttons_send_request: false,
+                                                visible_modal_error_unknown: true,
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    this.setState({
+                                        loader_button_send_request: false,
+                                        disable_buttons_send_request: false,
+                                        visible_modal_error_unknown: true,
+                                    });
+                                }
+                            });
+                        } else {
+                            this.setState({
+                                error_input_old_password: "Votre mot de passe est erroné",
+                            });
+                        }
                     } else {
                         this.setState({
-                            error: true,
-                            loaderOverlayResponse: false,
-                            currentLibelle: "Erreur",
-                            currentText: "Votre mot de passe actuel n'est pas le bon.",
+                            error_input_new_password_1: "Les deux mot de passe ne sont pas identiques",
+                            error_input_new_password_2: "Les deux mot de passe ne sont pas identiques",
                         });
                     }
-                });
+                } else {
+                    this.setState({ error_input_new_password_2: "Veuillez l'entrer à nouveau" });
+                }
             } else {
-                this.setState({
-                    error: true,
-                    loaderOverlayResponse: false,
-                    currentLibelle: "Erreur",
-                    currentText: "Votre mot de passe actuel n'est pas le bon.",
-                });
+                this.setState({ error_input_new_password_1: "Veuillez entrer votre nouveau mot de passe" });
             }
         } else {
             this.setState({
-                error: true,
-                loaderOverlayResponse: false,
-                currentLibelle: "Erreur formulaire",
-                currentText: "Les deux mots de passe ne sont pas identiques.",
+                error_input_old_password: "Veuillez entrer votre mot de passe",
             });
         }
     }
 
     editOldPassword = (text) => {
         this.oldPassword = text;
+        if (text !== "") {
+            this.setState({ error_input_old_password: "" });
+        } else {
+            this.setState({ error_input_old_password: "Veuillez entrer votre mot de passe" });
+        }
     };
 
     editNewPassword = (text) => {
         this.newPassword = text;
+        if (text !== "") {
+            this.setState({ error_input_new_password_1: "" });
+        } else {
+            this.setState({ error_input_new_password_1: "Veuillez entrer votre nouveau mot de passe" });
+        }
     };
 
     editSamePassword = (text) => {
         this.samePassword = text;
+        if (text !== "") {
+            this.setState({ error_input_new_password_2: "" });
+        } else {
+            this.setState({ error_input_new_password_2: "Veuillez l'entrer à nouveau" });
+        }
     };
 
-    dialogPopup = (ico, title, text) => {
-        return (
-            <Overlay isVisible={this.state.visible} overlayStyle={styles.overlay_padding} fullScreen={true} animationType="slide">
-                <View style={styles.container_flex_1}>
-                    <View style={styles.container_title}>
-                        <Text style={styles.text_title_dialog}>{title}</Text>
+    _toggleOverlay = (selector) => {
+        if (selector === "error-unknown") {
+            this.setState({ visible_modal_error_unknown: !this.state.visible_modal_error_unknown });
+        }
+        if (selector === "response-edit-password") {
+            this.setState({ visible_modal_response_edit_password: !this.state.visible_modal_response_edit_password });
+        }
+    };
+
+    _renderModal = (selector) => {
+        if (selector === "error-unknown") {
+            return (
+                <View style={styles.view_overlay}>
+                    <Text style={styles.text_overlay}>{this.state.text_modal_error_unknown}</Text>
+                    <View style={styles.view_button_overlay}>
+                        <Button buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("error-unknown")} />
                     </View>
-                    {this.state.loaderOverlayResponse ? (
-                        <View style={styles.view_title}>
-                            <ActivityIndicator size="large" color="#008080" />
-                        </View>
-                    ) : (
-                        <View style={styles.container_flex_1}>
-                            <Animatable.View animation="slideInLeft" style={styles.container_button_animation}>
-                                <View style={styles.ico_dialog}>{this.state.error ? <FontAwesome5 name="exclamation-triangle" color="white" size={70} /> : <FontAwesome5 name="check-circle" color="white" size={70} />}</View>
-                            </Animatable.View>
-                            <Animatable.View animation="slideInRight" style={styles.container_button_animation}>
-                                <View style={styles.text_dialog_popup}>
-                                    <Text style={styles.text_dialog}>{text}</Text>
-                                </View>
-                            </Animatable.View>
-                            <Button buttonStyle={styles.button_overlay_accept} title="Fermer" titleStyle={styles.text_button_validate} onPress={() => this.setState({ visible: false })} />
-                        </View>
-                    )}
                 </View>
-            </Overlay>
-        );
+            );
+        }
+        if (selector === "response-edit-password") {
+            return (
+                <View style={styles.view_overlay}>
+                    <Text style={styles.text_overlay}>{this.state.text_modal_response_edit_password}</Text>
+                    <View style={styles.view_button_overlay}>
+                        <Button buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this.setState({ visible_modal_response_edit_password: false })} />
+                    </View>
+                </View>
+            );
+        }
     };
 
     render() {
@@ -125,15 +157,56 @@ class Password extends React.Component {
             <View style={styles.view_form}>
                 <ScrollView style={styles.container_flex_1}>
                     <View style={styles.view_input}>
-                        <Input placeholder="Mot de passe actuel" rightIcon={{ type: "font-awesome", name: "unlock" }} style={styles.text_input} secureTextEntry={true} autoCapitalize="none" onChangeText={(text) => this.editOldPassword(text)} />
-                        <Input placeholder="Nouveau Mot de Passe" rightIcon={{ type: "font-awesome", name: "lock" }} style={styles.text_input} secureTextEntry={true} autoCapitalize="none" onChangeText={(text) => this.editNewPassword(text)} />
-                        <Input placeholder="Saisir à nouveau" rightIcon={{ type: "font-awesome", name: "lock" }} style={styles.text_input} secureTextEntry={true} autoCapitalize="none" onChangeText={(text) => this.editSamePassword(text)} />
+                        <Input
+                            placeholder="Mot de passe actuel"
+                            rightIcon={{ type: "font-awesome", name: "unlock" }}
+                            errorMessage={this.state.error_input_old_password}
+                            style={styles.text_input}
+                            secureTextEntry={true}
+                            autoCapitalize="none"
+                            onChangeText={(text) => this.editOldPassword(text)}
+                            value={this.oldPassword}
+                        />
+                        <Input
+                            placeholder="Nouveau Mot de Passe"
+                            rightIcon={{ type: "font-awesome", name: "lock" }}
+                            errorMessage={this.state.error_input_new_password_1}
+                            style={styles.text_input}
+                            secureTextEntry={true}
+                            autoCapitalize="none"
+                            onChangeText={(text) => this.editNewPassword(text)}
+                            value={this.newPassword}
+                        />
+                        <Input
+                            placeholder="Saisir à nouveau"
+                            rightIcon={{ type: "font-awesome", name: "lock" }}
+                            errorMessage={this.state.error_input_new_password_2}
+                            style={styles.text_input}
+                            secureTextEntry={true}
+                            autoCapitalize="none"
+                            onChangeText={(text) => this.editSamePassword(text)}
+                            value={this.samePassword}
+                        />
                     </View>
                 </ScrollView>
                 <View style={styles.view_button}>
-                    <Button containerStyle={styles.button_container} buttonStyle={styles.button_style} title="Valider" titleStyle={styles.text_button_validate} onPress={() => this.valider(this.newPassword, this.oldPassword, this.samePassword)} />
+                    <Button
+                        containerStyle={styles.button_container}
+                        buttonStyle={styles.button_style}
+                        disabled={this.state.disable_buttons_send_request}
+                        loading={this.state.loader_button_send_request}
+                        loadingProps={styles.loader_password}
+                        title="Valider"
+                        titleStyle={styles.text_button_validate}
+                        onPress={() => this.valider(this.newPassword, this.oldPassword, this.samePassword)}
+                    />
                 </View>
-                {this.dialogPopup(this.state.currentIco, this.state.currentLibelle, this.state.currentText)}
+                <Overlay isVisible={this.state.visible_modal_error_unknown} overlayStyle={styles.overlay_margin_10}>
+                    {this._renderModal("error-unknown")}
+                </Overlay>
+                <Overlay isVisible={this.state.visible_modal_response_edit_password} overlayStyle={styles.overlay_margin_10}>
+                    {this._renderModal("response-edit-password")}
+                </Overlay>
             </View>
         );
     }
@@ -232,22 +305,14 @@ const styles = StyleSheet.create({
     button_container: {
         width: "100%",
     },
-    button_overlay_accept: {
-        borderRadius: 0,
-        backgroundColor: "white",
-        marginVertical: 10,
-        marginHorizontal: 10,
-        paddingHorizontal: 20,
-        elevation: 5,
-        borderWidth: 1,
-        borderColor: "#D0D0D0",
-    },
     button_overlay_refuse: {
-        borderRadius: 50,
+        borderRadius: 0,
         backgroundColor: "#AC6867",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     imageOverlay: {
         height: 70,
@@ -272,6 +337,12 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         marginTop: 5,
         padding: 15,
+    },
+    overlay_margin_10: {
+        margin: 10,
+    },
+    loader_password: {
+        color: "#31859C",
     },
 });
 

@@ -5,10 +5,8 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import SignIn from "../screens/SignIn";
 import ManagementTime from "../screens/ManagementTime";
 import About from "../screens/About";
-import ManagementNoConnection from "../screens/ManagementNoConnection";
 import DrawerComponent from "../component/DrawerComponent";
 import Password from "../screens/Password";
-import Location from "../screens/Location";
 import Settings from "../screens/Settings";
 import { AuthContext } from "../context/context";
 import { connect } from "react-redux";
@@ -16,30 +14,8 @@ import { emailAction } from "../redux/actions/emailAction";
 import { passwordAction } from "../redux/actions/passwordAction";
 import { langueAction } from "../redux/actions/langueAction";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import NetInfo from "@react-native-community/netinfo";
 import Confidential from "../screens/Confidential";
 import InitialComponent from "../component/InitialComponent";
-
-const ManagementNoConnectionTimeStack = createStackNavigator();
-const ManagementNoConnectionStackScreen = () => (
-    <ManagementNoConnectionTimeStack.Navigator>
-        <ManagementNoConnectionTimeStack.Screen
-            name="Gestion du temps hors connection"
-            component={ManagementNoConnection}
-            options={{
-                title: "Niva - Gestion du temps hors ligne",
-                headerStyle: {
-                    backgroundColor: "#31859C",
-                },
-                headerTintColor: "#fff",
-                headerTitleAlign: "center",
-                headerTitleStyle: {
-                    fontWeight: "bold",
-                },
-            }}
-        />
-    </ManagementNoConnectionTimeStack.Navigator>
-);
 
 const ManagementTimeStack = createStackNavigator();
 const ManagementTimeStackScreen = ({ navigation }) => (
@@ -59,9 +35,6 @@ const ManagementTimeStackScreen = ({ navigation }) => (
                 headerLeftContainerStyle: {
                     marginLeft: 20,
                 },
-                // headerRightContainerStyle: {
-                //     marginRight: 20,
-                // },
             })}
         />
     </ManagementTimeStack.Navigator>
@@ -97,23 +70,7 @@ const ParameterStackScreen = ({ navigation }) => (
                 },
                 headerTintColor: "#fff",
                 headerTitleAlign: "center",
-                headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
-                headerLeftContainerStyle: {
-                    marginLeft: 20,
-                },
-            }}
-        />
-        <ParameterStack.Screen
-            name="Location"
-            component={Location}
-            options={{
-                title: "Niva - Localisation GPS",
-                headerStyle: {
-                    backgroundColor: "#31859C",
-                },
-                headerTintColor: "#fff",
-                headerTitleAlign: "center",
-                headerLeft: () => <FontAwesome5 onPress={() => navigation.toggleDrawer()} name="bars" color="white" size={23} />,
+                headerLeft: () => <FontAwesome5 onPress={() => navigation.navigate("Paramètre")} name="arrow-left" color="white" size={23} />,
                 headerLeftContainerStyle: {
                     marginLeft: 20,
                 },
@@ -172,7 +129,6 @@ const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
     <AuthStack.Navigator headerMode="none">
         <AuthStack.Screen name="SignIn" component={SignIn} options={{ title: "Sign In" }} />
-        <AuthStack.Screen name="Gestion du temps hors connection" component={ManagementNoConnectionStackScreen} />
     </AuthStack.Navigator>
 );
 
@@ -183,22 +139,13 @@ const DrawerScreen = () => (
         <Drawer.Screen name="Parametre" component={ParameterStackScreen} />
         <Drawer.Screen name="A propos" component={AboutStackScreen} />
         <Drawer.Screen name="Confidentialite" component={ConfidentialStackScreen} />
-        <Drawer.Screen name="Gestion du temps hors connection" component={ManagementNoConnectionStackScreen} />
     </Drawer.Navigator>
 );
 
 const RootStack = createStackNavigator();
-const RootStackScreen = ({ email, password, connection }) => (
+const RootStackScreen = ({ email, password }) => (
     <RootStack.Navigator headerMode="none">
-        {connection ? (
-            email && password ? (
-                <RootStack.Screen name="Management Time" component={DrawerScreen} options={{ animationEnabled: false }} />
-            ) : (
-                <RootStack.Screen name="Auth" component={AuthStackScreen} options={{ animationEnabled: false }} />
-            )
-        ) : (
-            <RootStack.Screen name="ManagementNoTimeConnection" component={ManagementNoConnectionStackScreen} options={{ animationEnabled: false }} />
-        )}
+        {email && password ? <RootStack.Screen name="Management Time" component={DrawerScreen} options={{ animationEnabled: false }} /> : <RootStack.Screen name="Auth" component={AuthStackScreen} options={{ animationEnabled: false }} />}
     </RootStack.Navigator>
 );
 
@@ -207,24 +154,14 @@ class Navigation extends React.Component {
         super(props);
         this.state = {
             isLoading: true,
-            etatConnection: null,
         };
-    }
-
-    UNSAFE_componentWillMount() {
-        console.log(this.props);
-        NetInfo.addEventListener((state) => {
-            this.setState({
-                etatConnection: state.isConnected,
-            });
-        });
     }
 
     render() {
         return (
             <AuthContext.Provider value={this.props}>
                 <NavigationContainer>
-                    <RootStackScreen email={this.props.email} password={this.props.password} connection={this.state.etatConnection} navigation={this.props.navigation} />
+                    <RootStackScreen email={this.props.email} password={this.props.password} navigation={this.props.navigation} />
                 </NavigationContainer>
             </AuthContext.Provider>
         );

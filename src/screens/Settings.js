@@ -4,10 +4,9 @@ import { emailAction } from "../redux/actions/emailAction";
 import { passwordAction } from "../redux/actions/passwordAction";
 import { connect } from "react-redux";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import * as Animatable from "react-native-animatable";
-import { PermissionsAndroid } from "react-native";
-import Geolocation from "react-native-geolocation-service";
+import NetInfo from "@react-native-community/netinfo";
+import { Button, Overlay } from "react-native-elements";
 
 class Settings extends React.Component {
     constructor(props) {
@@ -19,6 +18,11 @@ class Settings extends React.Component {
             text_localisation_active: "",
             text_localisation_desactive: "",
             text_password: "",
+            text_modal_no_internet_connection: "Il semblerait que vous n'ayez pas d'accès à internet. Vous pourrez réessayer lorsque vous aurez à nouveau un accès.",
+            text_modal_button_close: "Fermer",
+            text_error_network: "",
+            text_button_error_no_internet_connection: "Aucune connexion internet.\nAppuyer pour rafraichir.",
+            visible_modal_no_internet_connection: false,
         };
 
         if (this.props.langue === "100") {
@@ -64,48 +68,34 @@ class Settings extends React.Component {
         }
     }
 
-    componentDidMount() {
-        this.getStatutLocalistation();
-    }
-
-    UNSAFE_componentWillMount() {
-        this.getStatutLocalistation();
-    }
-
-    componentWillUnmount = () => {
-        LocationServicesDialogBox.stopListener();
-    };
-
-    getStatutLocalistation = () => {
-        Geolocation.getCurrentPosition(
-            (position) => {
-                this.setState({
-                    switchOn: true,
-                    text_localisation: this.state.text_localisation_active,
-                });
-            },
-            (error) => {
-                this.setState({
-                    switchOn: false,
-                    text_localisation: this.state.text_localisation_desactive,
-                });
-            }
-        );
-    };
-
-    requestLocationPermission = async () => {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-        return granted;
-    };
-
     onPressPassword = () => {
-        // console.log(this.props.navigation.navigate);
-        this.props.navigation.navigate("Mot de passe");
+        NetInfo.fetch().then((netInfos) => {
+            if (!netInfos.isConnected) {
+                this._toggleOverlay("no-internet-connection");
+            } else {
+                this.props.navigation.navigate("Mot de passe");
+            }
+        });
     };
 
-    // onPressLocation = () => {
-    //     this.props.navigation.navigate("Location");
-    // };
+    _toggleOverlay = (selector) => {
+        if (selector === "no-internet-connection") {
+            this.setState({ visible_modal_no_internet_connection: !this.state.visible_modal_no_internet_connection, text_error_network: this.state.text_button_error_no_internet_connection });
+        }
+    };
+
+    _renderModal = (selector) => {
+        if (selector === "no-internet-connection") {
+            return (
+                <View style={styles.view_overlay}>
+                    <Text style={styles.text_overlay}>{this.state.text_modal_no_internet_connection}</Text>
+                    <View style={styles.view_button_overlay}>
+                        <Button buttonStyle={styles.button_overlay_accept} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("no-internet-connection")} />
+                    </View>
+                </View>
+            );
+        }
+    };
 
     render() {
         const Initialnom = this.props.nom.substr(0, 1);
@@ -135,6 +125,9 @@ class Settings extends React.Component {
                         </TouchableOpacity>
                     </Animatable.View>
                 </View>
+                <Overlay isVisible={this.state.visible_modal_no_internet_connection} overlayStyle={styles.overlay_margin_10}>
+                    {this._renderModal("no-internet-connection")}
+                </Overlay>
             </View>
         );
     }
@@ -157,19 +150,11 @@ const styles = StyleSheet.create({
     container_ico_logo_email: {
         flex: 1,
         padding: 28,
-        // backgroundColor: "#31859C",
-        // elevation: 5,
-        // borderRadius: 5,
         justifyContent: "center",
         alignItems: "center",
     },
     container_logo_email: {
         flex: 1,
-        // padding: 28,
-        // backgroundColor: "#31859C",
-        // elevation: 5,
-        // borderRadius: 5,
-        // justifyContent: "center",
         alignItems: "center",
     },
     container_email: {
@@ -200,6 +185,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 10,
     },
+    button_overlay_accept: {
+        borderRadius: 0,
+        backgroundColor: "#62B554",
+        marginVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 20,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
+    },
     button_localisation_left: {
         flex: 2,
         flexDirection: "row",
@@ -218,6 +212,20 @@ const styles = StyleSheet.create({
     },
     ico_padding: {
         padding: 15,
+    },
+    view_button_overlay: {
+        flexDirection: "row",
+        justifyContent: "center",
+    },
+    text_overlay: {
+        marginBottom: 20,
+        fontSize: 15,
+    },
+    view_overlay: {
+        padding: 20,
+    },
+    overlay_margin_10: {
+        margin: 10,
     },
 });
 

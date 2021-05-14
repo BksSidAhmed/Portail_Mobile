@@ -64,8 +64,8 @@ export const getUser = async (token, email) => {
         });
         const statusCode = response.status;
         return Promise.all([statusCode, response.json()]);
-    } catch (err) {
-        return console.error(err);
+    } catch (error) {
+        return await Promise.all([500, error]);
     }
 };
 
@@ -81,8 +81,8 @@ export const getIco = async (token, ico) => {
         });
         const statusCode = response.status;
         return Promise.all([statusCode, response.json()]);
-    } catch (err) {
-        return console.error(err);
+    } catch (error) {
+        return await Promise.all([500, error]);
     }
 };
 
@@ -101,8 +101,8 @@ export const postLostPassword = async (email) => {
         });
         const statusCode = response.status;
         return Promise.all([statusCode, response.json()]);
-    } catch (err) {
-        return console.error(err);
+    } catch (error) {
+        return await Promise.all([500, error]);
     }
 };
 
@@ -123,7 +123,7 @@ export const postEditPassword = async (token, email, newPassword, oldPassword) =
         });
         const statusCode = response.status;
         return Promise.all([statusCode, response.json()]);
-    } catch (err) {
-        return console.error(err);
+    } catch (error) {
+        return await Promise.all([500, error]);
     }
 };

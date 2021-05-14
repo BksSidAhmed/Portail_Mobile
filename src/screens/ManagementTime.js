@@ -9,7 +9,7 @@ import Geolocation from "react-native-geolocation-service";
 import { listeEmailAction } from "../redux/actions/listeEmailAction";
 import { pointingAction } from "../redux/actions/pointingHorsLigneAction";
 import { nomAction } from "../redux/actions/nomAction";
-import { prenomAction } from "../redux/actions/prenonAction";
+import { prenomAction } from "../redux/actions/prenomAction";
 import { emailAction } from "../redux/actions/emailAction";
 import { passwordAction } from "../redux/actions/passwordAction";
 import { langueAction } from "../redux/actions/langueAction";
@@ -19,49 +19,72 @@ import { PermissionsAndroid } from "react-native";
 import { getDistance } from "geolib";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Collapse, CollapseHeader, CollapseBody } from "accordion-collapse-react-native";
+import NetInfo from "@react-native-community/netinfo";
 
 class ManagementTime extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             time: "",
-            timeFixed: "",
-            loaderResponse: false,
-            loadingList: true,
-            loadingResponse: false,
+            time_fixed: "",
+            loader_response: false,
+            loader_list_buttons: true,
+            render_response: false,
             latitude: "",
             longitude: "",
-            visible: false,
-            visibleMouvementsEnAttente: false,
+            visible_modal_no_internet_connection: false,
+            visible_modal_error_unknown: false,
+            visible_modal_mouvements_en_attente: false,
             user: "",
-            currentIco: "",
-            currentLibelle: "",
-            currentText: "",
-            compteurDelete: 0,
-            statutUser: null,
-            statut1: null,
-            statut2: null,
-            statut3: null,
-            statut4: null,
-            statut5: null,
-            errorServeur: false,
+            current_ico: "",
+            current_libelle: "",
+            current_text: "",
+            statut_0: null,
+            statut_1: null,
+            statut_2: null,
+            statut_3: null,
+            statut_4: null,
+            statut_5: null,
+            error_serveur: false,
             activite: null,
             activites: null,
-            loaderOverlayResponse: false,
             refreshing: false,
-            mouvementsEnAttente: false,
+            mouvements_en_attente: false,
             mouvements: null,
-            mouvementText: "",
-            disableBoutonMouvements: true,
+            mouvement_text: "",
+            disable_bouton_mouvements: true,
             text_welcome: "Bonjour, ",
+            text_modal_no_internet_connection: "Il semblerait que vous n'ayez pas d'accès à internet. Vous pourrez réessayer lorsque vous aurez à nouveau un accès.",
+            text_modal_button_close: "Fermer",
+            text_modal_error_unknown: "Il semblerait y avoir un problème avec le serveur distant. Veuillez réessayer plus tard.",
+            text_button_error_no_internet_connection: "Aucune connexion internet.\nAppuyer pour rafraichir.",
+            text_button_error_unknown: "Erreur du serveur distant.\nAppuyer pour rafraichir.",
+            text_error_network: "",
             expanded_0: false,
             expanded_1: false,
             expanded_2: false,
             expanded_3: false,
             expanded_4: false,
             expanded_5: false,
+            etat_network: true,
         };
         this.flatListRef = null;
+    }
+
+    UNSAFE_componentWillMount() {
+        NetInfo.fetch().then((netInfos) => {
+            this.setState({
+                etat_network: netInfos.isConnected,
+            });
+            if (!netInfos.isConnected) {
+                this._toggleOverlay("no-internet-connection");
+            } else {
+                this._sendMouvements();
+                this._getUserData();
+                this._getMouvementsEnAttente();
+            }
+        });
+        this._startClock();
 
         if (this.props.langue === "100") {
             this.props.navigation.setOptions({ title: "Niva - Gestion du temps" });
@@ -69,35 +92,63 @@ class ManagementTime extends React.Component {
 
         if (this.props.langue === "109") {
             this.props.navigation.setOptions({ title: "Niva - Zeiteinteilung" });
-            this.state.text_welcome = "Hallo, ";
+            this.setState({
+                text_welcome: "Hallo, ",
+                text_modal_no_internet_connection: "Es sieht so aus, als hätten Sie keinen Internetzugang. Sie können es erneut versuchen, wenn Sie erneut Zugriff haben.",
+                text_modal_button_close: "Schließen",
+                text_modal_error_unknown: "Es scheint ein Problem mit dem Remote-Server zu geben. Bitte versuchen Sie es später noch einmal.",
+                text_button_error_no_internet_connection: "Keine Internetverbindung.\nDrücken Sie zum Aktualisieren.",
+                text_button_error_unknown: "Remote-Server-Fehler.\nDrücken Sie zum Aktualisieren.",
+            });
         }
 
         if (this.props.langue === "134") {
             this.props.navigation.setOptions({ title: "Niva - Gestión del tiempo" });
-            this.state.text_welcome = "Buenos dias, ";
+            this.setState({
+                text_welcome: "Buenos dias, ",
+                text_modal_no_internet_connection: "Parece que no tienes acceso a Internet. Puede intentarlo de nuevo cuando tenga acceso de nuevo.",
+                text_modal_button_close: "Cerrar",
+                text_modal_error_unknown: "Parece haber un problema con el servidor remoto. Por favor, inténtelo de nuevo más tarde.",
+                text_button_error_no_internet_connection: "Sin conexión a Internet.\nPresione para actualizar.",
+                text_button_error_unknown: "Error del servidor remoto.\nPresione para actualizar.",
+            });
         }
 
         if (this.props.langue === "132") {
             this.props.navigation.setOptions({ title: "Niva - Time management" });
-            this.state.text_welcome = "Hello, ";
+            this.setState({
+                text_welcome: "Hello, ",
+                text_modal_no_internet_connection: "It looks like you don't have internet access. You can try again when you have access again.",
+                text_modal_button_close: "Close",
+                text_modal_error_unknown: "There appears to be a problem with the remote server. Please try again later.",
+                text_button_error_no_internet_connection: "No internet connection.\nPress to refresh.",
+                text_button_error_unknown: "Remote server error.\nPress to refresh.",
+            });
         }
 
         if (this.props.langue === "127") {
             this.props.navigation.setOptions({ title: "Niva - Gestione del tempo" });
-            this.state.text_welcome = "Buongiorno, ";
+            this.setState({
+                text_welcome: "Buongiorno, ",
+                text_modal_no_internet_connection: "Sembra che tu non abbia accesso a Internet. Puoi riprovare quando avrai di nuovo accesso.",
+                text_modal_button_close: "Chiudere",
+                text_modal_error_unknown: "Sembra che ci sia un problema con il server remoto. Per favore riprova più tardi.",
+                text_button_error_no_internet_connection: "Nessuna connessione internet.\nPremere per aggiornare.",
+                text_button_error_unknown: "Errore del server remoto.\nPremere per aggiornare.",
+            });
         }
 
         if (this.props.langue === "135") {
             this.props.navigation.setOptions({ title: "Niva - Tijdsbeheer" });
-            this.state.text_welcome = "Hallo, ";
+            this.setState({
+                text_welcome: "Hallo, ",
+                text_modal_no_internet_connection: "Het lijkt erop dat u geen internettoegang heeft. U kunt het opnieuw proberen als u weer toegang heeft.",
+                text_modal_button_close: "Sluiten",
+                text_modal_error_unknown: "Er lijkt een probleem te zijn met de externe server. Probeer het later nog eens.",
+                text_button_error_no_internet_connection: "Geen internet verbinding.\nDruk op om te vernieuwen.",
+                text_button_error_unknown: "Fout met externe server.\nDruk op om te vernieuwen.",
+            });
         }
-    }
-
-    UNSAFE_componentWillMount() {
-        this._renderClock();
-        this._sendMouvements();
-        this._getUserData();
-        this._getMouvementsEnAttente();
     }
 
     componentWillUnmount = () => {
@@ -109,11 +160,11 @@ class ManagementTime extends React.Component {
         var dataPointing = this.props.pointing;
         if (dataPointing.length === 0) {
             this.setState({
-                mouvementsEnAttente: false,
+                mouvements_en_attente: false,
             });
         } else {
             this.setState({
-                mouvementsEnAttente: true,
+                mouvements_en_attente: true,
             });
         }
     };
@@ -137,110 +188,112 @@ class ManagementTime extends React.Component {
         return mouvements;
     };
 
-    _getUserData() {
+    _getUserData = () => {
         getToken(this.props.email, this.props.password).then((token) => {
             if (token[0] === 200) {
                 getUser(token[1].token, this.props.email).then((response) => {
-                    this.props.nomAction(response[1].user.nom);
-                    this.props.prenomAction(response[1].user.prenom);
-                    this.setState({
-                        loadingList: false,
-                        refreshing: false,
-                        user: {
-                            email: response[1].user.email,
-                            prenom: response[1].user.prenom,
-                            nom: response[1].user.nom,
-                            profil: {
-                                action0: {
-                                    active: response[1].user.profil.action_0.active,
-                                    icoPresent: response[1].user.profil.action_0.ico_present,
-                                    icoAbsent: response[1].user.profil.action_0.ico_absent,
-                                    libellePresent: response[1].user.profil.action_0.libelle_present,
-                                    libelleAbsent: response[1].user.profil.action_0.libelle_absent,
-                                    localisation: response[1].user.profil.action_0.localisation,
-                                    activite: response[1].user.profil.action_0.activite,
-                                    displayPresent: response[1].user.profil.action_0.displayPresent,
-                                    displayAbsent: response[1].user.profil.action_0.displayAbsent,
+                    if (response[0] === 200) {
+                        this.props.nomAction(response[1].user.nom);
+                        this.props.prenomAction(response[1].user.prenom);
+                        this.setState({
+                            loader_list_buttons: false,
+                            refreshing: false,
+                            user: {
+                                email: response[1].user.email,
+                                profil: {
+                                    action0: {
+                                        active: response[1].user.profil.action_0.active,
+                                        icoPresent: response[1].user.profil.action_0.ico_present,
+                                        icoAbsent: response[1].user.profil.action_0.ico_absent,
+                                        libellePresent: response[1].user.profil.action_0.libelle_present,
+                                        libelleAbsent: response[1].user.profil.action_0.libelle_absent,
+                                        localisation: response[1].user.profil.action_0.localisation,
+                                        activite: response[1].user.profil.action_0.activite,
+                                        displayPresent: response[1].user.profil.action_0.displayPresent,
+                                        displayAbsent: response[1].user.profil.action_0.displayAbsent,
+                                    },
+                                    action1: {
+                                        active: response[1].user.profil.action_1.active,
+                                        icoPresent: response[1].user.profil.action_1.ico_present,
+                                        icoAbsent: response[1].user.profil.action_1.ico_absent,
+                                        libellePresent: response[1].user.profil.action_1.libelle_present,
+                                        libelleAbsent: response[1].user.profil.action_1.libelle_absent,
+                                        localisation: response[1].user.profil.action_1.localisation,
+                                        activite: response[1].user.profil.action_1.activite,
+                                        displayPresent: response[1].user.profil.action_1.displayPresent,
+                                        displayAbsent: response[1].user.profil.action_1.displayAbsent,
+                                    },
+                                    action2: {
+                                        active: response[1].user.profil.action_2.active,
+                                        icoPresent: response[1].user.profil.action_2.ico_present,
+                                        icoAbsent: response[1].user.profil.action_2.ico_absent,
+                                        libellePresent: response[1].user.profil.action_2.libelle_present,
+                                        libelleAbsent: response[1].user.profil.action_2.libelle_absent,
+                                        localisation: response[1].user.profil.action_2.localisation,
+                                        activite: response[1].user.profil.action_2.activite,
+                                        displayPresent: response[1].user.profil.action_2.displayPresent,
+                                        displayAbsent: response[1].user.profil.action_2.displayAbsent,
+                                    },
+                                    action3: {
+                                        active: response[1].user.profil.action_3.active,
+                                        icoPresent: response[1].user.profil.action_3.ico_present,
+                                        icoAbsent: response[1].user.profil.action_3.ico_absent,
+                                        libellePresent: response[1].user.profil.action_3.libelle_present,
+                                        libelleAbsent: response[1].user.profil.action_3.libelle_absent,
+                                        localisation: response[1].user.profil.action_3.localisation,
+                                        activite: response[1].user.profil.action_3.activite,
+                                        displayPresent: response[1].user.profil.action_3.displayPresent,
+                                        displayAbsent: response[1].user.profil.action_3.displayAbsent,
+                                    },
+                                    action4: {
+                                        active: response[1].user.profil.action_4.active,
+                                        icoPresent: response[1].user.profil.action_4.ico_present,
+                                        icoAbsent: response[1].user.profil.action_4.ico_absent,
+                                        libellePresent: response[1].user.profil.action_4.libelle_present,
+                                        libelleAbsent: response[1].user.profil.action_4.libelle_absent,
+                                        localisation: response[1].user.profil.action_4.localisation,
+                                        activite: response[1].user.profil.action_4.activite,
+                                        displayPresent: response[1].user.profil.action_4.displayPresent,
+                                        displayAbsent: response[1].user.profil.action_4.displayAbsent,
+                                    },
+                                    action5: {
+                                        active: response[1].user.profil.action_5.active,
+                                        icoPresent: response[1].user.profil.action_5.ico_present,
+                                        icoAbsent: response[1].user.profil.action_5.ico_absent,
+                                        libellePresent: response[1].user.profil.action_5.libelle_present,
+                                        libelleAbsent: response[1].user.profil.action_5.libelle_absent,
+                                        localisation: response[1].user.profil.action_5.localisation,
+                                        activite: response[1].user.profil.action_5.activite,
+                                        displayPresent: response[1].user.profil.action_5.displayPresent,
+                                        displayAbsent: response[1].user.profil.action_5.displayAbsent,
+                                    },
                                 },
-                                action1: {
-                                    active: response[1].user.profil.action_1.active,
-                                    icoPresent: response[1].user.profil.action_1.ico_present,
-                                    icoAbsent: response[1].user.profil.action_1.ico_absent,
-                                    libellePresent: response[1].user.profil.action_1.libelle_present,
-                                    libelleAbsent: response[1].user.profil.action_1.libelle_absent,
-                                    localisation: response[1].user.profil.action_1.localisation,
-                                    activite: response[1].user.profil.action_1.activite,
-                                    displayPresent: response[1].user.profil.action_1.displayPresent,
-                                    displayAbsent: response[1].user.profil.action_1.displayAbsent,
+                                client: {
+                                    activeBadgeClient: response[1].user.client.activeBadge,
+                                    activeAbsenceClient: response[1].user.client.activeAbsence,
                                 },
-                                action2: {
-                                    active: response[1].user.profil.action_2.active,
-                                    icoPresent: response[1].user.profil.action_2.ico_present,
-                                    icoAbsent: response[1].user.profil.action_2.ico_absent,
-                                    libellePresent: response[1].user.profil.action_2.libelle_present,
-                                    libelleAbsent: response[1].user.profil.action_2.libelle_absent,
-                                    localisation: response[1].user.profil.action_2.localisation,
-                                    activite: response[1].user.profil.action_2.activite,
-                                    displayPresent: response[1].user.profil.action_2.displayPresent,
-                                    displayAbsent: response[1].user.profil.action_2.displayAbsent,
-                                },
-                                action3: {
-                                    active: response[1].user.profil.action_3.active,
-                                    icoPresent: response[1].user.profil.action_3.ico_present,
-                                    icoAbsent: response[1].user.profil.action_3.ico_absent,
-                                    libellePresent: response[1].user.profil.action_3.libelle_present,
-                                    libelleAbsent: response[1].user.profil.action_3.libelle_absent,
-                                    localisation: response[1].user.profil.action_3.localisation,
-                                    activite: response[1].user.profil.action_3.activite,
-                                    displayPresent: response[1].user.profil.action_3.displayPresent,
-                                    displayAbsent: response[1].user.profil.action_3.displayAbsent,
-                                },
-                                action4: {
-                                    active: response[1].user.profil.action_4.active,
-                                    icoPresent: response[1].user.profil.action_4.ico_present,
-                                    icoAbsent: response[1].user.profil.action_4.ico_absent,
-                                    libellePresent: response[1].user.profil.action_4.libelle_present,
-                                    libelleAbsent: response[1].user.profil.action_4.libelle_absent,
-                                    localisation: response[1].user.profil.action_4.localisation,
-                                    activite: response[1].user.profil.action_4.activite,
-                                    displayPresent: response[1].user.profil.action_4.displayPresent,
-                                    displayAbsent: response[1].user.profil.action_4.displayAbsent,
-                                },
-                                action5: {
-                                    active: response[1].user.profil.action_5.active,
-                                    icoPresent: response[1].user.profil.action_5.ico_present,
-                                    icoAbsent: response[1].user.profil.action_5.ico_absent,
-                                    libellePresent: response[1].user.profil.action_5.libelle_present,
-                                    libelleAbsent: response[1].user.profil.action_5.libelle_absent,
-                                    localisation: response[1].user.profil.action_5.localisation,
-                                    activite: response[1].user.profil.action_5.activite,
-                                    displayPresent: response[1].user.profil.action_5.displayPresent,
-                                    displayAbsent: response[1].user.profil.action_5.displayAbsent,
-                                },
+                                activeBadgeUser: response[1].user.activeBadge,
+                                activeAbsenceUser: response[1].user.activeAbsence,
+                                activeGeolocalisation: response[1].user.activeLocalisation,
+                                lieuxGeolocalisation: response[1].user.lieux,
+                                activites: response[1].user.activites,
                             },
-                            client: {
-                                activeBadgeClient: response[1].user.client.activeBadge,
-                                activeAbsenceClient: response[1].user.client.activeAbsence,
-                            },
-                            activeBadgeUser: response[1].user.activeBadge,
-                            activeAbsenceUser: response[1].user.activeAbsence,
-                            activeGeolocalisation: response[1].user.activeLocalisation,
-                            lieuxGeolocalisation: response[1].user.lieux,
-                            activites: response[1].user.activites,
-                        },
-                        statutUser: response[1].user.statut0,
-                        statut1: response[1].user.statut1,
-                        statut2: response[1].user.statut2,
-                        statut3: response[1].user.statut3,
-                        statut4: response[1].user.statut4,
-                        statut5: response[1].user.statut5,
-                    });
+                            statut_0: response[1].user.statut0,
+                            statut_1: response[1].user.statut1,
+                            statut_2: response[1].user.statut2,
+                            statut_3: response[1].user.statut3,
+                            statut_4: response[1].user.statut4,
+                            statut_5: response[1].user.statut5,
+                        });
+                    } else {
+                        this._refresh("error-unknown");
+                    }
                 });
             } else {
-                this.props.navigation.navigate("Gestion du temps hors connection");
+                this._refresh("error-unknown");
             }
         });
-    }
+    };
 
     _getFullHeure = () => {
         var now = new moment().format("HHmmss");
@@ -252,14 +305,39 @@ class ManagementTime extends React.Component {
         return now;
     };
 
-    _refresh = () => {
+    _refresh = (selector) => {
         this.setState({
             refreshing: true,
-            loadingList: true,
+            loader_list_buttons: true,
         });
-        this._getUserData();
-        this._getMouvementsEnAttente();
-        this._resetCollapse();
+        if (selector === "normal") {
+            NetInfo.fetch().then((netInfos) => {
+                this.setState({
+                    etat_network: netInfos.isConnected,
+                });
+                if (!netInfos.isConnected) {
+                    this._toggleOverlay("no-internet-connection");
+                    this.setState({
+                        refreshing: false,
+                        loader_list_buttons: false,
+                    });
+                } else {
+                    this._getUserData();
+                    this._getMouvementsEnAttente();
+                    this._resetCollapse();
+                }
+            });
+        }
+        if (selector === "error-unknown") {
+            this.setState({
+                etat_network: false,
+            });
+            this._toggleOverlay("error-unknown");
+            this.setState({
+                refreshing: false,
+                loader_list_buttons: false,
+            });
+        }
     };
 
     _resetCollapse = () => {
@@ -275,7 +353,7 @@ class ManagementTime extends React.Component {
 
     _toggleCollapse = (button) => {
         this.setState({
-            timeFixed: moment().format("LTS"),
+            time_fixed: moment().format("LTS"),
         });
 
         if (button === "F00") {
@@ -340,9 +418,18 @@ class ManagementTime extends React.Component {
         }
         this._scrollToIndex(button);
         this.setState({
-            loadingResponse: false,
-            loaderResponse: false,
+            render_response: false,
+            loader_response: false,
         });
+    };
+
+    _toggleOverlay = (selector) => {
+        if (selector === "no-internet-connection") {
+            this.setState({ visible_modal_no_internet_connection: !this.state.visible_modal_no_internet_connection, text_error_network: this.state.text_button_error_no_internet_connection });
+        }
+        if (selector === "error-unknown") {
+            this.setState({ visible_modal_error_unknown: !this.state.visible_modal_error_unknown, text_error_network: this.state.text_button_error_unknown });
+        }
     };
 
     _scrollToIndex = (button) => {
@@ -368,18 +455,18 @@ class ManagementTime extends React.Component {
 
     _sendMouvements() {
         var dataPointing = this.props.pointing;
-        var compteurDelete = 0;
+        var compteur_delete = 0;
 
         this.setState({
             mouvements: this._getMouvementsEnAttenteByEmail(),
-            mouvementText: "Début de la séquence d'envoi",
-            disableBoutonMouvements: true,
+            mouvement_text: "Début de la séquence d'envoi",
+            disable_bouton_mouvements: true,
         });
 
         dataPointing.forEach((element) => {
             if (element.email === this.props.email) {
                 this.setState({
-                    visibleMouvementsEnAttente: true,
+                    visible_modal_mouvements_en_attente: true,
                 });
 
                 var compteur = 0;
@@ -394,12 +481,12 @@ class ManagementTime extends React.Component {
                                     this.state.mouvements[compteur].loadingMouvement = false;
 
                                     this.setState({
-                                        mouvementText: "Envoi du mouvement " + (compteur + 1) + " réussi",
+                                        mouvement_text: "Envoi du mouvement " + (compteur + 1) + " réussi",
                                     });
 
-                                    compteurDelete++;
+                                    compteur_delete++;
                                     compteur++;
-                                    if (compteurDelete === element.pointage.length) {
+                                    if (compteur_delete === element.pointage.length) {
                                         var removeIndex = dataPointing
                                             .map(function (item) {
                                                 return item.email;
@@ -408,30 +495,30 @@ class ManagementTime extends React.Component {
                                         dataPointing.splice(removeIndex, 1);
                                         this.props.pointingAction(dataPointing);
                                         this.setState({
-                                            errorServeur: false,
-                                            disableBoutonMouvements: false,
+                                            error_serveur: false,
+                                            disable_bouton_mouvements: false,
                                         });
                                     }
 
-                                    this._refresh();
+                                    this._refresh("normal");
                                 } else {
                                     this.state.mouvements[compteur].ico = "times-circle";
                                     this.state.mouvements[compteur].colorIco = "#AC6867";
                                     this.state.mouvements[compteur].loadingMouvement = false;
 
                                     this.setState({
-                                        mouvementText: "Envoi du mouvement " + (compteur + 1) + " echoué",
+                                        mouvement_text: "Envoi du mouvement " + (compteur + 1) + " echoué",
                                     });
 
                                     compteur++;
 
                                     if (compteur === element.pointage.length) {
                                         this.setState({
-                                            disableBoutonMouvements: false,
+                                            disable_bouton_mouvements: false,
                                         });
                                     }
 
-                                    this._refresh();
+                                    this._refresh("error-unknown");
                                 }
                             });
                         } else {
@@ -440,19 +527,19 @@ class ManagementTime extends React.Component {
                             this.state.mouvements[compteur].loadingMouvement = false;
 
                             this.setState({
-                                mouvementText: "Envoi du mouvement " + (compteur + 1) + " echoué",
-                                disableBoutonMouvements: false,
+                                mouvement_text: "Envoi du mouvement " + (compteur + 1) + " echoué",
+                                disable_bouton_mouvements: false,
                             });
 
                             compteur++;
 
                             if (compteur === element.pointage.length) {
                                 this.setState({
-                                    disableBoutonMouvements: false,
+                                    disable_bouton_mouvements: false,
                                 });
                             }
 
-                            this._refresh();
+                            this._refresh("error-unknown");
                         }
                     });
                 });
@@ -460,7 +547,7 @@ class ManagementTime extends React.Component {
         });
     }
 
-    _renderClock = () => {
+    _startClock = () => {
         this.IntervalClock = setInterval(() => {
             this.setState({
                 time: moment().format("LTS"),
@@ -475,12 +562,12 @@ class ManagementTime extends React.Component {
 
     _errorServeur = async (buttonError, lat, long, activite) => {
         this.setState({
-            loadingList: false,
-            loaderResponse: false,
-            loadingResponse: true,
-            currentIco: null,
-            currentLibelle: "Erreur serveur",
-            currentText: "Serveur actuellement indisponible.\nLe mouvement a été enregistré dans votre mobile.",
+            loader_list_buttons: false,
+            loader_response: false,
+            render_response: true,
+            current_ico: null,
+            current_libelle: "Erreur serveur",
+            current_text: "Serveur actuellement indisponible.\nLe mouvement a été enregistré dans votre mobile.",
         });
         this._scrollToIndex(buttonError);
 
@@ -507,7 +594,7 @@ class ManagementTime extends React.Component {
             }
         } else {
             this.setState({
-                currentText: "Serveur actuellement indisponible.",
+                current_text: "Serveur actuellement indisponible.",
             });
             this._scrollToIndex(buttonError);
         }
@@ -515,8 +602,8 @@ class ManagementTime extends React.Component {
 
     _sendAction = async (button, libelle, localisation, activite) => {
         this.setState({
-            loaderResponse: true,
-            loadingResponse: false,
+            loader_response: true,
+            render_response: false,
         });
 
         let ligne_1 = "";
@@ -528,251 +615,22 @@ class ManagementTime extends React.Component {
 
         if (button === "P00") {
             this.setState({
-                loadingList: false,
-                visible: false,
-                loaderOverlayResponse: false,
+                loader_list_buttons: false,
             });
-            this._sendMouvements();
-        }
-
-        if (!this.state.user.activeGeolocalisation) {
-            getToken(this.props.email, this.props.password).then((token) => {
-                if (token[0] === 200) {
-                    postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, null, null, activite, null).then((action) => {
-                        if (action[0] === 200) {
-                            if (action[1].code === 200) {
-                                if (button === "F00") {
-                                    Vibration.vibrate(500);
-                                }
-
-                                ligne_1 = action[1].message.ligne_1;
-                                ligne_2 = action[1].message.ligne_2;
-                                ligne_3 = action[1].message.ligne_3;
-                                ligne_4 = action[1].message.ligne_4;
-
-                                if (ligne_1 !== "") {
-                                    ligne_1 = ligne_1 + "\n";
-                                }
-                                if (ligne_2 !== "") {
-                                    ligne_2 = ligne_2 + "\n";
-                                }
-                                if (ligne_3 !== "") {
-                                    ligne_3 = ligne_3 + "\n";
-                                }
-                                if (action[1].ico !== "") {
-                                    dataIco = action[1].ico;
-                                }
-
-                                this.setState({
-                                    loadingList: false,
-                                    loaderResponse: false,
-                                    loadingResponse: true,
-                                    statutUser: action[1].statut0,
-                                    statut1: action[1].statut1,
-                                    statut2: action[1].statut2,
-                                    statut3: action[1].statut3,
-                                    statut4: action[1].statut4,
-                                    statut5: action[1].statut5,
-                                    currentIco: dataIco,
-                                    currentLibelle: libelle,
-                                    currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                });
-                                this._scrollToIndex(button);
-                            } else {
-                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
-                            }
-                        } else {
-                            this.props.navigation.navigate("Gestion du temps hors connection");
-                        }
-                    });
+            NetInfo.fetch().then((netInfos) => {
+                this.setState({
+                    etat_network: netInfos.isConnected,
+                });
+                if (!netInfos.isConnected) {
+                    this._toggleOverlay("no-internet-connection");
                 } else {
-                    this.props.navigation.navigate("Gestion du temps hors connection");
+                    this._sendMouvements();
                 }
             });
+        } else if (button === "I00") {
+            this._refresh("normal");
         } else {
-            if (localisation) {
-                this._requestLocationPermission().then((granted) => {
-                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                        Geolocation.getCurrentPosition((info) =>
-                            this.setState(
-                                {
-                                    latitude: info.coords.latitude.toString(),
-                                    longitude: info.coords.longitude.toString(),
-                                },
-                                () => {
-                                    var test = false;
-                                    var codeLieu = null;
-                                    this.state.user.lieuxGeolocalisation.forEach((lieu) => {
-                                        var dis = getDistance({ latitude: this.state.latitude, longitude: this.state.longitude }, { latitude: lieu.latitude, longitude: lieu.longitude });
-                                        if (dis <= lieu.marge) {
-                                            test = true;
-                                            codeLieu = lieu.code;
-                                        }
-                                    });
-
-                                    if (test) {
-                                        getToken(this.props.email, this.props.password).then((token) => {
-                                            if (token[0] === 200) {
-                                                postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, this.state.latitude, this.state.longitude, activite, codeLieu).then((action) => {
-                                                    if (action[0] === 200) {
-                                                        if (action[1].code === 200) {
-                                                            if (button === "F00") {
-                                                                Vibration.vibrate(500);
-                                                            }
-
-                                                            ligne_1 = action[1].message.ligne_1;
-                                                            ligne_2 = action[1].message.ligne_2;
-                                                            ligne_3 = action[1].message.ligne_3;
-                                                            ligne_4 = action[1].message.ligne_4;
-
-                                                            if (ligne_1 !== "") {
-                                                                ligne_1 = ligne_1 + "\n";
-                                                            }
-                                                            if (ligne_2 !== "") {
-                                                                ligne_2 = ligne_2 + "\n";
-                                                            }
-                                                            if (ligne_3 !== "") {
-                                                                ligne_3 = ligne_3 + "\n";
-                                                            }
-                                                            if (action[1].ico !== "") {
-                                                                dataIco = action[1].ico;
-                                                            }
-
-                                                            this.setState({
-                                                                loadingList: false,
-                                                                loaderResponse: false,
-                                                                loadingResponse: true,
-                                                                statutUser: action[1].statut0,
-                                                                statut1: action[1].statut1,
-                                                                statut2: action[1].statut2,
-                                                                statut3: action[1].statut3,
-                                                                statut4: action[1].statut4,
-                                                                statut5: action[1].statut5,
-                                                                currentIco: dataIco,
-                                                                currentLibelle: libelle,
-                                                                currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                                            });
-                                                            this._scrollToIndex(button);
-                                                        } else {
-                                                            this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
-                                                        }
-                                                    } else {
-                                                        this.props.navigation.navigate("Gestion du temps hors connection");
-                                                    }
-                                                });
-                                            } else {
-                                                this.props.navigation.navigate("Gestion du temps hors connection");
-                                            }
-                                        });
-                                    } else {
-                                        getToken(this.props.email, this.props.password).then((token) => {
-                                            if (token[0] === 200) {
-                                                postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), "E01", this.state.latitude, this.state.longitude, activite, null).then((action) => {
-                                                    if (action[0] === 200) {
-                                                        if (action[1].code === 200) {
-                                                            if (button === "F00") {
-                                                                Vibration.vibrate(500);
-                                                            }
-
-                                                            ligne_1 = action[1].message.ligne_1;
-                                                            ligne_2 = action[1].message.ligne_2;
-                                                            ligne_3 = action[1].message.ligne_3;
-                                                            ligne_4 = action[1].message.ligne_4;
-
-                                                            if (ligne_1 !== "") {
-                                                                ligne_1 = ligne_1 + "\n";
-                                                            }
-                                                            if (ligne_2 !== "") {
-                                                                ligne_2 = ligne_2 + "\n";
-                                                            }
-                                                            if (ligne_3 !== "") {
-                                                                ligne_3 = ligne_3 + "\n";
-                                                            }
-
-                                                            this.setState({
-                                                                loadingList: false,
-                                                                loaderResponse: false,
-                                                                loadingResponse: true,
-                                                                statutUser: action[1].statut0,
-                                                                statut1: action[1].statut1,
-                                                                statut2: action[1].statut2,
-                                                                statut3: action[1].statut3,
-                                                                statut4: action[1].statut4,
-                                                                statut5: action[1].statut5,
-                                                                currentIco: null,
-                                                                currentLibelle: libelle,
-                                                                currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                                            });
-                                                            this._scrollToIndex(button);
-                                                        } else {
-                                                            this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
-                                                        }
-                                                    } else {
-                                                        this.props.navigation.navigate("Gestion du temps hors connection");
-                                                    }
-                                                });
-                                            } else {
-                                                this.props.navigation.navigate("Gestion du temps hors connection");
-                                            }
-                                        });
-                                    }
-                                }
-                            )
-                        );
-                    } else {
-                        getToken(this.props.email, this.props.password).then((token) => {
-                            if (token[0] === 200) {
-                                postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), "E00", null, null, null, null).then((action) => {
-                                    if (action[0] === 200) {
-                                        if (action[1].code === 200) {
-                                            if (button === "F00") {
-                                                Vibration.vibrate(500);
-                                            }
-
-                                            ligne_1 = action[1].message.ligne_1;
-                                            ligne_2 = action[1].message.ligne_2;
-                                            ligne_3 = action[1].message.ligne_3;
-                                            ligne_4 = action[1].message.ligne_4;
-
-                                            if (ligne_1 !== "") {
-                                                ligne_1 = ligne_1 + "\n";
-                                            }
-                                            if (ligne_2 !== "") {
-                                                ligne_2 = ligne_2 + "\n";
-                                            }
-                                            if (ligne_3 !== "") {
-                                                ligne_3 = ligne_3 + "\n";
-                                            }
-
-                                            this.setState({
-                                                loadingList: false,
-                                                loaderResponse: false,
-                                                loadingResponse: true,
-                                                statutUser: action[1].statut0,
-                                                statut1: action[1].statut1,
-                                                statut2: action[1].statut2,
-                                                statut3: action[1].statut3,
-                                                statut4: action[1].statut4,
-                                                statut5: action[1].statut5,
-                                                currentIco: null,
-                                                currentLibelle: libelle,
-                                                currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                            });
-                                            this._scrollToIndex(button);
-                                        } else {
-                                            this._errorServeur(button, null, null, activite);
-                                        }
-                                    } else {
-                                        this.props.navigation.navigate("Gestion du temps hors connection");
-                                    }
-                                });
-                            } else {
-                                this.props.navigation.navigate("Gestion du temps hors connection");
-                            }
-                        });
-                    }
-                });
-            } else {
+            if (!this.state.user.activeGeolocalisation) {
                 getToken(this.props.email, this.props.password).then((token) => {
                     if (token[0] === 200) {
                         postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, null, null, activite, null).then((action) => {
@@ -801,26 +659,264 @@ class ManagementTime extends React.Component {
                                     }
 
                                     this.setState({
-                                        loadingList: false,
-                                        loaderResponse: false,
-                                        loadingResponse: true,
-                                        statutUser: action[1].statut0,
-                                        currentIco: dataIco,
-                                        currentLibelle: libelle,
-                                        currentText: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                        loader_list_buttons: false,
+                                        loader_response: false,
+                                        render_response: true,
+                                        statut_0: action[1].statut0,
+                                        statut_1: action[1].statut1,
+                                        statut_2: action[1].statut2,
+                                        statut_3: action[1].statut3,
+                                        statut_4: action[1].statut4,
+                                        statut_5: action[1].statut5,
+                                        current_ico: dataIco,
+                                        current_libelle: libelle,
+                                        current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
                                     });
                                     this._scrollToIndex(button);
                                 } else {
-                                    this._errorServeur(button, null, null, activite);
+                                    this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
                                 }
                             } else {
-                                this.props.navigation.navigate("Gestion du temps hors connection");
+                                this._refresh("error-unknown");
                             }
                         });
                     } else {
-                        this.props.navigation.navigate("Gestion du temps hors connection");
+                        this._refresh("error-unknown");
                     }
                 });
+            } else {
+                if (localisation) {
+                    this._requestLocationPermission().then((granted) => {
+                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                            Geolocation.getCurrentPosition((info) =>
+                                this.setState(
+                                    {
+                                        latitude: info.coords.latitude.toString(),
+                                        longitude: info.coords.longitude.toString(),
+                                    },
+                                    () => {
+                                        var test = false;
+                                        var codeLieu = null;
+                                        this.state.user.lieuxGeolocalisation.forEach((lieu) => {
+                                            var dis = getDistance({ latitude: this.state.latitude, longitude: this.state.longitude }, { latitude: lieu.latitude, longitude: lieu.longitude });
+                                            if (dis <= lieu.marge) {
+                                                test = true;
+                                                codeLieu = lieu.code;
+                                            }
+                                        });
+
+                                        if (test) {
+                                            getToken(this.props.email, this.props.password).then((token) => {
+                                                if (token[0] === 200) {
+                                                    postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, this.state.latitude, this.state.longitude, activite, codeLieu).then((action) => {
+                                                        if (action[0] === 200) {
+                                                            if (action[1].code === 200) {
+                                                                if (button === "F00") {
+                                                                    Vibration.vibrate(500);
+                                                                }
+
+                                                                ligne_1 = action[1].message.ligne_1;
+                                                                ligne_2 = action[1].message.ligne_2;
+                                                                ligne_3 = action[1].message.ligne_3;
+                                                                ligne_4 = action[1].message.ligne_4;
+
+                                                                if (ligne_1 !== "") {
+                                                                    ligne_1 = ligne_1 + "\n";
+                                                                }
+                                                                if (ligne_2 !== "") {
+                                                                    ligne_2 = ligne_2 + "\n";
+                                                                }
+                                                                if (ligne_3 !== "") {
+                                                                    ligne_3 = ligne_3 + "\n";
+                                                                }
+                                                                if (action[1].ico !== "") {
+                                                                    dataIco = action[1].ico;
+                                                                }
+
+                                                                this.setState({
+                                                                    loader_list_buttons: false,
+                                                                    loader_response: false,
+                                                                    render_response: true,
+                                                                    statut_0: action[1].statut0,
+                                                                    statut_1: action[1].statut1,
+                                                                    statut_2: action[1].statut2,
+                                                                    statut_3: action[1].statut3,
+                                                                    statut_4: action[1].statut4,
+                                                                    statut_5: action[1].statut5,
+                                                                    current_ico: dataIco,
+                                                                    current_libelle: libelle,
+                                                                    current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                                                });
+                                                                this._scrollToIndex(button);
+                                                            } else {
+                                                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
+                                                            }
+                                                        } else {
+                                                            this._refresh("error-unknown");
+                                                        }
+                                                    });
+                                                } else {
+                                                    this._refresh("error-unknown");
+                                                }
+                                            });
+                                        } else {
+                                            getToken(this.props.email, this.props.password).then((token) => {
+                                                if (token[0] === 200) {
+                                                    postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), "E01", this.state.latitude, this.state.longitude, activite, null).then((action) => {
+                                                        if (action[0] === 200) {
+                                                            if (action[1].code === 200) {
+                                                                if (button === "F00") {
+                                                                    Vibration.vibrate(500);
+                                                                }
+
+                                                                ligne_1 = action[1].message.ligne_1;
+                                                                ligne_2 = action[1].message.ligne_2;
+                                                                ligne_3 = action[1].message.ligne_3;
+                                                                ligne_4 = action[1].message.ligne_4;
+
+                                                                if (ligne_1 !== "") {
+                                                                    ligne_1 = ligne_1 + "\n";
+                                                                }
+                                                                if (ligne_2 !== "") {
+                                                                    ligne_2 = ligne_2 + "\n";
+                                                                }
+                                                                if (ligne_3 !== "") {
+                                                                    ligne_3 = ligne_3 + "\n";
+                                                                }
+
+                                                                this.setState({
+                                                                    loader_list_buttons: false,
+                                                                    loader_response: false,
+                                                                    render_response: true,
+                                                                    statut_0: action[1].statut0,
+                                                                    statut_1: action[1].statut1,
+                                                                    statut_2: action[1].statut2,
+                                                                    statut_3: action[1].statut3,
+                                                                    statut_4: action[1].statut4,
+                                                                    statut_5: action[1].statut5,
+                                                                    current_ico: null,
+                                                                    current_libelle: libelle,
+                                                                    current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                                                });
+                                                                this._scrollToIndex(button);
+                                                            } else {
+                                                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
+                                                            }
+                                                        } else {
+                                                            this._refresh("error-unknown");
+                                                        }
+                                                    });
+                                                } else {
+                                                    this._refresh("error-unknown");
+                                                }
+                                            });
+                                        }
+                                    }
+                                )
+                            );
+                        } else {
+                            getToken(this.props.email, this.props.password).then((token) => {
+                                if (token[0] === 200) {
+                                    postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), "E00", null, null, null, null).then((action) => {
+                                        if (action[0] === 200) {
+                                            if (action[1].code === 200) {
+                                                if (button === "F00") {
+                                                    Vibration.vibrate(500);
+                                                }
+
+                                                ligne_1 = action[1].message.ligne_1;
+                                                ligne_2 = action[1].message.ligne_2;
+                                                ligne_3 = action[1].message.ligne_3;
+                                                ligne_4 = action[1].message.ligne_4;
+
+                                                if (ligne_1 !== "") {
+                                                    ligne_1 = ligne_1 + "\n";
+                                                }
+                                                if (ligne_2 !== "") {
+                                                    ligne_2 = ligne_2 + "\n";
+                                                }
+                                                if (ligne_3 !== "") {
+                                                    ligne_3 = ligne_3 + "\n";
+                                                }
+
+                                                this.setState({
+                                                    loader_list_buttons: false,
+                                                    loader_response: false,
+                                                    render_response: true,
+                                                    statut_0: action[1].statut0,
+                                                    statut_1: action[1].statut1,
+                                                    statut_2: action[1].statut2,
+                                                    statut_3: action[1].statut3,
+                                                    statut_4: action[1].statut4,
+                                                    statut_5: action[1].statut5,
+                                                    current_ico: null,
+                                                    current_libelle: libelle,
+                                                    current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                                });
+                                                this._scrollToIndex(button);
+                                            } else {
+                                                this._errorServeur(button, null, null, activite);
+                                            }
+                                        } else {
+                                            this._refresh("error-unknown");
+                                        }
+                                    });
+                                } else {
+                                    this._refresh("error-unknown");
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    getToken(this.props.email, this.props.password).then((token) => {
+                        if (token[0] === 200) {
+                            postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, null, null, activite, null).then((action) => {
+                                if (action[0] === 200) {
+                                    if (action[1].code === 200) {
+                                        if (button === "F00") {
+                                            Vibration.vibrate(500);
+                                        }
+
+                                        ligne_1 = action[1].message.ligne_1;
+                                        ligne_2 = action[1].message.ligne_2;
+                                        ligne_3 = action[1].message.ligne_3;
+                                        ligne_4 = action[1].message.ligne_4;
+
+                                        if (ligne_1 !== "") {
+                                            ligne_1 = ligne_1 + "\n";
+                                        }
+                                        if (ligne_2 !== "") {
+                                            ligne_2 = ligne_2 + "\n";
+                                        }
+                                        if (ligne_3 !== "") {
+                                            ligne_3 = ligne_3 + "\n";
+                                        }
+                                        if (action[1].ico !== "") {
+                                            dataIco = action[1].ico;
+                                        }
+
+                                        this.setState({
+                                            loader_list_buttons: false,
+                                            loader_response: false,
+                                            render_response: true,
+                                            statut_0: action[1].statut0,
+                                            current_ico: dataIco,
+                                            current_libelle: libelle,
+                                            current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+                                        });
+                                        this._scrollToIndex(button);
+                                    } else {
+                                        this._errorServeur(button, null, null, activite);
+                                    }
+                                } else {
+                                    this._refresh("error-unknown");
+                                }
+                            });
+                        } else {
+                            this._refresh("error-unknown");
+                        }
+                    });
+                }
             }
         }
     };
@@ -845,7 +941,7 @@ class ManagementTime extends React.Component {
                     <Text style={styles.text_body_overlay}>{text}</Text>
                 </View>
                 <View style={styles.container_button_response}>
-                    <Button buttonStyle={styles.button_cancel_collapse} title="Fermer" onPress={() => this._refresh()} />
+                    <Button buttonStyle={styles.button_cancel_collapse} title="Fermer" onPress={() => this._refresh("normal")} />
                 </View>
             </View>
         );
@@ -854,233 +950,257 @@ class ManagementTime extends React.Component {
     _renderButtons = (user) => {
         let libelles = [];
 
-        if (this.state.mouvementsEnAttente) {
-            libelles.push({ key: 0, libelle: "Envoi des mouvements en attente", ico: "", button: "P00", delay: 0, localisation: this.state.mouvementsEnAttente, activite: false });
-        }
-
-        if (user.profil.action0.active) {
-            var display_0 = true;
-            if (this.state.statutUser) {
-                if (!user.profil.action0.displayPresent) {
-                    display_0 = false;
-                }
+        if (this.state.etat_network) {
+            if (this.state.mouvements_en_attente) {
                 libelles.push({
-                    key: 1,
-                    libelle: user.profil.action0.libellePresent,
-                    ico: user.profil.action0.icoPresent,
-                    button: "F00",
+                    key: 0,
+                    libelle: "Envoi des mouvements en attente",
+                    ico: "",
+                    button: "P00",
                     delay: 0,
-                    localisation: user.profil.action0.localisation,
-                    activite: user.profil.action0.activite,
-                    expanded: this.state.expanded_0,
-                    display: display_0,
-                });
-            } else {
-                if (!user.profil.action0.displayAbsent) {
-                    display_0 = false;
-                }
-                libelles.push({
-                    key: 1,
-                    libelle: user.profil.action0.libelleAbsent,
-                    ico: user.profil.action0.icoAbsent,
-                    button: "F00",
-                    delay: 0,
-                    localisation: user.profil.action0.localisation,
-                    activite: user.profil.action0.activite,
-                    expanded: this.state.expanded_0,
-                    display: display_0,
+                    localisation: this.state.mouvements_en_attente,
+                    activite: false,
+                    expanded: false,
+                    display: true,
                 });
             }
-        }
 
-        if (user.profil.action1.active) {
-            var display_1 = true;
-            if (this.state.statutUser) {
-                if (!user.profil.action1.displayPresent) {
-                    display_1 = false;
-                }
-            } else {
-                if (!user.profil.action1.displayAbsent) {
-                    display_1 = false;
+            if (user.profil.action0.active) {
+                var display_0 = true;
+                if (this.state.statut_0) {
+                    if (!user.profil.action0.displayPresent) {
+                        display_0 = false;
+                    }
+                    libelles.push({
+                        key: 1,
+                        libelle: user.profil.action0.libellePresent,
+                        ico: user.profil.action0.icoPresent,
+                        button: "F00",
+                        delay: 0,
+                        localisation: user.profil.action0.localisation,
+                        activite: user.profil.action0.activite,
+                        expanded: this.state.expanded_0,
+                        display: display_0,
+                    });
+                } else {
+                    if (!user.profil.action0.displayAbsent) {
+                        display_0 = false;
+                    }
+                    libelles.push({
+                        key: 1,
+                        libelle: user.profil.action0.libelleAbsent,
+                        ico: user.profil.action0.icoAbsent,
+                        button: "F00",
+                        delay: 0,
+                        localisation: user.profil.action0.localisation,
+                        activite: user.profil.action0.activite,
+                        expanded: this.state.expanded_0,
+                        display: display_0,
+                    });
                 }
             }
-            if (this.state.statut1) {
-                libelles.push({
-                    key: 2,
-                    libelle: user.profil.action1.libellePresent,
-                    ico: user.profil.action1.icoPresent,
-                    button: "F01",
-                    delay: 200,
-                    localisation: user.profil.action1.localisation,
-                    activite: user.profil.action1.activite,
-                    expanded: this.state.expanded_1,
-                    display: display_1,
-                });
-            } else {
-                libelles.push({
-                    key: 2,
-                    libelle: user.profil.action1.libelleAbsent,
-                    ico: user.profil.action1.icoAbsent,
-                    button: "F01",
-                    delay: 200,
-                    localisation: user.profil.action1.localisation,
-                    activite: user.profil.action1.activite,
-                    expanded: this.state.expanded_1,
-                    display: display_1,
-                });
-            }
-        }
 
-        if (user.profil.action2.active) {
-            var display_2 = true;
-            if (this.state.statutUser) {
-                if (!user.profil.action2.displayPresent) {
-                    display_2 = false;
+            if (user.profil.action1.active) {
+                var display_1 = true;
+                if (this.state.statut_0) {
+                    if (!user.profil.action1.displayPresent) {
+                        display_1 = false;
+                    }
+                } else {
+                    if (!user.profil.action1.displayAbsent) {
+                        display_1 = false;
+                    }
                 }
-            } else {
-                if (!user.profil.action2.displayAbsent) {
-                    display_2 = false;
+                if (this.state.statut_1) {
+                    libelles.push({
+                        key: 2,
+                        libelle: user.profil.action1.libellePresent,
+                        ico: user.profil.action1.icoPresent,
+                        button: "F01",
+                        delay: 200,
+                        localisation: user.profil.action1.localisation,
+                        activite: user.profil.action1.activite,
+                        expanded: this.state.expanded_1,
+                        display: display_1,
+                    });
+                } else {
+                    libelles.push({
+                        key: 2,
+                        libelle: user.profil.action1.libelleAbsent,
+                        ico: user.profil.action1.icoAbsent,
+                        button: "F01",
+                        delay: 200,
+                        localisation: user.profil.action1.localisation,
+                        activite: user.profil.action1.activite,
+                        expanded: this.state.expanded_1,
+                        display: display_1,
+                    });
                 }
             }
-            if (this.state.statut2) {
-                libelles.push({
-                    key: 3,
-                    libelle: user.profil.action2.libellePresent,
-                    ico: user.profil.action2.icoPresent,
-                    button: "F02",
-                    delay: 400,
-                    localisation: user.profil.action2.localisation,
-                    activite: user.profil.action2.activite,
-                    expanded: this.state.expanded_2,
-                    display: display_2,
-                });
-            } else {
-                libelles.push({
-                    key: 3,
-                    libelle: user.profil.action2.libelleAbsent,
-                    ico: user.profil.action2.icoAbsent,
-                    button: "F02",
-                    delay: 400,
-                    localisation: user.profil.action2.localisation,
-                    activite: user.profil.action2.activite,
-                    expanded: this.state.expanded_2,
-                    display: display_2,
-                });
-            }
-        }
 
-        if (user.profil.action3.active) {
-            var display_3 = true;
-            if (this.state.statutUser) {
-                if (!user.profil.action3.displayPresent) {
-                    display_3 = false;
+            if (user.profil.action2.active) {
+                var display_2 = true;
+                if (this.state.statut_0) {
+                    if (!user.profil.action2.displayPresent) {
+                        display_2 = false;
+                    }
+                } else {
+                    if (!user.profil.action2.displayAbsent) {
+                        display_2 = false;
+                    }
                 }
-            } else {
-                if (!user.profil.action3.displayAbsent) {
-                    display_3 = false;
+                if (this.state.statut_2) {
+                    libelles.push({
+                        key: 3,
+                        libelle: user.profil.action2.libellePresent,
+                        ico: user.profil.action2.icoPresent,
+                        button: "F02",
+                        delay: 400,
+                        localisation: user.profil.action2.localisation,
+                        activite: user.profil.action2.activite,
+                        expanded: this.state.expanded_2,
+                        display: display_2,
+                    });
+                } else {
+                    libelles.push({
+                        key: 3,
+                        libelle: user.profil.action2.libelleAbsent,
+                        ico: user.profil.action2.icoAbsent,
+                        button: "F02",
+                        delay: 400,
+                        localisation: user.profil.action2.localisation,
+                        activite: user.profil.action2.activite,
+                        expanded: this.state.expanded_2,
+                        display: display_2,
+                    });
                 }
             }
-            if (this.state.statut3) {
-                libelles.push({
-                    key: 4,
-                    libelle: user.profil.action3.libellePresent,
-                    ico: user.profil.action3.icoPresent,
-                    button: "F03",
-                    delay: 600,
-                    localisation: user.profil.action3.localisation,
-                    activite: user.profil.action3.activite,
-                    expanded: this.state.expanded_3,
-                    display: display_3,
-                });
-            } else {
-                libelles.push({
-                    key: 4,
-                    libelle: user.profil.action3.libelleAbsent,
-                    ico: user.profil.action3.icoAbsent,
-                    button: "F03",
-                    delay: 600,
-                    localisation: user.profil.action3.localisation,
-                    activite: user.profil.action3.activite,
-                    expanded: this.state.expanded_3,
-                    display: display_3,
-                });
-            }
-        }
 
-        if (user.profil.action4.active) {
-            var display_4 = true;
-            if (this.state.statutUser) {
-                if (!user.profil.action4.displayPresent) {
-                    display_4 = false;
+            if (user.profil.action3.active) {
+                var display_3 = true;
+                if (this.state.statut_0) {
+                    if (!user.profil.action3.displayPresent) {
+                        display_3 = false;
+                    }
+                } else {
+                    if (!user.profil.action3.displayAbsent) {
+                        display_3 = false;
+                    }
                 }
-            } else {
-                if (!user.profil.action4.displayAbsent) {
-                    display_4 = false;
+                if (this.state.statut_3) {
+                    libelles.push({
+                        key: 4,
+                        libelle: user.profil.action3.libellePresent,
+                        ico: user.profil.action3.icoPresent,
+                        button: "F03",
+                        delay: 600,
+                        localisation: user.profil.action3.localisation,
+                        activite: user.profil.action3.activite,
+                        expanded: this.state.expanded_3,
+                        display: display_3,
+                    });
+                } else {
+                    libelles.push({
+                        key: 4,
+                        libelle: user.profil.action3.libelleAbsent,
+                        ico: user.profil.action3.icoAbsent,
+                        button: "F03",
+                        delay: 600,
+                        localisation: user.profil.action3.localisation,
+                        activite: user.profil.action3.activite,
+                        expanded: this.state.expanded_3,
+                        display: display_3,
+                    });
                 }
             }
-            if (this.state.statut4) {
-                libelles.push({
-                    key: 5,
-                    libelle: user.profil.action4.libellePresent,
-                    ico: user.profil.action4.icoPresent,
-                    button: "F04",
-                    delay: 800,
-                    localisation: user.profil.action4.localisation,
-                    activite: user.profil.action4.activite,
-                    expanded: this.state.expanded_4,
-                    display: display_4,
-                });
-            } else {
-                libelles.push({
-                    key: 5,
-                    libelle: user.profil.action4.libelleAbsent,
-                    ico: user.profil.action4.icoAbsent,
-                    button: "F04",
-                    delay: 800,
-                    localisation: user.profil.action4.localisation,
-                    activite: user.profil.action4.activite,
-                    expanded: this.state.expanded_4,
-                    display: display_4,
-                });
-            }
-        }
 
-        if (user.profil.action5.active) {
-            var display_5 = true;
-            if (this.state.statutUser) {
-                if (!user.profil.action5.displayPresent) {
-                    display_5 = false;
+            if (user.profil.action4.active) {
+                var display_4 = true;
+                if (this.state.statut_0) {
+                    if (!user.profil.action4.displayPresent) {
+                        display_4 = false;
+                    }
+                } else {
+                    if (!user.profil.action4.displayAbsent) {
+                        display_4 = false;
+                    }
                 }
-            } else {
-                if (!user.profil.action5.displayAbsent) {
-                    display_5 = false;
+                if (this.state.statut_4) {
+                    libelles.push({
+                        key: 5,
+                        libelle: user.profil.action4.libellePresent,
+                        ico: user.profil.action4.icoPresent,
+                        button: "F04",
+                        delay: 800,
+                        localisation: user.profil.action4.localisation,
+                        activite: user.profil.action4.activite,
+                        expanded: this.state.expanded_4,
+                        display: display_4,
+                    });
+                } else {
+                    libelles.push({
+                        key: 5,
+                        libelle: user.profil.action4.libelleAbsent,
+                        ico: user.profil.action4.icoAbsent,
+                        button: "F04",
+                        delay: 800,
+                        localisation: user.profil.action4.localisation,
+                        activite: user.profil.action4.activite,
+                        expanded: this.state.expanded_4,
+                        display: display_4,
+                    });
                 }
             }
-            if (this.state.statut5) {
-                libelles.push({
-                    key: 6,
-                    libelle: user.profil.action5.libellePresent,
-                    ico: user.profil.action5.icoPresent,
-                    button: "F05",
-                    delay: 1000,
-                    localisation: user.profil.action5.localisation,
-                    activite: user.profil.action5.activite,
-                    expanded: this.state.expanded_5,
-                    display: display_5,
-                });
-            } else {
-                libelles.push({
-                    key: 6,
-                    libelle: user.profil.action5.libelleAbsent,
-                    ico: user.profil.action5.icoAbsent,
-                    button: "F05",
-                    delay: 1000,
-                    localisation: user.profil.action5.localisation,
-                    activite: user.profil.action5.activite,
-                    expanded: this.state.expanded_5,
-                    display: display_5,
-                });
+
+            if (user.profil.action5.active) {
+                var display_5 = true;
+                if (this.state.statut_0) {
+                    if (!user.profil.action5.displayPresent) {
+                        display_5 = false;
+                    }
+                } else {
+                    if (!user.profil.action5.displayAbsent) {
+                        display_5 = false;
+                    }
+                }
+                if (this.state.statut_5) {
+                    libelles.push({
+                        key: 6,
+                        libelle: user.profil.action5.libellePresent,
+                        ico: user.profil.action5.icoPresent,
+                        button: "F05",
+                        delay: 1000,
+                        localisation: user.profil.action5.localisation,
+                        activite: user.profil.action5.activite,
+                        expanded: this.state.expanded_5,
+                        display: display_5,
+                    });
+                } else {
+                    libelles.push({
+                        key: 6,
+                        libelle: user.profil.action5.libelleAbsent,
+                        ico: user.profil.action5.icoAbsent,
+                        button: "F05",
+                        delay: 1000,
+                        localisation: user.profil.action5.localisation,
+                        activite: user.profil.action5.activite,
+                        expanded: this.state.expanded_5,
+                        display: display_5,
+                    });
+                }
             }
+        } else {
+            libelles.push({
+                key: 0,
+                libelle: this.state.text_error_network,
+                ico: "",
+                button: "I00",
+                delay: 0,
+                localisation: false,
+                activite: false,
+                expanded: false,
+                display: true,
+            });
         }
 
         return (
@@ -1113,12 +1233,12 @@ class ManagementTime extends React.Component {
                                         </TouchableOpacity>
                                     </CollapseHeader>
                                     <CollapseBody style={styles.collapse_button_body}>
-                                        {this.state.loaderResponse ? (
+                                        {this.state.loader_response ? (
                                             <View style={styles.view_collapse}>
                                                 <ActivityIndicator color="#008080" size={40} />
                                             </View>
-                                        ) : this.state.loadingResponse ? (
-                                            this._renderRetour(item.button, item.activite, this.state.currentIco, this.state.currentLibelle, this.state.currentText)
+                                        ) : this.state.render_response ? (
+                                            this._renderRetour(item.button, item.activite, this.state.current_ico, this.state.current_libelle, this.state.current_text)
                                         ) : item.activite === "O" ? (
                                             this._renderActivites(item.button, item.libelle, item.localisation, this.state.user.activites)
                                         ) : (
@@ -1130,7 +1250,7 @@ class ManagementTime extends React.Component {
                                                 </View>
                                                 <View style={styles.view_collapse}>
                                                     <Text style={styles.text_padding_5}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
-                                                    <Text style={styles.text_padding_5}>{this.state.timeFixed}</Text>
+                                                    <Text style={styles.text_padding_5}>{this.state.time_fixed}</Text>
                                                     <View style={styles.view_flow_direction_row}>
                                                         <Button
                                                             buttonStyle={styles.button_cancel_collapse}
@@ -1155,7 +1275,7 @@ class ManagementTime extends React.Component {
                             </Animatable.View>
                         ) : null
                     }
-                    refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this._refresh()} />}
+                    refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={() => this._refresh("normal")} />}
                     keyExtractor={(item) => item.key}
                     ref={(ref) => (this.flatListRef = ref)}
                 />
@@ -1182,85 +1302,126 @@ class ManagementTime extends React.Component {
         );
     };
 
-    mouvementsEnAttente = () => {
+    _renderMouvementsEnAttente = () => {
         return (
-            <Overlay isVisible={this.state.visibleMouvementsEnAttente} overlayStyle={styles.overlay_padding_0} fullScreen={true} animationType="slide">
-                <View style={styles.container_overlay}>
-                    <View style={styles.container_global_header_overlay}>
-                        <Animatable.View animation="bounceIn" delay={0} style={styles.container_animation_header_overlay}>
-                            <View style={styles.container_title_overlay}>
-                                <FontAwesome5 name="arrow-alt-circle-up" color="white" size={50} style={styles.ico_margin_10} />
-                                <Text style={styles.text_title_overlay_mouvement}>Envoi des mouvements en attente en cours. Merci de bien vouloir patienter.</Text>
+            <View style={styles.container_overlay}>
+                <View style={styles.container_global_header_overlay}>
+                    <Animatable.View animation="bounceIn" delay={0} style={styles.container_animation_header_overlay}>
+                        <View style={styles.container_title_overlay}>
+                            <FontAwesome5 name="arrow-alt-circle-up" color="white" size={50} style={styles.ico_margin_10} />
+                            <Text style={styles.text_title_overlay_mouvement}>Envoi des mouvements en attente en cours. Merci de bien vouloir patienter.</Text>
+                        </View>
+                    </Animatable.View>
+                    <View style={styles.container_global_tiles_overlay}>
+                        <Animatable.View animation="bounceIn" delay={600} style={styles.container_animation_overlay_text}>
+                            <View style={styles.container_mouvement_overlay}>
+                                <FlatList
+                                    data={this.state.mouvements}
+                                    renderItem={({ item }) => (
+                                        <View style={styles.container_list_mouvement}>
+                                            {item.loadingMouvement ? (
+                                                <ActivityIndicator color="#008080" style={styles.indicator_padding_horizontal_10} />
+                                            ) : (
+                                                <FontAwesome5 name={item.ico} color={item.colorIco} size={20} style={styles.indicator_padding_horizontal_10} />
+                                            )}
+                                            <Text style={styles.text_mouvement_overlay}>
+                                                Mouvement du {item.date} à {item.heure}
+                                            </Text>
+                                        </View>
+                                    )}
+                                />
                             </View>
                         </Animatable.View>
-                        <View style={styles.container_global_tiles_overlay}>
-                            <Animatable.View animation="bounceIn" delay={600} style={styles.container_animation_overlay_text}>
-                                <View style={styles.container_mouvement_overlay}>
-                                    <FlatList
-                                        data={this.state.mouvements}
-                                        renderItem={({ item }) => (
-                                            <View style={styles.container_list_mouvement}>
-                                                {item.loadingMouvement ? (
-                                                    <ActivityIndicator color="#008080" style={styles.indicator_padding_horizontal_10} />
-                                                ) : (
-                                                    <FontAwesome5 name={item.ico} color={item.colorIco} size={20} style={styles.indicator_padding_horizontal_10} />
-                                                )}
-                                                <Text style={styles.text_mouvement_overlay}>
-                                                    Mouvement du {item.date} à {item.heure}
-                                                </Text>
-                                            </View>
-                                        )}
-                                    />
-                                </View>
-                            </Animatable.View>
-                            <Animatable.View animation="bounceIn" delay={300} style={styles.container_animation_overlay_ico}>
-                                <View style={styles.container_ico_overlay}>
-                                    <Text>{this.state.mouvementText}</Text>
-                                </View>
-                            </Animatable.View>
-                            <Button disabled={this.state.disableBoutonMouvements} buttonStyle={styles.button_overlay_accept} title="Fermer" onPress={() => this.setState({ visibleMouvementsEnAttente: false })} />
-                        </View>
+                        <Animatable.View animation="bounceIn" delay={300} style={styles.container_animation_overlay_ico}>
+                            <View style={styles.container_ico_overlay}>
+                                <Text>{this.state.mouvement_text}</Text>
+                            </View>
+                        </Animatable.View>
+                        <Button disabled={this.state.disable_bouton_mouvements} buttonStyle={styles.button_overlay_accept} title="Fermer" onPress={() => this.setState({ visible_modal_mouvements_en_attente: false })} />
                     </View>
                 </View>
-            </Overlay>
+            </View>
         );
     };
 
+    _renderStatusBar = () => {
+        return <StatusBar backgroundColor="#31859C" barStyle="light-content" />;
+    };
+
+    _renderWelcomeText = () => {
+        return (
+            <Animatable.View animation="slideInLeft">
+                <Text style={styles.text_welcome}>
+                    {this.state.text_welcome}
+                    <Text style={styles.text_welcome_name}>
+                        {this.props.prenom} {this.props.nom}
+                    </Text>
+                </Text>
+            </Animatable.View>
+        );
+    };
+
+    _renderClock = () => {
+        return (
+            <Animatable.View animation="bounceIn">
+                <Text style={styles.text_date}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
+                <Text style={styles.text_heure}>{this.state.time}</Text>
+            </Animatable.View>
+        );
+    };
+
+    _renderLoader = () => {
+        return <ActivityIndicator size="large" color="#008080" style={styles.container_loader} />;
+    };
+
+    _renderModal = (selector) => {
+        if (selector === "no-internet-connection") {
+            return (
+                <View style={styles.view_overlay}>
+                    <Text style={styles.text_overlay}>{this.state.text_modal_no_internet_connection}</Text>
+                    <View style={styles.view_button_overlay}>
+                        <Button buttonStyle={styles.button_overlay_accept} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("no-internet-connection")} />
+                    </View>
+                </View>
+            );
+        }
+        if (selector === "error-unknown") {
+            return (
+                <View style={styles.view_overlay}>
+                    <Text style={styles.text_overlay}>{this.state.text_modal_error_unknown}</Text>
+                    <View style={styles.view_button_overlay}>
+                        <Button buttonStyle={styles.button_overlay_accept} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("error-unknown")} />
+                    </View>
+                </View>
+            );
+        }
+    };
+
     render() {
-        const { loadingList, user } = this.state;
         return (
             <View style={styles.container}>
-                <StatusBar backgroundColor="#31859C" barStyle="light-content" />
-                {loadingList ? (
-                    <ActivityIndicator size="large" color="#008080" style={styles.container_loader} />
-                ) : (
-                    <View style={styles.container}>
-                        <View style={styles.container_global_header}>
-                            <View style={styles.container_global_header_welcome}>
-                                <Animatable.View animation="slideInLeft">
-                                    <Text style={styles.text_welcome}>
-                                        {this.state.text_welcome}
-                                        <Text style={styles.text_welcome_name}>
-                                            {this.state.user.prenom} {this.state.user.nom}
-                                        </Text>
-                                    </Text>
-                                </Animatable.View>
-                            </View>
-                            <View style={styles.container_global_header_date}>
-                                <Animatable.View animation="bounceIn">
-                                    <Text style={styles.text_date}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
-                                    <Text style={styles.text_heure}>{this.state.time}</Text>
-                                </Animatable.View>
-                            </View>
-                        </View>
-                        <View style={styles.container_global_tiles}>{this._renderButtons(user)}</View>
+                {this._renderStatusBar()}
+                <View style={styles.container}>
+                    <View style={styles.container_global_header}>
+                        <View style={styles.container_global_header_welcome}>{this._renderWelcomeText()}</View>
+                        <View style={styles.container_global_header_date}>{this._renderClock()}</View>
                     </View>
-                )}
-                {this.mouvementsEnAttente()}
+                    <View style={styles.container_global_tiles}>{this.state.loader_list_buttons ? this._renderLoader() : this._renderButtons(this.state.user)}</View>
+                </View>
+                <Overlay isVisible={this.state.visible_modal_error_unknown} overlayStyle={styles.overlay_margin_10}>
+                    {this._renderModal("error-unknown")}
+                </Overlay>
+                <Overlay isVisible={this.state.visible_modal_no_internet_connection} overlayStyle={styles.overlay_margin_10}>
+                    {this._renderModal("no-internet-connection")}
+                </Overlay>
+                <Overlay isVisible={this.state.visible_modal_mouvements_en_attente} overlayStyle={styles.overlay_margin_10}>
+                    {this._renderMouvementsEnAttente()}
+                </Overlay>
             </View>
         );
     }
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -1479,6 +1640,7 @@ const styles = StyleSheet.create({
     },
     text_button: {
         fontSize: 17,
+        paddingRight: 20,
     },
     buttons_list_activites: {
         padding: 20,
@@ -1487,11 +1649,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     button_overlay_accept: {
-        borderRadius: 50,
-        backgroundColor: "#008080",
+        borderRadius: 0,
+        backgroundColor: "#62B554",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
     },
     button_cancel_collapse: {
         marginRight: 5,
@@ -1516,6 +1680,9 @@ const styles = StyleSheet.create({
     },
     overlay_padding_0: {
         padding: 0,
+    },
+    overlay_margin_10: {
+        margin: 10,
     },
     ico_padding_10: {
         padding: 10,
@@ -1549,6 +1716,17 @@ const styles = StyleSheet.create({
     button_tiles: {
         padding: 20,
     },
+    view_overlay: {
+        padding: 20,
+    },
+    text_overlay: {
+        marginBottom: 20,
+        fontSize: 15,
+    },
+    view_button_overlay: {
+        flexDirection: "row",
+        justifyContent: "center",
+    },
 });
 
 const mapStateToProps = (state) => {
@@ -1558,6 +1736,8 @@ const mapStateToProps = (state) => {
         pointing: state.pointingReducer.pointing,
         emails: state.listeEmailReducer.emails,
         langue: state.langueReducer.langue,
+        nom: state.nomReducer.nom,
+        prenom: state.prenomReducer.prenom,
     };
 };
 

@@ -13,8 +13,8 @@ const rootReducer = combineReducers({
     pointingReducer: pointingReducer,
     listeEmailReducer: listeEmailReducer,
     langueReducer: langueReducer,
-    nomReducer : nomReducer,
-    prenomReducer : prenomReducer
+    nomReducer: nomReducer,
+    prenomReducer: prenomReducer,
 });
 
 export default rootReducer;
