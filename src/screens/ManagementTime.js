@@ -85,6 +85,10 @@ class ManagementTime extends React.Component {
             });
             if (!netInfos.isConnected) {
                 this._toggleOverlay("no-internet-connection");
+                this.setState({
+                    refreshing: false,
+                    loader_list_buttons: false,
+                });
             } else {
                 this._sendMouvements("normal");
                 this._getUserData();
@@ -412,7 +416,7 @@ class ManagementTime extends React.Component {
         this.setState({
             time_fixed: moment().format("LTS"),
         });
-
+        this._resetCollapse();
         if (button === "F00") {
             this.setState({
                 expanded_0: !this.state.expanded_0,
