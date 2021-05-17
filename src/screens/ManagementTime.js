@@ -51,7 +51,6 @@ class ManagementTime extends React.Component {
             refreshing: false,
             mouvements_en_attente: false,
             mouvements: null,
-            mouvement_text: "",
             disable_bouton_mouvements: true,
             text_welcome: "Bonjour, ",
             text_modal_no_internet_connection: "Il semblerait que vous n'ayez pas d'accès à internet. Vous pourrez réessayer lorsque vous aurez à nouveau un accès.",
@@ -60,6 +59,14 @@ class ManagementTime extends React.Component {
             text_button_error_no_internet_connection: "Aucune connexion internet.\nAppuyer pour rafraichir.",
             text_button_error_unknown: "Erreur du serveur distant.\nAppuyer pour rafraichir.",
             text_error_network: "",
+            text_title_mouvement_envoi: "Envoi des mouvements en attente en cours. Merci de bien vouloir patienter.",
+            text_debut_list_mouvement_envoi: "Mouvement du",
+            text_milieu_list_mouvement_envoi: "à",
+            text_debut_etat_mouvement_envoi: "Envoi du mouvement ",
+            text_milieu_etat_succed_mouvement_envoi: " réussi",
+            text_milieu_etat_error_mouvement_envoi: " echoué",
+            text_start_etat_mouvement_envoi: "Début de la séquence d'envoi",
+            text_mouvement: "",
             expanded_0: false,
             expanded_1: false,
             expanded_2: false,
@@ -79,7 +86,7 @@ class ManagementTime extends React.Component {
             if (!netInfos.isConnected) {
                 this._toggleOverlay("no-internet-connection");
             } else {
-                this._sendMouvements();
+                this._sendMouvements("normal");
                 this._getUserData();
                 this._getMouvementsEnAttente();
             }
@@ -99,6 +106,13 @@ class ManagementTime extends React.Component {
                 text_modal_error_unknown: "Es scheint ein Problem mit dem Remote-Server zu geben. Bitte versuchen Sie es später noch einmal.",
                 text_button_error_no_internet_connection: "Keine Internetverbindung.\nDrücken Sie zum Aktualisieren.",
                 text_button_error_unknown: "Remote-Server-Fehler.\nDrücken Sie zum Aktualisieren.",
+                text_title_mouvement_envoi: "Senden anstehender laufender Bewegungen. Vielen Dank für Ihre Geduld.",
+                text_debut_list_mouvement_envoi: "Bewegung von",
+                text_milieu_list_mouvement_envoi: "beim",
+                text_debut_etat_mouvement_envoi: "Bewegung senden ",
+                text_milieu_etat_succed_mouvement_envoi: " Erfolg",
+                text_milieu_etat_error_mouvement_envoi: " gescheitert",
+                text_start_etat_mouvement_envoi: "Start der Sendesequenz",
             });
         }
 
@@ -111,6 +125,13 @@ class ManagementTime extends React.Component {
                 text_modal_error_unknown: "Parece haber un problema con el servidor remoto. Por favor, inténtelo de nuevo más tarde.",
                 text_button_error_no_internet_connection: "Sin conexión a Internet.\nPresione para actualizar.",
                 text_button_error_unknown: "Error del servidor remoto.\nPresione para actualizar.",
+                text_title_mouvement_envoi: "Envío de movimientos pendientes en curso. Gracias por su paciencia.",
+                text_debut_list_mouvement_envoi: "Movimiento de",
+                text_milieu_list_mouvement_envoi: "a",
+                text_debut_etat_mouvement_envoi: "Enviando el movimiento ",
+                text_milieu_etat_succed_mouvement_envoi: " éxito",
+                text_milieu_etat_error_mouvement_envoi: " ha fallado",
+                text_start_etat_mouvement_envoi: "Inicio de la secuencia de envío",
             });
         }
 
@@ -123,6 +144,13 @@ class ManagementTime extends React.Component {
                 text_modal_error_unknown: "There appears to be a problem with the remote server. Please try again later.",
                 text_button_error_no_internet_connection: "No internet connection.\nPress to refresh.",
                 text_button_error_unknown: "Remote server error.\nPress to refresh.",
+                text_title_mouvement_envoi: "Sending pending movements in progress. Thank you for your patience.",
+                text_debut_list_mouvement_envoi: "Movement of",
+                text_milieu_list_mouvement_envoi: "at",
+                text_debut_etat_mouvement_envoi: "Sending the movement ",
+                text_milieu_etat_succed_mouvement_envoi: " success",
+                text_milieu_etat_error_mouvement_envoi: " failed",
+                text_start_etat_mouvement_envoi: "Start of the sending sequence",
             });
         }
 
@@ -135,6 +163,13 @@ class ManagementTime extends React.Component {
                 text_modal_error_unknown: "Sembra che ci sia un problema con il server remoto. Per favore riprova più tardi.",
                 text_button_error_no_internet_connection: "Nessuna connessione internet.\nPremere per aggiornare.",
                 text_button_error_unknown: "Errore del server remoto.\nPremere per aggiornare.",
+                text_title_mouvement_envoi: "Invio movimenti in sospeso in corso. Grazie per la vostra pazienza.",
+                text_debut_list_mouvement_envoi: "Movimento di",
+                text_milieu_list_mouvement_envoi: "a",
+                text_debut_etat_mouvement_envoi: "Invio del movimento ",
+                text_milieu_etat_succed_mouvement_envoi: " successo",
+                text_milieu_etat_error_mouvement_envoi: " fallito",
+                text_start_etat_mouvement_envoi: "Inizio della sequenza di invio",
             });
         }
 
@@ -147,6 +182,13 @@ class ManagementTime extends React.Component {
                 text_modal_error_unknown: "Er lijkt een probleem te zijn met de externe server. Probeer het later nog eens.",
                 text_button_error_no_internet_connection: "Geen internet verbinding.\nDruk op om te vernieuwen.",
                 text_button_error_unknown: "Fout met externe server.\nDruk op om te vernieuwen.",
+                text_title_mouvement_envoi: "Bezig met verzenden van lopende bewegingen. Bedankt voor uw geduld.",
+                text_debut_list_mouvement_envoi: "Beweging van",
+                text_milieu_list_mouvement_envoi: "Bij",
+                text_debut_etat_mouvement_envoi: "De beweging verzenden ",
+                text_milieu_etat_succed_mouvement_envoi: " succes",
+                text_milieu_etat_error_mouvement_envoi: " mislukt",
+                text_start_etat_mouvement_envoi: "Start van de verzendprocedure",
             });
         }
     }
@@ -329,10 +371,25 @@ class ManagementTime extends React.Component {
             });
         }
         if (selector === "error-unknown") {
-            this.setState({
-                etat_network: false,
+            NetInfo.fetch().then((netInfos) => {
+                if (!netInfos.isConnected) {
+                    this._toggleOverlay("no-internet-connection");
+                } else {
+                    this._toggleOverlay("error-unknown");
+                }
+                this.setState({
+                    etat_network: false,
+                });
+                this.setState({
+                    refreshing: false,
+                    loader_list_buttons: false,
+                });
             });
-            this._toggleOverlay("error-unknown");
+        }
+        if (selector === "error-server-as400") {
+            this.setState({
+                etat_network: true,
+            });
             this.setState({
                 refreshing: false,
                 loader_list_buttons: false,
@@ -453,82 +510,86 @@ class ManagementTime extends React.Component {
         }
     };
 
-    _sendMouvements() {
+    _sendMouvements = async (selector) => {
         var dataPointing = this.props.pointing;
         var compteur_delete = 0;
 
         this.setState({
             mouvements: this._getMouvementsEnAttenteByEmail(),
-            mouvement_text: "Début de la séquence d'envoi",
+            text_mouvement: this.state.text_start_etat_mouvement_envoi,
             disable_bouton_mouvements: true,
         });
 
-        dataPointing.forEach((element) => {
+        for (const element of dataPointing) {
             if (element.email === this.props.email) {
-                this.setState({
-                    visible_modal_mouvements_en_attente: true,
-                });
+                if (selector === "normal") {
+                    this.setState({
+                        visible_modal_mouvements_en_attente: true,
+                    });
+                } else {
+                    this.setState({
+                        visible_modal_mouvements_en_attente: false,
+                    });
+                }
 
                 var compteur = 0;
 
-                element.pointage.forEach((pointing) => {
-                    getToken(this.props.email, this.props.password).then((token) => {
-                        if (token[0] === 200) {
-                            postAction(token[1].token, pointing[0], pointing[1], pointing[2], pointing[3], pointing[4], pointing[5], pointing[6], null, pointing[7]).then((action) => {
-                                if (action[0] === 200 && action[1].code === 200) {
-                                    this.state.mouvements[compteur].ico = "check-circle";
-                                    this.state.mouvements[compteur].colorIco = "#31859C";
-                                    this.state.mouvements[compteur].loadingMouvement = false;
+                for (const pointing of element.pointage) {
+                    const token = await getToken(this.props.email, this.props.password);
+                    if (token[0] === 200) {
+                        const action = await postAction(token[1].token, pointing[0], pointing[1], pointing[2], pointing[3], pointing[4], pointing[5], pointing[6], null, pointing[7], pointing[8]);
+                        if (action[0] === 200) {
+                            if (action[1].code === 200) {
+                                this.state.mouvements[compteur].ico = "check-circle";
+                                this.state.mouvements[compteur].colorIco = "#31859C";
+                                this.state.mouvements[compteur].loadingMouvement = false;
 
+                                this.setState({
+                                    text_mouvement: this.state.text_debut_etat_mouvement_envoi + (compteur + 1) + this.state.text_milieu_etat_succed_mouvement_envoi,
+                                });
+
+                                compteur_delete++;
+                                compteur++;
+                                if (compteur_delete === element.pointage.length) {
+                                    var removeIndex = dataPointing
+                                        .map(function (item) {
+                                            return item.email;
+                                        })
+                                        .indexOf(this.props.email);
+                                    dataPointing.splice(removeIndex, 1);
+                                    this.props.pointingAction(dataPointing);
                                     this.setState({
-                                        mouvement_text: "Envoi du mouvement " + (compteur + 1) + " réussi",
+                                        error_serveur: false,
+                                        disable_bouton_mouvements: false,
                                     });
-
-                                    compteur_delete++;
-                                    compteur++;
-                                    if (compteur_delete === element.pointage.length) {
-                                        var removeIndex = dataPointing
-                                            .map(function (item) {
-                                                return item.email;
-                                            })
-                                            .indexOf(this.props.email);
-                                        dataPointing.splice(removeIndex, 1);
-                                        this.props.pointingAction(dataPointing);
-                                        this.setState({
-                                            error_serveur: false,
-                                            disable_bouton_mouvements: false,
-                                        });
-                                    }
-
-                                    this._refresh("normal");
-                                } else {
-                                    this.state.mouvements[compteur].ico = "times-circle";
-                                    this.state.mouvements[compteur].colorIco = "#AC6867";
-                                    this.state.mouvements[compteur].loadingMouvement = false;
-
-                                    this.setState({
-                                        mouvement_text: "Envoi du mouvement " + (compteur + 1) + " echoué",
-                                    });
-
-                                    compteur++;
-
-                                    if (compteur === element.pointage.length) {
-                                        this.setState({
-                                            disable_bouton_mouvements: false,
-                                        });
-                                    }
-
-                                    this._refresh("error-unknown");
                                 }
-                            });
+                                if (selector === "normal") {
+                                    this._refresh("normal");
+                                }
+                            } else {
+                                this.state.mouvements[compteur].ico = "times-circle";
+                                this.state.mouvements[compteur].colorIco = "#AC6867";
+                                this.state.mouvements[compteur].loadingMouvement = false;
+
+                                this.setState({
+                                    text_mouvement: this.state.text_debut_etat_mouvement_envoi + (compteur + 1) + this.state.text_milieu_etat_error_mouvement_envoi,
+                                });
+
+                                compteur++;
+
+                                if (compteur === element.pointage.length) {
+                                    this.setState({
+                                        disable_bouton_mouvements: false,
+                                    });
+                                }
+                            }
                         } else {
                             this.state.mouvements[compteur].ico = "times-circle";
                             this.state.mouvements[compteur].colorIco = "#AC6867";
                             this.state.mouvements[compteur].loadingMouvement = false;
 
                             this.setState({
-                                mouvement_text: "Envoi du mouvement " + (compteur + 1) + " echoué",
-                                disable_bouton_mouvements: false,
+                                text_mouvement: this.state.text_debut_etat_mouvement_envoi + (compteur + 1) + this.state.text_milieu_etat_error_mouvement_envoi,
                             });
 
                             compteur++;
@@ -538,14 +599,36 @@ class ManagementTime extends React.Component {
                                     disable_bouton_mouvements: false,
                                 });
                             }
+                            if (selector === "normal") {
+                                this._refresh("error-unknown");
+                            }
+                        }
+                    } else {
+                        this.state.mouvements[compteur].ico = "times-circle";
+                        this.state.mouvements[compteur].colorIco = "#AC6867";
+                        this.state.mouvements[compteur].loadingMouvement = false;
 
+                        this.setState({
+                            text_mouvement: this.state.text_debut_etat_mouvement_envoi + (compteur + 1) + this.state.text_milieu_etat_error_mouvement_envoi,
+                            disable_bouton_mouvements: false,
+                        });
+
+                        compteur++;
+
+                        if (compteur === element.pointage.length) {
+                            this.setState({
+                                disable_bouton_mouvements: false,
+                            });
+                        }
+
+                        if (selector === "normal") {
                             this._refresh("error-unknown");
                         }
-                    });
-                });
+                    }
+                }
             }
-        });
-    }
+        }
+    };
 
     _startClock = () => {
         this.IntervalClock = setInterval(() => {
@@ -560,7 +643,7 @@ class ManagementTime extends React.Component {
         return granted;
     };
 
-    _errorServeur = async (buttonError, lat, long, activite) => {
+    _errorServeur = async (buttonError, lat, long, activite, lieu) => {
         this.setState({
             loader_list_buttons: false,
             loader_response: false,
@@ -576,7 +659,7 @@ class ManagementTime extends React.Component {
             var compteurTrouve = 0;
             for (var i = 0; i < dataPointing.length; i++) {
                 if (dataPointing[i].email === this.props.email) {
-                    dataPointing[i].pointage.push(["0", this.props.email, this._getFullDate(), this._getFullHeure(), buttonError, lat, long, activite]);
+                    dataPointing[i].pointage.push(["0", this.props.email, this._getFullDate(), this._getFullHeure(), buttonError, lat, long, activite, lieu]);
                     compteurTrouve++;
 
                     this.props.pointingAction(dataPointing);
@@ -586,7 +669,7 @@ class ManagementTime extends React.Component {
             }
 
             if (compteurTrouve === 0) {
-                dataPointing.push({ email: this.props.email, pointage: [["0", this.props.email, this._getFullDate(), this._getFullHeure(), buttonError, lat, long, activite]] });
+                dataPointing.push({ email: this.props.email, pointage: [["0", this.props.email, this._getFullDate(), this._getFullHeure(), buttonError, lat, long, activite, lieu]] });
 
                 this.props.pointingAction(dataPointing);
 
@@ -624,12 +707,15 @@ class ManagementTime extends React.Component {
                 if (!netInfos.isConnected) {
                     this._toggleOverlay("no-internet-connection");
                 } else {
-                    this._sendMouvements();
+                    this._sendMouvements("normal");
                 }
             });
         } else if (button === "I00") {
             this._refresh("normal");
         } else {
+            if ((button === "F00" || activite != null) && this.state.mouvements_en_attente) {
+                await this._sendMouvements("background");
+            }
             if (!this.state.user.activeGeolocalisation) {
                 getToken(this.props.email, this.props.password).then((token) => {
                     if (token[0] === 200) {
@@ -674,7 +760,7 @@ class ManagementTime extends React.Component {
                                     });
                                     this._scrollToIndex(button);
                                 } else {
-                                    this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
+                                    this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null);
                                 }
                             } else {
                                 this._refresh("error-unknown");
@@ -749,7 +835,7 @@ class ManagementTime extends React.Component {
                                                                 });
                                                                 this._scrollToIndex(button);
                                                             } else {
-                                                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
+                                                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite, codeLieu);
                                                             }
                                                         } else {
                                                             this._refresh("error-unknown");
@@ -800,7 +886,7 @@ class ManagementTime extends React.Component {
                                                                 });
                                                                 this._scrollToIndex(button);
                                                             } else {
-                                                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite);
+                                                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null);
                                                             }
                                                         } else {
                                                             this._refresh("error-unknown");
@@ -855,7 +941,7 @@ class ManagementTime extends React.Component {
                                                 });
                                                 this._scrollToIndex(button);
                                             } else {
-                                                this._errorServeur(button, null, null, activite);
+                                                this._errorServeur(button, null, null, activite, null);
                                             }
                                         } else {
                                             this._refresh("error-unknown");
@@ -906,7 +992,7 @@ class ManagementTime extends React.Component {
                                         });
                                         this._scrollToIndex(button);
                                     } else {
-                                        this._errorServeur(button, null, null, activite);
+                                        this._errorServeur(button, null, null, activite, null);
                                     }
                                 } else {
                                     this._refresh("error-unknown");
@@ -1308,12 +1394,12 @@ class ManagementTime extends React.Component {
                 <View style={styles.container_global_header_overlay}>
                     <Animatable.View animation="bounceIn" delay={0} style={styles.container_animation_header_overlay}>
                         <View style={styles.container_title_overlay}>
-                            <FontAwesome5 name="arrow-alt-circle-up" color="white" size={50} style={styles.ico_margin_10} />
-                            <Text style={styles.text_title_overlay_mouvement}>Envoi des mouvements en attente en cours. Merci de bien vouloir patienter.</Text>
+                            <FontAwesome5 name="arrow-alt-circle-up" color="black" size={50} style={styles.ico_margin_10} />
+                            <Text style={styles.text_title_overlay_mouvement}>{this.state.text_title_mouvement_envoi}</Text>
                         </View>
                     </Animatable.View>
                     <View style={styles.container_global_tiles_overlay}>
-                        <Animatable.View animation="bounceIn" delay={600} style={styles.container_animation_overlay_text}>
+                        <Animatable.View animation="bounceIn" delay={300} style={styles.container_animation_overlay_text}>
                             <View style={styles.container_mouvement_overlay}>
                                 <FlatList
                                     data={this.state.mouvements}
@@ -1325,19 +1411,19 @@ class ManagementTime extends React.Component {
                                                 <FontAwesome5 name={item.ico} color={item.colorIco} size={20} style={styles.indicator_padding_horizontal_10} />
                                             )}
                                             <Text style={styles.text_mouvement_overlay}>
-                                                Mouvement du {item.date} à {item.heure}
+                                                {this.state.text_debut_list_mouvement_envoi} {item.date} {this.state.text_milieu_list_mouvement_envoi} {item.heure}
                                             </Text>
                                         </View>
                                     )}
                                 />
                             </View>
                         </Animatable.View>
-                        <Animatable.View animation="bounceIn" delay={300} style={styles.container_animation_overlay_ico}>
+                        <Animatable.View animation="bounceIn" delay={600} style={styles.container_animation_overlay_ico}>
                             <View style={styles.container_ico_overlay}>
-                                <Text>{this.state.mouvement_text}</Text>
+                                <Text style={styles.text_mouvement_overlay}>{this.state.text_mouvement}</Text>
                             </View>
                         </Animatable.View>
-                        <Button disabled={this.state.disable_bouton_mouvements} buttonStyle={styles.button_overlay_accept} title="Fermer" onPress={() => this.setState({ visible_modal_mouvements_en_attente: false })} />
+                        <Button disabled={this.state.disable_bouton_mouvements} buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this.setState({ visible_modal_mouvements_en_attente: false })} />
                     </View>
                 </View>
             </View>
@@ -1438,10 +1524,10 @@ const styles = StyleSheet.create({
     },
     container_title_overlay: {
         flex: 1,
-        padding: 20,
-        backgroundColor: "#008080",
+        padding: 15,
+        backgroundColor: "white",
         elevation: 5,
-        borderRadius: 5,
+        borderRadius: 0,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -1493,8 +1579,9 @@ const styles = StyleSheet.create({
     },
     container_list_mouvement: {
         flex: 2,
-        padding: 5,
+        padding: 0,
         flexDirection: "row",
+        alignItems: "center",
     },
     container_ico: {
         flex: 1,
@@ -1527,7 +1614,7 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: "white",
         elevation: 5,
-        borderRadius: 5,
+        borderRadius: 0,
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
@@ -1545,8 +1632,9 @@ const styles = StyleSheet.create({
         padding: 15,
         backgroundColor: "white",
         elevation: 5,
-        borderRadius: 5,
+        borderRadius: 0,
         flex: 1,
+        justifyContent: "center",
     },
     container_titre_response: {
         flex: 1,
@@ -1618,9 +1706,7 @@ const styles = StyleSheet.create({
         color: "#FFF",
     },
     text_title_overlay_mouvement: {
-        fontWeight: "bold",
         fontSize: 17,
-        color: "white",
     },
     text_title_overlay: {
         fontWeight: "bold",
@@ -1651,6 +1737,15 @@ const styles = StyleSheet.create({
     button_overlay_accept: {
         borderRadius: 0,
         backgroundColor: "#62B554",
+        marginVertical: 10,
+        marginHorizontal: 10,
+        paddingHorizontal: 20,
+        borderWidth: 1,
+        borderColor: "#D0D0D0",
+    },
+    button_overlay_refuse: {
+        borderRadius: 0,
+        backgroundColor: "#AC6867",
         marginVertical: 10,
         marginHorizontal: 10,
         paddingHorizontal: 20,
@@ -1691,7 +1786,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     indicator_padding_horizontal_10: {
-        paddingHorizontal: 10,
+        paddingRight: 10,
     },
     view_collapse: {
         flex: 1,
