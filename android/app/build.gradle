@@ -137,8 +137,8 @@ android {
         applicationId "com.portail_mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20
-        versionName "20.0b"
+        versionCode 21
+        versionName "21.0b"
     }
     splits {
         abi {

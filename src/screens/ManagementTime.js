@@ -74,8 +74,9 @@ class ManagementTime extends React.Component {
             text_milieu_etat_succed_mouvement_envoi: " réussi",
             text_milieu_etat_error_mouvement_envoi: " echoué",
             text_start_etat_mouvement_envoi: "Début de la séquence d'envoi",
-            text_days: ["LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI", "DIMANCHE"],
-            text_months: ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"],
+            text_title_response_success: "Transaction validé",
+            text_days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
+            text_months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
             text_mouvement: "",
             expanded_0: false,
             expanded_1: false,
@@ -134,8 +135,9 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " Erfolg",
                 text_milieu_etat_error_mouvement_envoi: " gescheitert",
                 text_start_etat_mouvement_envoi: "Start der Sendesequenz",
-                text_days: ["MONTAG", "DIENSTAG", "MITTWOCH", "DONNERSTAG", "FREITAG", "SAMSTAG", "SONNTAG"],
-                text_months: ["JANUAR", "FEBRUAR", "MÄRZ", "APRIL", "KANN", "JUNI", "JULI", "AUGUST", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DEZEMBER"],
+                text_title_response_success: "Validierte Transaktion",
+                text_days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
+                text_months: ["Januar", "Februar", "März", "April", "Kann", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
             });
         }
 
@@ -160,8 +162,9 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " éxito",
                 text_milieu_etat_error_mouvement_envoi: " ha fallado",
                 text_start_etat_mouvement_envoi: "Inicio de la secuencia de envío",
-                text_days: ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"],
-                text_months: ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"],
+                text_title_response_success: "Transacción validada",
+                text_days: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
+                text_months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             });
         }
 
@@ -186,8 +189,9 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " success",
                 text_milieu_etat_error_mouvement_envoi: " failed",
                 text_start_etat_mouvement_envoi: "Start of the sending sequence",
-                text_days: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"],
-                text_months: ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"],
+                text_title_response_success: "Validated transaction",
+                text_days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                text_months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             });
         }
 
@@ -212,8 +216,9 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " successo",
                 text_milieu_etat_error_mouvement_envoi: " fallito",
                 text_start_etat_mouvement_envoi: "Inizio della sequenza di invio",
-                text_days: ["LUNEDI", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDI", "VENERDÌ", "SABATO", "DOMENICA"],
-                text_months: ["GENNAIO", "FEBBRAIO", "MARZO", "APRILE", "MAGGIO", "GIUGNO", "LUGLIO", "AGOSTO", "SETTEMBRE", "OTTOBRE", "NOVEMBRE", "DICEMBRE"],
+                text_title_response_success: "Transazione convalidata",
+                text_days: ["Lunedi", "MARTEDi̇̀", "Mercoledi̇̀", "Giovedi", "Venerdi̇̀", "Sabato", "Domenica"],
+                text_months: ["Gennaio", "Febbraio", "Marzo", "Aaprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
             });
         }
 
@@ -238,8 +243,9 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " succes",
                 text_milieu_etat_error_mouvement_envoi: " mislukt",
                 text_start_etat_mouvement_envoi: "Start van de verzendprocedure",
-                text_days: ["MAANDAG", "DINSDAG", "WOENSDAG", "DONDERDAG", "VRIJDAG", "ZATERDAG", "ZONDAG"],
-                text_months: ["JANUARI", "FEBRUARI", "MAART", "APRIL", "MEI", "JUNI", "JULI", "AUGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DECEMBER"],
+                text_title_response_success: "Gevalideerde transactie",
+                text_days: ["Maandag", "Dinsdag", "Woensdag", "Donerdag", "Vrijdag", "Zaterdag", "Zondag"],
+                text_months: ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"],
             });
         }
     }
@@ -1351,7 +1357,7 @@ class ManagementTime extends React.Component {
 
     _renderResponse = (visible, libelle, ico, text, button, activite) => {
         if (button === "F00" || activite === "O" || activite === "F") {
-            libelle = "Transaction validé";
+            libelle = this.state.text_title_response_success;
         }
         if (!visible) {
             return null;
