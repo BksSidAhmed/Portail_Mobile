@@ -1,5 +1,5 @@
 const initialState = {
-    langue: "100",
+    langue: "",
 };
 
 const langueReducer = (state = initialState, action) => {

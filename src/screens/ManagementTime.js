@@ -29,7 +29,10 @@ class ManagementTime extends React.Component {
             time_fixed: "",
             loader_response: false,
             loader_list_buttons: true,
+            render_loader: false,
+            render_activites: false,
             render_response: false,
+            render_confirmation: false,
             latitude: "",
             longitude: "",
             visible_modal_no_internet_connection: false,
@@ -55,6 +58,11 @@ class ManagementTime extends React.Component {
             text_welcome: "Bonjour, ",
             text_modal_no_internet_connection: "Il semblerait que vous n'ayez pas d'accès à internet. Vous pourrez réessayer lorsque vous aurez à nouveau un accès.",
             text_modal_button_close: "Fermer",
+            text_modal_button_cancel: "Annuler",
+            text_modal_button_validate: "Valider",
+            text_modal_date: "Date",
+            text_modal_heure: "Heure",
+            text_modal_confirmation: "Confirmation ?",
             text_modal_error_unknown: "Il semblerait y avoir un problème avec le serveur distant. Veuillez réessayer plus tard.",
             text_button_error_no_internet_connection: "Aucune connexion internet.\nAppuyer pour rafraichir.",
             text_button_error_unknown: "Erreur du serveur distant.\nAppuyer pour rafraichir.",
@@ -66,6 +74,8 @@ class ManagementTime extends React.Component {
             text_milieu_etat_succed_mouvement_envoi: " réussi",
             text_milieu_etat_error_mouvement_envoi: " echoué",
             text_start_etat_mouvement_envoi: "Début de la séquence d'envoi",
+            text_days: ["LUNDI", "MARDI", "MERCREDI", "JEUDI", "VENDREDI", "SAMEDI", "DIMANCHE"],
+            text_months: ["JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET", "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE"],
             text_mouvement: "",
             expanded_0: false,
             expanded_1: false,
@@ -74,6 +84,8 @@ class ManagementTime extends React.Component {
             expanded_4: false,
             expanded_5: false,
             etat_network: true,
+            test_geolocalisation: false,
+            code_lieu: null,
         };
         this.flatListRef = null;
     }
@@ -107,6 +119,11 @@ class ManagementTime extends React.Component {
                 text_welcome: "Hallo, ",
                 text_modal_no_internet_connection: "Es sieht so aus, als hätten Sie keinen Internetzugang. Sie können es erneut versuchen, wenn Sie erneut Zugriff haben.",
                 text_modal_button_close: "Schließen",
+                text_modal_button_cancel: "Abbrechen",
+                text_modal_button_validate: "Bestätigen",
+                text_modal_date: "Datiert",
+                text_modal_heure: "Stunde",
+                text_modal_confirmation: "Bestätigung ?",
                 text_modal_error_unknown: "Es scheint ein Problem mit dem Remote-Server zu geben. Bitte versuchen Sie es später noch einmal.",
                 text_button_error_no_internet_connection: "Keine Internetverbindung.\nDrücken Sie zum Aktualisieren.",
                 text_button_error_unknown: "Remote-Server-Fehler.\nDrücken Sie zum Aktualisieren.",
@@ -117,6 +134,8 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " Erfolg",
                 text_milieu_etat_error_mouvement_envoi: " gescheitert",
                 text_start_etat_mouvement_envoi: "Start der Sendesequenz",
+                text_days: ["MONTAG", "DIENSTAG", "MITTWOCH", "DONNERSTAG", "FREITAG", "SAMSTAG", "SONNTAG"],
+                text_months: ["JANUAR", "FEBRUAR", "MÄRZ", "APRIL", "KANN", "JUNI", "JULI", "AUGUST", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DEZEMBER"],
             });
         }
 
@@ -126,6 +145,11 @@ class ManagementTime extends React.Component {
                 text_welcome: "Buenos dias, ",
                 text_modal_no_internet_connection: "Parece que no tienes acceso a Internet. Puede intentarlo de nuevo cuando tenga acceso de nuevo.",
                 text_modal_button_close: "Cerrar",
+                text_modal_button_cancel: "Anular",
+                text_modal_button_validate: "Validar",
+                text_modal_date: "Con fecha de",
+                text_modal_heure: "Hora",
+                text_modal_confirmation: "¿Confirmación?",
                 text_modal_error_unknown: "Parece haber un problema con el servidor remoto. Por favor, inténtelo de nuevo más tarde.",
                 text_button_error_no_internet_connection: "Sin conexión a Internet.\nPresione para actualizar.",
                 text_button_error_unknown: "Error del servidor remoto.\nPresione para actualizar.",
@@ -136,6 +160,8 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " éxito",
                 text_milieu_etat_error_mouvement_envoi: " ha fallado",
                 text_start_etat_mouvement_envoi: "Inicio de la secuencia de envío",
+                text_days: ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"],
+                text_months: ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"],
             });
         }
 
@@ -145,6 +171,11 @@ class ManagementTime extends React.Component {
                 text_welcome: "Hello, ",
                 text_modal_no_internet_connection: "It looks like you don't have internet access. You can try again when you have access again.",
                 text_modal_button_close: "Close",
+                text_modal_button_cancel: "Cancel",
+                text_modal_button_validate: "Validate",
+                text_modal_date: "Date",
+                text_modal_heure: "Hour",
+                text_modal_confirmation: "Confirmation ?",
                 text_modal_error_unknown: "There appears to be a problem with the remote server. Please try again later.",
                 text_button_error_no_internet_connection: "No internet connection.\nPress to refresh.",
                 text_button_error_unknown: "Remote server error.\nPress to refresh.",
@@ -155,6 +186,8 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " success",
                 text_milieu_etat_error_mouvement_envoi: " failed",
                 text_start_etat_mouvement_envoi: "Start of the sending sequence",
+                text_days: ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"],
+                text_months: ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"],
             });
         }
 
@@ -164,6 +197,11 @@ class ManagementTime extends React.Component {
                 text_welcome: "Buongiorno, ",
                 text_modal_no_internet_connection: "Sembra che tu non abbia accesso a Internet. Puoi riprovare quando avrai di nuovo accesso.",
                 text_modal_button_close: "Chiudere",
+                text_modal_button_cancel: "Cancellare",
+                text_modal_button_validate: "Convalidare",
+                text_modal_date: "Datato",
+                text_modal_heure: "Ora",
+                text_modal_confirmation: "Conferma ?",
                 text_modal_error_unknown: "Sembra che ci sia un problema con il server remoto. Per favore riprova più tardi.",
                 text_button_error_no_internet_connection: "Nessuna connessione internet.\nPremere per aggiornare.",
                 text_button_error_unknown: "Errore del server remoto.\nPremere per aggiornare.",
@@ -174,6 +212,8 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " successo",
                 text_milieu_etat_error_mouvement_envoi: " fallito",
                 text_start_etat_mouvement_envoi: "Inizio della sequenza di invio",
+                text_days: ["LUNEDI", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDI", "VENERDÌ", "SABATO", "DOMENICA"],
+                text_months: ["GENNAIO", "FEBBRAIO", "MARZO", "APRILE", "MAGGIO", "GIUGNO", "LUGLIO", "AGOSTO", "SETTEMBRE", "OTTOBRE", "NOVEMBRE", "DICEMBRE"],
             });
         }
 
@@ -183,6 +223,11 @@ class ManagementTime extends React.Component {
                 text_welcome: "Hallo, ",
                 text_modal_no_internet_connection: "Het lijkt erop dat u geen internettoegang heeft. U kunt het opnieuw proberen als u weer toegang heeft.",
                 text_modal_button_close: "Sluiten",
+                text_modal_button_cancel: "Annuleren",
+                text_modal_button_validate: "Bevestigen",
+                text_modal_date: "Gedateerd",
+                text_modal_heure: "Uur",
+                text_modal_confirmation: "Bevestiging ?",
                 text_modal_error_unknown: "Er lijkt een probleem te zijn met de externe server. Probeer het later nog eens.",
                 text_button_error_no_internet_connection: "Geen internet verbinding.\nDruk op om te vernieuwen.",
                 text_button_error_unknown: "Fout met externe server.\nDruk op om te vernieuwen.",
@@ -193,6 +238,8 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_succed_mouvement_envoi: " succes",
                 text_milieu_etat_error_mouvement_envoi: " mislukt",
                 text_start_etat_mouvement_envoi: "Start van de verzendprocedure",
+                text_days: ["MAANDAG", "DINSDAG", "WOENSDAG", "DONDERDAG", "VRIJDAG", "ZATERDAG", "ZONDAG"],
+                text_months: ["JANUARI", "FEBRUARI", "MAART", "APRIL", "MEI", "JUNI", "JULI", "AUGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DECEMBER"],
             });
         }
     }
@@ -215,7 +262,7 @@ class ManagementTime extends React.Component {
         }
     };
 
-    _getMouvementsEnAttenteByEmail = () => {
+    _getMouvementsEnAttenteByEmail = async () => {
         var dataPointing = this.props.pointing;
         var mouvements = [];
         var compteur = 0;
@@ -234,111 +281,110 @@ class ManagementTime extends React.Component {
         return mouvements;
     };
 
-    _getUserData = () => {
-        getToken(this.props.email, this.props.password).then((token) => {
-            if (token[0] === 200) {
-                getUser(token[1].token, this.props.email).then((response) => {
-                    if (response[0] === 200) {
-                        this.props.nomAction(response[1].user.nom);
-                        this.props.prenomAction(response[1].user.prenom);
-                        this.setState({
-                            loader_list_buttons: false,
-                            refreshing: false,
-                            user: {
-                                email: response[1].user.email,
-                                profil: {
-                                    action0: {
-                                        active: response[1].user.profil.action_0.active,
-                                        icoPresent: response[1].user.profil.action_0.ico_present,
-                                        icoAbsent: response[1].user.profil.action_0.ico_absent,
-                                        libellePresent: response[1].user.profil.action_0.libelle_present,
-                                        libelleAbsent: response[1].user.profil.action_0.libelle_absent,
-                                        localisation: response[1].user.profil.action_0.localisation,
-                                        activite: response[1].user.profil.action_0.activite,
-                                        displayPresent: response[1].user.profil.action_0.displayPresent,
-                                        displayAbsent: response[1].user.profil.action_0.displayAbsent,
-                                    },
-                                    action1: {
-                                        active: response[1].user.profil.action_1.active,
-                                        icoPresent: response[1].user.profil.action_1.ico_present,
-                                        icoAbsent: response[1].user.profil.action_1.ico_absent,
-                                        libellePresent: response[1].user.profil.action_1.libelle_present,
-                                        libelleAbsent: response[1].user.profil.action_1.libelle_absent,
-                                        localisation: response[1].user.profil.action_1.localisation,
-                                        activite: response[1].user.profil.action_1.activite,
-                                        displayPresent: response[1].user.profil.action_1.displayPresent,
-                                        displayAbsent: response[1].user.profil.action_1.displayAbsent,
-                                    },
-                                    action2: {
-                                        active: response[1].user.profil.action_2.active,
-                                        icoPresent: response[1].user.profil.action_2.ico_present,
-                                        icoAbsent: response[1].user.profil.action_2.ico_absent,
-                                        libellePresent: response[1].user.profil.action_2.libelle_present,
-                                        libelleAbsent: response[1].user.profil.action_2.libelle_absent,
-                                        localisation: response[1].user.profil.action_2.localisation,
-                                        activite: response[1].user.profil.action_2.activite,
-                                        displayPresent: response[1].user.profil.action_2.displayPresent,
-                                        displayAbsent: response[1].user.profil.action_2.displayAbsent,
-                                    },
-                                    action3: {
-                                        active: response[1].user.profil.action_3.active,
-                                        icoPresent: response[1].user.profil.action_3.ico_present,
-                                        icoAbsent: response[1].user.profil.action_3.ico_absent,
-                                        libellePresent: response[1].user.profil.action_3.libelle_present,
-                                        libelleAbsent: response[1].user.profil.action_3.libelle_absent,
-                                        localisation: response[1].user.profil.action_3.localisation,
-                                        activite: response[1].user.profil.action_3.activite,
-                                        displayPresent: response[1].user.profil.action_3.displayPresent,
-                                        displayAbsent: response[1].user.profil.action_3.displayAbsent,
-                                    },
-                                    action4: {
-                                        active: response[1].user.profil.action_4.active,
-                                        icoPresent: response[1].user.profil.action_4.ico_present,
-                                        icoAbsent: response[1].user.profil.action_4.ico_absent,
-                                        libellePresent: response[1].user.profil.action_4.libelle_present,
-                                        libelleAbsent: response[1].user.profil.action_4.libelle_absent,
-                                        localisation: response[1].user.profil.action_4.localisation,
-                                        activite: response[1].user.profil.action_4.activite,
-                                        displayPresent: response[1].user.profil.action_4.displayPresent,
-                                        displayAbsent: response[1].user.profil.action_4.displayAbsent,
-                                    },
-                                    action5: {
-                                        active: response[1].user.profil.action_5.active,
-                                        icoPresent: response[1].user.profil.action_5.ico_present,
-                                        icoAbsent: response[1].user.profil.action_5.ico_absent,
-                                        libellePresent: response[1].user.profil.action_5.libelle_present,
-                                        libelleAbsent: response[1].user.profil.action_5.libelle_absent,
-                                        localisation: response[1].user.profil.action_5.localisation,
-                                        activite: response[1].user.profil.action_5.activite,
-                                        displayPresent: response[1].user.profil.action_5.displayPresent,
-                                        displayAbsent: response[1].user.profil.action_5.displayAbsent,
-                                    },
-                                },
-                                client: {
-                                    activeBadgeClient: response[1].user.client.activeBadge,
-                                    activeAbsenceClient: response[1].user.client.activeAbsence,
-                                },
-                                activeBadgeUser: response[1].user.activeBadge,
-                                activeAbsenceUser: response[1].user.activeAbsence,
-                                activeGeolocalisation: response[1].user.activeLocalisation,
-                                lieuxGeolocalisation: response[1].user.lieux,
-                                activites: response[1].user.activites,
+    _getUserData = async () => {
+        const token = await getToken(this.props.email, this.props.password);
+        if (token[0] === 200) {
+            const response = await getUser(token[1].token, this.props.email);
+            if (response[0] === 200) {
+                this.props.nomAction(response[1].user.nom);
+                this.props.prenomAction(response[1].user.prenom);
+                this.props.langueAction(response[1].user.langue);
+                this.setState({
+                    loader_list_buttons: false,
+                    refreshing: false,
+                    user: {
+                        email: response[1].user.email,
+                        profil: {
+                            action0: {
+                                active: response[1].user.profil.action_0.active,
+                                icoPresent: response[1].user.profil.action_0.ico_present,
+                                icoAbsent: response[1].user.profil.action_0.ico_absent,
+                                libellePresent: response[1].user.profil.action_0.libelle_present,
+                                libelleAbsent: response[1].user.profil.action_0.libelle_absent,
+                                localisation: response[1].user.profil.action_0.localisation,
+                                activite: response[1].user.profil.action_0.activite,
+                                displayPresent: response[1].user.profil.action_0.displayPresent,
+                                displayAbsent: response[1].user.profil.action_0.displayAbsent,
                             },
-                            statut_0: response[1].user.statut0,
-                            statut_1: response[1].user.statut1,
-                            statut_2: response[1].user.statut2,
-                            statut_3: response[1].user.statut3,
-                            statut_4: response[1].user.statut4,
-                            statut_5: response[1].user.statut5,
-                        });
-                    } else {
-                        this._refresh("error-unknown");
-                    }
+                            action1: {
+                                active: response[1].user.profil.action_1.active,
+                                icoPresent: response[1].user.profil.action_1.ico_present,
+                                icoAbsent: response[1].user.profil.action_1.ico_absent,
+                                libellePresent: response[1].user.profil.action_1.libelle_present,
+                                libelleAbsent: response[1].user.profil.action_1.libelle_absent,
+                                localisation: response[1].user.profil.action_1.localisation,
+                                activite: response[1].user.profil.action_1.activite,
+                                displayPresent: response[1].user.profil.action_1.displayPresent,
+                                displayAbsent: response[1].user.profil.action_1.displayAbsent,
+                            },
+                            action2: {
+                                active: response[1].user.profil.action_2.active,
+                                icoPresent: response[1].user.profil.action_2.ico_present,
+                                icoAbsent: response[1].user.profil.action_2.ico_absent,
+                                libellePresent: response[1].user.profil.action_2.libelle_present,
+                                libelleAbsent: response[1].user.profil.action_2.libelle_absent,
+                                localisation: response[1].user.profil.action_2.localisation,
+                                activite: response[1].user.profil.action_2.activite,
+                                displayPresent: response[1].user.profil.action_2.displayPresent,
+                                displayAbsent: response[1].user.profil.action_2.displayAbsent,
+                            },
+                            action3: {
+                                active: response[1].user.profil.action_3.active,
+                                icoPresent: response[1].user.profil.action_3.ico_present,
+                                icoAbsent: response[1].user.profil.action_3.ico_absent,
+                                libellePresent: response[1].user.profil.action_3.libelle_present,
+                                libelleAbsent: response[1].user.profil.action_3.libelle_absent,
+                                localisation: response[1].user.profil.action_3.localisation,
+                                activite: response[1].user.profil.action_3.activite,
+                                displayPresent: response[1].user.profil.action_3.displayPresent,
+                                displayAbsent: response[1].user.profil.action_3.displayAbsent,
+                            },
+                            action4: {
+                                active: response[1].user.profil.action_4.active,
+                                icoPresent: response[1].user.profil.action_4.ico_present,
+                                icoAbsent: response[1].user.profil.action_4.ico_absent,
+                                libellePresent: response[1].user.profil.action_4.libelle_present,
+                                libelleAbsent: response[1].user.profil.action_4.libelle_absent,
+                                localisation: response[1].user.profil.action_4.localisation,
+                                activite: response[1].user.profil.action_4.activite,
+                                displayPresent: response[1].user.profil.action_4.displayPresent,
+                                displayAbsent: response[1].user.profil.action_4.displayAbsent,
+                            },
+                            action5: {
+                                active: response[1].user.profil.action_5.active,
+                                icoPresent: response[1].user.profil.action_5.ico_present,
+                                icoAbsent: response[1].user.profil.action_5.ico_absent,
+                                libellePresent: response[1].user.profil.action_5.libelle_present,
+                                libelleAbsent: response[1].user.profil.action_5.libelle_absent,
+                                localisation: response[1].user.profil.action_5.localisation,
+                                activite: response[1].user.profil.action_5.activite,
+                                displayPresent: response[1].user.profil.action_5.displayPresent,
+                                displayAbsent: response[1].user.profil.action_5.displayAbsent,
+                            },
+                        },
+                        client: {
+                            activeBadgeClient: response[1].user.client.activeBadge,
+                            activeAbsenceClient: response[1].user.client.activeAbsence,
+                        },
+                        activeBadgeUser: response[1].user.activeBadge,
+                        activeAbsenceUser: response[1].user.activeAbsence,
+                        activeGeolocalisation: response[1].user.activeLocalisation,
+                        lieuxGeolocalisation: response[1].user.lieux,
+                        activites: response[1].user.activites,
+                    },
+                    statut_0: response[1].user.statut0,
+                    statut_1: response[1].user.statut1,
+                    statut_2: response[1].user.statut2,
+                    statut_3: response[1].user.statut3,
+                    statut_4: response[1].user.statut4,
+                    statut_5: response[1].user.statut5,
                 });
             } else {
-                this._refresh("error-unknown");
+                await this._refresh("error-unknown");
             }
-        });
+        } else {
+            await this._refresh("error-unknown");
+        }
     };
 
     _getFullHeure = () => {
@@ -351,43 +397,40 @@ class ManagementTime extends React.Component {
         return now;
     };
 
-    _refresh = (selector) => {
+    _refresh = async (selector) => {
         this.setState({
             refreshing: true,
             loader_list_buttons: true,
         });
+        const netInfos = await NetInfo.fetch();
         if (selector === "normal") {
-            NetInfo.fetch().then((netInfos) => {
-                this.setState({
-                    etat_network: netInfos.isConnected,
-                });
-                if (!netInfos.isConnected) {
-                    this._toggleOverlay("no-internet-connection");
-                    this.setState({
-                        refreshing: false,
-                        loader_list_buttons: false,
-                    });
-                } else {
-                    this._getUserData();
-                    this._getMouvementsEnAttente();
-                    this._resetCollapse();
-                }
+            this.setState({
+                etat_network: netInfos.isConnected,
             });
-        }
-        if (selector === "error-unknown") {
-            NetInfo.fetch().then((netInfos) => {
-                if (!netInfos.isConnected) {
-                    this._toggleOverlay("no-internet-connection");
-                } else {
-                    this._toggleOverlay("error-unknown");
-                }
-                this.setState({
-                    etat_network: false,
-                });
+            if (!netInfos.isConnected) {
+                this._toggleOverlay("no-internet-connection");
                 this.setState({
                     refreshing: false,
                     loader_list_buttons: false,
                 });
+            } else {
+                this._getUserData();
+                this._getMouvementsEnAttente();
+                this._resetCollapse();
+            }
+        }
+        if (selector === "error-unknown") {
+            if (!netInfos.isConnected) {
+                this._toggleOverlay("no-internet-connection");
+            } else {
+                this._toggleOverlay("error-unknown");
+            }
+            this.setState({
+                etat_network: false,
+            });
+            this.setState({
+                refreshing: false,
+                loader_list_buttons: false,
             });
         }
         if (selector === "error-server-as400") {
@@ -409,13 +452,29 @@ class ManagementTime extends React.Component {
             expanded_3: false,
             expanded_4: false,
             expanded_5: false,
+            render_response: false,
+            render_loader: false,
         });
     };
 
-    _toggleCollapse = (button) => {
+    _toggleCollapse = (button, activite) => {
         this.setState({
             time_fixed: moment().format("LTS"),
+            render_loader: true,
+            render_response: false,
+            render_activites: false,
+            render_confirmation: false,
         });
+        let render_loader = false;
+        let render_activites = false;
+        let render_confirmation = false;
+        if (button === "F00" || activite === "F") {
+            render_confirmation = true;
+        } else if (activite === "O") {
+            render_activites = true;
+        } else {
+            render_loader = true;
+        }
         this._resetCollapse();
         if (button === "F00") {
             this.setState({
@@ -425,6 +484,9 @@ class ManagementTime extends React.Component {
                 expanded_3: false,
                 expanded_4: false,
                 expanded_5: false,
+                render_loader: render_loader,
+                render_activites: render_activites,
+                render_confirmation: render_confirmation,
             });
         }
         if (button === "F01") {
@@ -435,6 +497,9 @@ class ManagementTime extends React.Component {
                 expanded_3: false,
                 expanded_4: false,
                 expanded_5: false,
+                render_loader: render_loader,
+                render_activites: render_activites,
+                render_confirmation: render_confirmation,
             });
         }
         if (button === "F02") {
@@ -445,6 +510,9 @@ class ManagementTime extends React.Component {
                 expanded_3: false,
                 expanded_4: false,
                 expanded_5: false,
+                render_loader: render_loader,
+                render_activites: render_activites,
+                render_confirmation: render_confirmation,
             });
         }
         if (button === "F03") {
@@ -455,6 +523,9 @@ class ManagementTime extends React.Component {
                 expanded_3: !this.state.expanded_3,
                 expanded_4: false,
                 expanded_5: false,
+                render_loader: render_loader,
+                render_activites: render_activites,
+                render_confirmation: render_confirmation,
             });
         }
         if (button === "F04") {
@@ -465,6 +536,9 @@ class ManagementTime extends React.Component {
                 expanded_3: false,
                 expanded_4: !this.state.expanded_4,
                 expanded_5: false,
+                render_loader: render_loader,
+                render_activites: render_activites,
+                render_confirmation: render_confirmation,
             });
         }
         if (button === "F05") {
@@ -475,16 +549,19 @@ class ManagementTime extends React.Component {
                 expanded_3: false,
                 expanded_4: false,
                 expanded_5: !this.state.expanded_5,
+                render_loader: render_loader,
+                render_activites: render_activites,
+                render_confirmation: render_confirmation,
             });
         }
         this._scrollToIndex(button);
-        this.setState({
-            render_response: false,
-            loader_response: false,
-        });
+        // this.setState({
+        //     render_response: false,
+        //     render_loader: false,
+        // });
     };
 
-    _toggleOverlay = (selector) => {
+    _toggleOverlay = async (selector) => {
         if (selector === "no-internet-connection") {
             this.setState({ visible_modal_no_internet_connection: !this.state.visible_modal_no_internet_connection, text_error_network: this.state.text_button_error_no_internet_connection });
         }
@@ -493,24 +570,38 @@ class ManagementTime extends React.Component {
         }
     };
 
-    _scrollToIndex = (button) => {
+    _scrollToIndex = async (button) => {
+        let index0 = 0;
+        let index1 = 1;
+        let index2 = 2;
+        let index3 = 3;
+        let index4 = 4;
+        let index5 = 5;
+        if (this.state.mouvements_en_attente) {
+            index0 = 1;
+            index1 = 2;
+            index2 = 3;
+            index3 = 4;
+            index4 = 5;
+            index5 = 6;
+        }
         if (button === "F00") {
-            this.flatListRef.scrollToIndex({ animated: true, index: 0 });
+            this.flatListRef.scrollToIndex({ animated: true, index: index0 });
         }
         if (button === "F01") {
-            this.flatListRef.scrollToIndex({ animated: true, index: 1 });
+            this.flatListRef.scrollToIndex({ animated: true, index: index1 });
         }
         if (button === "F02") {
-            this.flatListRef.scrollToIndex({ animated: true, index: 2 });
+            this.flatListRef.scrollToIndex({ animated: true, index: index2 });
         }
         if (button === "F03") {
-            this.flatListRef.scrollToIndex({ animated: true, index: 3 });
+            this.flatListRef.scrollToIndex({ animated: true, index: index3 });
         }
         if (button === "F04") {
-            this.flatListRef.scrollToIndex({ animated: true, index: 4 });
+            this.flatListRef.scrollToIndex({ animated: true, index: index4 });
         }
         if (button === "F05") {
-            this.flatListRef.scrollToIndex({ animated: true, index: 5 });
+            this.flatListRef.scrollToIndex({ animated: true, index: index5 });
         }
     };
 
@@ -519,7 +610,7 @@ class ManagementTime extends React.Component {
         var compteur_delete = 0;
 
         this.setState({
-            mouvements: this._getMouvementsEnAttenteByEmail(),
+            mouvements: await this._getMouvementsEnAttenteByEmail(),
             text_mouvement: this.state.text_start_etat_mouvement_envoi,
             disable_bouton_mouvements: true,
         });
@@ -650,13 +741,13 @@ class ManagementTime extends React.Component {
     _errorServeur = async (buttonError, lat, long, activite, lieu) => {
         this.setState({
             loader_list_buttons: false,
-            loader_response: false,
+            render_loader: false,
             render_response: true,
+            activite: null,
             current_ico: null,
             current_libelle: "Erreur serveur",
             current_text: "Serveur actuellement indisponible.\nLe mouvement a été enregistré dans votre mobile.",
         });
-        this._scrollToIndex(buttonError);
 
         if (buttonError === "F00" || activite != null) {
             var dataPointing = this.props.pointing;
@@ -683,358 +774,207 @@ class ManagementTime extends React.Component {
             this.setState({
                 current_text: "Serveur actuellement indisponible.",
             });
-            this._scrollToIndex(buttonError);
         }
     };
 
-    _sendAction = async (button, libelle, localisation, activite) => {
-        this.setState({
-            loader_response: true,
-            render_response: false,
-        });
+    _testPosition = async () => {
+        return new Promise((resolve) => {
+            Geolocation.getCurrentPosition((info) => {
+                let test_geolocalisation = false;
+                let code_lieu = null;
+                let latitude = info.coords.latitude.toString();
+                let longitude = info.coords.longitude.toString();
 
+                this.state.user.lieuxGeolocalisation.forEach((lieu) => {
+                    var dis = getDistance({ latitude: latitude, longitude: longitude }, { latitude: lieu.latitude, longitude: lieu.longitude });
+                    if (dis <= lieu.marge) {
+                        test_geolocalisation = true;
+                        code_lieu = lieu.code;
+                    }
+                });
+
+                resolve({ test_geolocalisation: test_geolocalisation, code_lieu: code_lieu, longitude: longitude, latitude: latitude });
+            });
+        });
+    };
+
+    _responseAction = async (selector, action, libelle) => {
         let ligne_1 = "";
         let ligne_2 = "";
         let ligne_3 = "";
         let ligne_4 = "";
         let dataIco = null;
-        let indicateurTemps = "1";
+
+        ligne_1 = action.message.ligne_1;
+        ligne_2 = action.message.ligne_2;
+        ligne_3 = action.message.ligne_3;
+        ligne_4 = action.message.ligne_4;
+
+        if (ligne_1 !== "") {
+            ligne_1 = ligne_1 + "\n";
+        }
+        if (ligne_2 !== "") {
+            ligne_2 = ligne_2 + "\n";
+        }
+        if (ligne_3 !== "") {
+            ligne_3 = ligne_3 + "\n";
+        }
+        if (selector === "normal") {
+            if (action.ico !== "") {
+                dataIco = action.ico;
+            }
+        }
+
+        this.setState({
+            loader_list_buttons: false,
+            render_loader: false,
+            render_response: true,
+            activite: null,
+            statut_0: action.statut0,
+            statut_1: action.statut1,
+            statut_2: action.statut2,
+            statut_3: action.statut3,
+            statut_4: action.statut4,
+            statut_5: action.statut5,
+            current_ico: dataIco,
+            current_libelle: libelle,
+            current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
+        });
+    };
+
+    _sendAction = async (button, libelle, localisation, activite) => {
+        this.setState({
+            render_loader: true,
+            render_confirmation: false,
+            render_response: false,
+            render_activites: false,
+        });
 
         if (button === "P00") {
             this.setState({
                 loader_list_buttons: false,
             });
-            NetInfo.fetch().then((netInfos) => {
-                this.setState({
-                    etat_network: netInfos.isConnected,
-                });
-                if (!netInfos.isConnected) {
-                    this._toggleOverlay("no-internet-connection");
-                } else {
-                    this._sendMouvements("normal");
-                }
+            const netInfos = await NetInfo.fetch();
+            this.setState({
+                etat_network: netInfos.isConnected,
             });
+            if (!netInfos.isConnected) {
+                await this._toggleOverlay("no-internet-connection");
+            } else {
+                await this._sendMouvements("normal");
+            }
         } else if (button === "I00") {
-            this._refresh("normal");
+            await this._refresh("normal");
         } else {
             if ((button === "F00" || activite != null) && this.state.mouvements_en_attente) {
                 await this._sendMouvements("background");
             }
-            if (!this.state.user.activeGeolocalisation) {
-                getToken(this.props.email, this.props.password).then((token) => {
-                    if (token[0] === 200) {
-                        postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, null, null, activite, null).then((action) => {
-                            if (action[0] === 200) {
-                                if (action[1].code === 200) {
-                                    if (button === "F00") {
-                                        Vibration.vibrate(500);
-                                    }
-
-                                    ligne_1 = action[1].message.ligne_1;
-                                    ligne_2 = action[1].message.ligne_2;
-                                    ligne_3 = action[1].message.ligne_3;
-                                    ligne_4 = action[1].message.ligne_4;
-
-                                    if (ligne_1 !== "") {
-                                        ligne_1 = ligne_1 + "\n";
-                                    }
-                                    if (ligne_2 !== "") {
-                                        ligne_2 = ligne_2 + "\n";
-                                    }
-                                    if (ligne_3 !== "") {
-                                        ligne_3 = ligne_3 + "\n";
-                                    }
-                                    if (action[1].ico !== "") {
-                                        dataIco = action[1].ico;
-                                    }
-
-                                    this.setState({
-                                        loader_list_buttons: false,
-                                        loader_response: false,
-                                        render_response: true,
-                                        statut_0: action[1].statut0,
-                                        statut_1: action[1].statut1,
-                                        statut_2: action[1].statut2,
-                                        statut_3: action[1].statut3,
-                                        statut_4: action[1].statut4,
-                                        statut_5: action[1].statut5,
-                                        current_ico: dataIco,
-                                        current_libelle: libelle,
-                                        current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                    });
-                                    this._scrollToIndex(button);
-                                } else {
-                                    this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null);
-                                }
-                            } else {
-                                this._refresh("error-unknown");
+            const token = await getToken(this.props.email, this.props.password);
+            if (token[0] === 200) {
+                if (!this.state.user.activeGeolocalisation) {
+                    const action = await postAction(token[1].token, "1", this.props.email, this._getFullDate(), this._getFullHeure(), button, null, null, activite, null);
+                    if (action[0] === 200) {
+                        if (action[1].code === 200) {
+                            if (button === "F00") {
+                                Vibration.vibrate(500);
                             }
-                        });
-                    } else {
-                        this._refresh("error-unknown");
-                    }
-                });
-            } else {
-                if (localisation) {
-                    this._requestLocationPermission().then((granted) => {
-                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                            Geolocation.getCurrentPosition((info) =>
-                                this.setState(
-                                    {
-                                        latitude: info.coords.latitude.toString(),
-                                        longitude: info.coords.longitude.toString(),
-                                    },
-                                    () => {
-                                        var test = false;
-                                        var codeLieu = null;
-                                        this.state.user.lieuxGeolocalisation.forEach((lieu) => {
-                                            var dis = getDistance({ latitude: this.state.latitude, longitude: this.state.longitude }, { latitude: lieu.latitude, longitude: lieu.longitude });
-                                            if (dis <= lieu.marge) {
-                                                test = true;
-                                                codeLieu = lieu.code;
-                                            }
-                                        });
-
-                                        if (test) {
-                                            getToken(this.props.email, this.props.password).then((token) => {
-                                                if (token[0] === 200) {
-                                                    postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, this.state.latitude, this.state.longitude, activite, codeLieu).then((action) => {
-                                                        if (action[0] === 200) {
-                                                            if (action[1].code === 200) {
-                                                                if (button === "F00") {
-                                                                    Vibration.vibrate(500);
-                                                                }
-
-                                                                ligne_1 = action[1].message.ligne_1;
-                                                                ligne_2 = action[1].message.ligne_2;
-                                                                ligne_3 = action[1].message.ligne_3;
-                                                                ligne_4 = action[1].message.ligne_4;
-
-                                                                if (ligne_1 !== "") {
-                                                                    ligne_1 = ligne_1 + "\n";
-                                                                }
-                                                                if (ligne_2 !== "") {
-                                                                    ligne_2 = ligne_2 + "\n";
-                                                                }
-                                                                if (ligne_3 !== "") {
-                                                                    ligne_3 = ligne_3 + "\n";
-                                                                }
-                                                                if (action[1].ico !== "") {
-                                                                    dataIco = action[1].ico;
-                                                                }
-
-                                                                this.setState({
-                                                                    loader_list_buttons: false,
-                                                                    loader_response: false,
-                                                                    render_response: true,
-                                                                    statut_0: action[1].statut0,
-                                                                    statut_1: action[1].statut1,
-                                                                    statut_2: action[1].statut2,
-                                                                    statut_3: action[1].statut3,
-                                                                    statut_4: action[1].statut4,
-                                                                    statut_5: action[1].statut5,
-                                                                    current_ico: dataIco,
-                                                                    current_libelle: libelle,
-                                                                    current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                                                });
-                                                                this._scrollToIndex(button);
-                                                            } else {
-                                                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite, codeLieu);
-                                                            }
-                                                        } else {
-                                                            this._refresh("error-unknown");
-                                                        }
-                                                    });
-                                                } else {
-                                                    this._refresh("error-unknown");
-                                                }
-                                            });
-                                        } else {
-                                            getToken(this.props.email, this.props.password).then((token) => {
-                                                if (token[0] === 200) {
-                                                    postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), "E01", this.state.latitude, this.state.longitude, activite, null).then((action) => {
-                                                        if (action[0] === 200) {
-                                                            if (action[1].code === 200) {
-                                                                if (button === "F00") {
-                                                                    Vibration.vibrate(500);
-                                                                }
-
-                                                                ligne_1 = action[1].message.ligne_1;
-                                                                ligne_2 = action[1].message.ligne_2;
-                                                                ligne_3 = action[1].message.ligne_3;
-                                                                ligne_4 = action[1].message.ligne_4;
-
-                                                                if (ligne_1 !== "") {
-                                                                    ligne_1 = ligne_1 + "\n";
-                                                                }
-                                                                if (ligne_2 !== "") {
-                                                                    ligne_2 = ligne_2 + "\n";
-                                                                }
-                                                                if (ligne_3 !== "") {
-                                                                    ligne_3 = ligne_3 + "\n";
-                                                                }
-
-                                                                this.setState({
-                                                                    loader_list_buttons: false,
-                                                                    loader_response: false,
-                                                                    render_response: true,
-                                                                    statut_0: action[1].statut0,
-                                                                    statut_1: action[1].statut1,
-                                                                    statut_2: action[1].statut2,
-                                                                    statut_3: action[1].statut3,
-                                                                    statut_4: action[1].statut4,
-                                                                    statut_5: action[1].statut5,
-                                                                    current_ico: null,
-                                                                    current_libelle: libelle,
-                                                                    current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                                                });
-                                                                this._scrollToIndex(button);
-                                                            } else {
-                                                                this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null);
-                                                            }
-                                                        } else {
-                                                            this._refresh("error-unknown");
-                                                        }
-                                                    });
-                                                } else {
-                                                    this._refresh("error-unknown");
-                                                }
-                                            });
-                                        }
-                                    }
-                                )
-                            );
+                            await this._responseAction("normal", action[1], libelle);
+                            await this._scrollToIndex(button);
                         } else {
-                            getToken(this.props.email, this.props.password).then((token) => {
-                                if (token[0] === 200) {
-                                    postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), "E00", null, null, null, null).then((action) => {
-                                        if (action[0] === 200) {
-                                            if (action[1].code === 200) {
-                                                if (button === "F00") {
-                                                    Vibration.vibrate(500);
-                                                }
-
-                                                ligne_1 = action[1].message.ligne_1;
-                                                ligne_2 = action[1].message.ligne_2;
-                                                ligne_3 = action[1].message.ligne_3;
-                                                ligne_4 = action[1].message.ligne_4;
-
-                                                if (ligne_1 !== "") {
-                                                    ligne_1 = ligne_1 + "\n";
-                                                }
-                                                if (ligne_2 !== "") {
-                                                    ligne_2 = ligne_2 + "\n";
-                                                }
-                                                if (ligne_3 !== "") {
-                                                    ligne_3 = ligne_3 + "\n";
-                                                }
-
-                                                this.setState({
-                                                    loader_list_buttons: false,
-                                                    loader_response: false,
-                                                    render_response: true,
-                                                    statut_0: action[1].statut0,
-                                                    statut_1: action[1].statut1,
-                                                    statut_2: action[1].statut2,
-                                                    statut_3: action[1].statut3,
-                                                    statut_4: action[1].statut4,
-                                                    statut_5: action[1].statut5,
-                                                    current_ico: null,
-                                                    current_libelle: libelle,
-                                                    current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                                });
-                                                this._scrollToIndex(button);
-                                            } else {
-                                                this._errorServeur(button, null, null, activite, null);
-                                            }
-                                        } else {
-                                            this._refresh("error-unknown");
-                                        }
-                                    });
-                                } else {
-                                    this._refresh("error-unknown");
-                                }
-                            });
+                            await this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null);
+                            await this._scrollToIndex(button);
                         }
-                    });
+                    } else {
+                        await this._refresh("error-unknown");
+                    }
                 } else {
-                    getToken(this.props.email, this.props.password).then((token) => {
-                        if (token[0] === 200) {
-                            postAction(token[1].token, indicateurTemps, this.props.email, this._getFullDate(), this._getFullHeure(), button, null, null, activite, null).then((action) => {
+                    if (localisation) {
+                        const granted = await this._requestLocationPermission();
+                        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                            const test_geolocalisation = await this._testPosition();
+                            if (test_geolocalisation.test_geolocalisation) {
+                                const action = await postAction(
+                                    token[1].token,
+                                    "1",
+                                    this.props.email,
+                                    this._getFullDate(),
+                                    this._getFullHeure(),
+                                    button,
+                                    test_geolocalisation.latitude,
+                                    test_geolocalisation.longitude,
+                                    activite,
+                                    test_geolocalisation.code_lieu
+                                );
                                 if (action[0] === 200) {
                                     if (action[1].code === 200) {
                                         if (button === "F00") {
                                             Vibration.vibrate(500);
                                         }
-
-                                        ligne_1 = action[1].message.ligne_1;
-                                        ligne_2 = action[1].message.ligne_2;
-                                        ligne_3 = action[1].message.ligne_3;
-                                        ligne_4 = action[1].message.ligne_4;
-
-                                        if (ligne_1 !== "") {
-                                            ligne_1 = ligne_1 + "\n";
-                                        }
-                                        if (ligne_2 !== "") {
-                                            ligne_2 = ligne_2 + "\n";
-                                        }
-                                        if (ligne_3 !== "") {
-                                            ligne_3 = ligne_3 + "\n";
-                                        }
-                                        if (action[1].ico !== "") {
-                                            dataIco = action[1].ico;
-                                        }
-
-                                        this.setState({
-                                            loader_list_buttons: false,
-                                            loader_response: false,
-                                            render_response: true,
-                                            statut_0: action[1].statut0,
-                                            current_ico: dataIco,
-                                            current_libelle: libelle,
-                                            current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
-                                        });
-                                        this._scrollToIndex(button);
+                                        await this._responseAction("normal", action[1], libelle);
+                                        await this._scrollToIndex(button);
                                     } else {
-                                        this._errorServeur(button, null, null, activite, null);
+                                        await this._errorServeur(button, this.state.latitude, this.state.longitude, activite, test_geolocalisation.code_lieu);
+                                        await this._scrollToIndex(button);
                                     }
                                 } else {
-                                    this._refresh("error-unknown");
+                                    await this._refresh("error-unknown");
                                 }
-                            });
+                            } else {
+                                const action = await postAction(token[1].token, "1", this.props.email, this._getFullDate(), this._getFullHeure(), "E01", test_geolocalisation.latitude, test_geolocalisation.longitude, activite, null);
+                                if (action[0] === 200) {
+                                    if (action[1].code === 200) {
+                                        if (button === "F00") {
+                                            Vibration.vibrate(500);
+                                        }
+                                        await this._responseAction("error", action[1], libelle);
+                                        await this._scrollToIndex(button);
+                                    } else {
+                                        await this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null);
+                                        await this._scrollToIndex(button);
+                                    }
+                                } else {
+                                    await this._refresh("error-unknown");
+                                }
+                            }
                         } else {
-                            this._refresh("error-unknown");
+                            const action = await postAction(token[1].token, "1", this.props.email, this._getFullDate(), this._getFullHeure(), "E00", null, null, null, null);
+                            if (action[0] === 200) {
+                                if (action[1].code === 200) {
+                                    if (button === "F00") {
+                                        Vibration.vibrate(500);
+                                    }
+                                    await this._responseAction("error", action[1], libelle);
+                                    await this._scrollToIndex(button);
+                                } else {
+                                    await this._errorServeur(button, null, null, activite, null);
+                                    await this._scrollToIndex(button);
+                                }
+                            } else {
+                                await this._refresh("error-unknown");
+                            }
                         }
-                    });
+                    } else {
+                        const action = await postAction(token[1].token, "1", this.props.email, this._getFullDate(), this._getFullHeure(), button, null, null, activite, null);
+                        if (action[0] === 200) {
+                            if (action[1].code === 200) {
+                                if (button === "F00") {
+                                    Vibration.vibrate(500);
+                                }
+                                await this._responseAction("normal", action[1], libelle);
+                                await this._scrollToIndex(button);
+                            } else {
+                                await this._errorServeur(button, null, null, activite, null);
+                                await this._scrollToIndex(button);
+                            }
+                        } else {
+                            await this._refresh("error-unknown");
+                        }
+                    }
                 }
+            } else {
+                await this._refresh("error-unknown");
             }
         }
-    };
-
-    _renderRetour = (button, typeButton, icoBase64, libelle, text) => {
-        let ico = <Image style={styles.image} source={{ uri: `data:image/png;base64,${icoBase64}` }} />;
-        if (icoBase64 === null) {
-            ico = <FontAwesome5 name="exclamation-circle" color="#AC6867" size={50} />;
-        } else {
-            if (button === "F00" || typeButton === "O" || typeButton === "F") {
-                libelle = "Transaction validé";
-                ico = <FontAwesome5 name="check-circle" color="#62B554" size={50} />;
-            }
-        }
-        return (
-            <View style={styles.container_overlay}>
-                <View style={styles.container_titre_response}>
-                    <Text style={styles.text_title_overlay}>{libelle}</Text>
-                </View>
-                <View style={styles.container_ico_response}>{ico}</View>
-                <View style={styles.container_text_response}>
-                    <Text style={styles.text_body_overlay}>{text}</Text>
-                </View>
-                <View style={styles.container_button_response}>
-                    <Button buttonStyle={styles.button_cancel_collapse} title="Fermer" onPress={() => this._refresh("normal")} />
-                </View>
-            </View>
-        );
     };
 
     _renderButtons = (user) => {
@@ -1304,10 +1244,8 @@ class ManagementTime extends React.Component {
                                     <CollapseHeader>
                                         <TouchableOpacity
                                             onPress={() => {
-                                                if (item.button === "F00" || item.activite === "O" || item.activite === "F") {
-                                                    this._toggleCollapse(item.button);
-                                                } else {
-                                                    this._toggleCollapse(item.button);
+                                                this._toggleCollapse(item.button, item.activite);
+                                                if (item.button !== "F00" && item.activite !== "O" && item.activite !== "F" && !item.expanded) {
                                                     this._sendAction(item.button, item.libelle, item.localisation, null);
                                                 }
                                             }}
@@ -1322,45 +1260,7 @@ class ManagementTime extends React.Component {
                                             </View>
                                         </TouchableOpacity>
                                     </CollapseHeader>
-                                    <CollapseBody style={styles.collapse_button_body}>
-                                        {this.state.loader_response ? (
-                                            <View style={styles.view_collapse}>
-                                                <ActivityIndicator color="#008080" size={40} />
-                                            </View>
-                                        ) : this.state.render_response ? (
-                                            this._renderRetour(item.button, item.activite, this.state.current_ico, this.state.current_libelle, this.state.current_text)
-                                        ) : item.activite === "O" ? (
-                                            this._renderActivites(item.button, item.libelle, item.localisation, this.state.user.activites)
-                                        ) : (
-                                            <View style={styles.view_flex_direction_row_flex}>
-                                                <View style={styles.view_collapse}>
-                                                    <Text style={styles.text_collapse}>Date</Text>
-                                                    <Text style={styles.text_collapse}>Heure</Text>
-                                                    <Text style={styles.text_collapse}>Confirmation ?</Text>
-                                                </View>
-                                                <View style={styles.view_collapse}>
-                                                    <Text style={styles.text_padding_5}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
-                                                    <Text style={styles.text_padding_5}>{this.state.time_fixed}</Text>
-                                                    <View style={styles.view_flow_direction_row}>
-                                                        <Button
-                                                            buttonStyle={styles.button_cancel_collapse}
-                                                            title="Annuler"
-                                                            onPress={() => {
-                                                                this._toggleCollapse(item.button);
-                                                            }}
-                                                        />
-                                                        <Button
-                                                            buttonStyle={styles.button_validate_collapse}
-                                                            title="Valider"
-                                                            onPress={() => {
-                                                                this._sendAction(item.button, item.libelle, item.localisation, null);
-                                                            }}
-                                                        />
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        )}
-                                    </CollapseBody>
+                                    <CollapseBody style={styles.collapse_button_body}>{this._renderCollapseBody(item)}</CollapseBody>
                                 </Collapse>
                             </Animatable.View>
                         ) : null
@@ -1373,20 +1273,143 @@ class ManagementTime extends React.Component {
         );
     };
 
-    _renderActivites = (button, libelle, localisation, activites) => {
+    _renderCollapseBody = (item) => {
+        if (item.button === "F00") {
+            return (
+                <View style={styles.container_loader}>
+                    {this._renderLoaderResponse(this.state.render_loader)}
+                    {this._renderConfirmation(this.state.render_confirmation, item.button, item.libelle, item.localisation, null)}
+                    {this._renderResponse(this.state.render_response, this.state.current_libelle, this.state.current_ico, this.state.current_text, item.button, item.activite)}
+                </View>
+            );
+        } else {
+            if (item.activite !== "O" && item.activite !== "F") {
+                return (
+                    <View style={styles.container_loader}>
+                        {this._renderLoaderResponse(this.state.render_loader)}
+                        {this._renderResponse(this.state.render_response, this.state.current_libelle, this.state.current_ico, this.state.current_text, item.button, item.activite)}
+                    </View>
+                );
+            }
+            if (item.activite === "F") {
+                return (
+                    <View style={styles.container_loader}>
+                        {this._renderLoaderResponse(this.state.render_loader)}
+                        {this._renderConfirmation(this.state.render_confirmation, item.button, item.libelle, item.localisation, null)}
+                        {this._renderResponse(this.state.render_response, this.state.current_libelle, this.state.current_ico, this.state.current_text, item.button, item.activite)}
+                    </View>
+                );
+            }
+            if (item.activite === "O") {
+                return (
+                    <View style={styles.container_loader}>
+                        {this._renderLoaderResponse(this.state.render_loader)}
+                        {this._renderActivites(this.state.render_activites)}
+                        {this._renderConfirmation(this.state.render_confirmation, item.button, item.libelle, item.localisation, this.state.activite)}
+                        {this._renderResponse(this.state.render_response, this.state.current_libelle, this.state.current_ico, this.state.current_text, item.button, item.activite)}
+                    </View>
+                );
+            }
+        }
+    };
+
+    _renderLoaderResponse = (visible) => {
+        if (!visible) {
+            return null;
+        }
+        return <ActivityIndicator size="large" color="#008080" style={styles.container_loader} animating={visible} />;
+    };
+
+    _renderActivites = (visible) => {
+        if (!visible) {
+            return null;
+        }
         return (
             <View style={styles.container_overlay}>
                 <FlatList
-                    data={activites}
+                    data={this.state.user.activites}
                     renderItem={({ item, index }) => (
                         <View style={styles.container_button_animation}>
-                            <Button onPress={() => this._sendAction(button, libelle, localisation, item.code)} title={item.nom} titleStyle={styles.text_button_tiles_activite} buttonStyle={styles.button_tiles_activite} />
+                            <Button
+                                onPress={() => {
+                                    this.setState({ render_confirmation: true, render_activites: false, activite: item.code });
+                                }}
+                                title={item.nom}
+                                titleStyle={styles.text_button_tiles_activite}
+                                buttonStyle={styles.button_tiles_activite}
+                            />
                         </View>
                     )}
                     keyExtractor={(item) => item.code}
                 />
                 <View style={styles.container_button_animation}>
-                    <Button onPress={() => this._toggleCollapse(button)} title="Annuler" buttonStyle={styles.button_cancel_collapse_activite} />
+                    <Button onPress={() => this._resetCollapse()} title={this.state.text_modal_button_cancel} buttonStyle={styles.button_cancel_collapse_activite} />
+                </View>
+            </View>
+        );
+    };
+
+    _renderResponse = (visible, libelle, ico, text, button, activite) => {
+        if (button === "F00" || activite === "O" || activite === "F") {
+            libelle = "Transaction validé";
+        }
+        if (!visible) {
+            return null;
+        }
+        return (
+            <View style={styles.container_overlay}>
+                <View style={styles.container_titre_response}>
+                    <Text style={styles.text_title_overlay}>{libelle}</Text>
+                </View>
+                <View style={styles.container_ico_response}>
+                    {button === "F00" || activite === "O" || activite === "F" ? (
+                        <FontAwesome5 name="check-circle" color="#62B554" size={50} />
+                    ) : (button !== "F00" || activite !== "O" || activite !== "F") && ico === null ? (
+                        <FontAwesome5 name="exclamation-circle" color="#AC6867" size={50} />
+                    ) : (
+                        <Image style={styles.image} source={{ uri: `data:image/png;base64,${ico}` }} />
+                    )}
+                </View>
+                <View style={styles.container_text_response}>
+                    <Text style={styles.text_body_overlay}>{text}</Text>
+                </View>
+                <View style={styles.container_button_response}>
+                    <Button buttonStyle={styles.button_cancel_collapse} title={this.state.text_modal_button_close} onPress={() => this._refresh("normal")} />
+                </View>
+            </View>
+        );
+    };
+
+    _renderConfirmation = (visible, button, libelle, localisation, activites) => {
+        if (!visible) {
+            return null;
+        }
+        return (
+            <View style={styles.view_flex_direction_row_flex}>
+                <View style={styles.view_collapse}>
+                    <Text style={styles.text_collapse}>{this.state.text_modal_date}</Text>
+                    <Text style={styles.text_collapse}>{this.state.text_modal_heure}</Text>
+                    <Text style={styles.text_collapse}>{this.state.text_modal_confirmation}</Text>
+                </View>
+                <View style={styles.view_collapse_flex_2}>
+                    <Text style={styles.text_padding_5}>{this._renderTextClock()}</Text>
+                    <Text style={styles.text_padding_5}>{this.state.time_fixed}</Text>
+                    <View style={styles.view_flow_direction_row}>
+                        <Button
+                            buttonStyle={styles.button_cancel_collapse}
+                            title={this.state.text_modal_button_cancel}
+                            onPress={() => {
+                                this._resetCollapse();
+                            }}
+                        />
+                        <Button
+                            buttonStyle={styles.button_validate_collapse}
+                            title={this.state.text_modal_button_validate}
+                            onPress={() => {
+                                this._sendAction(button, libelle, localisation, activites);
+                            }}
+                        />
+                    </View>
                 </View>
             </View>
         );
@@ -1451,10 +1474,83 @@ class ManagementTime extends React.Component {
         );
     };
 
+    _renderTextClock = () => {
+        let momentPlugin = new moment();
+        let intDay = momentPlugin.format("d");
+        let intMonth = momentPlugin.format("M");
+        let dayOfMonth = momentPlugin.format("D");
+        let year = momentPlugin.format("YYYY");
+        let day = "";
+        let month = "";
+        let fullDate = "";
+        let days = this.state.text_days;
+        let months = this.state.text_months;
+        if (intDay === "1") {
+            day = days[0];
+        }
+        if (intDay === "2") {
+            day = days[1];
+        }
+        if (intDay === "3") {
+            day = days[2];
+        }
+        if (intDay === "4") {
+            day = days[3];
+        }
+        if (intDay === "5") {
+            day = days[4];
+        }
+        if (intDay === "6") {
+            day = days[5];
+        }
+        if (intDay === "7") {
+            day = days[6];
+        }
+        if (intMonth === "1") {
+            month = months[0];
+        }
+        if (intMonth === "2") {
+            month = months[1];
+        }
+        if (intMonth === "3") {
+            month = months[2];
+        }
+        if (intMonth === "4") {
+            month = months[3];
+        }
+        if (intMonth === "5") {
+            month = months[4];
+        }
+        if (intMonth === "6") {
+            month = months[5];
+        }
+        if (intMonth === "7") {
+            month = months[6];
+        }
+        if (intMonth === "8") {
+            month = months[7];
+        }
+        if (intMonth === "9") {
+            month = months[8];
+        }
+        if (intMonth === "10") {
+            month = months[9];
+        }
+        if (intMonth === "11") {
+            month = months[10];
+        }
+        if (intMonth === "12") {
+            month = months[11];
+        }
+        fullDate = day + " " + dayOfMonth + " " + month + " " + year;
+        return fullDate;
+    };
+
     _renderClock = () => {
+        const fullDate = this._renderTextClock();
         return (
             <Animatable.View animation="bounceIn">
-                <Text style={styles.text_date}>{moment().format("dddd Do MMMM YYYY").toUpperCase()}</Text>
+                <Text style={styles.text_date}>{fullDate}</Text>
                 <Text style={styles.text_heure}>{this.state.time}</Text>
             </Animatable.View>
         );
@@ -1794,6 +1890,10 @@ const styles = StyleSheet.create({
     },
     view_collapse: {
         flex: 1,
+        justifyContent: "center",
+    },
+    view_collapse_flex_2: {
+        flex: 2,
         justifyContent: "center",
     },
     view_flow_direction_row: {

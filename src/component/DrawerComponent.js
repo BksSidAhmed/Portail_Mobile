@@ -18,11 +18,7 @@ class DrawerComponent extends React.Component {
     };
 
     render() {
-        let list_item = [];
-
-        if (this.props.langue === "100") {
-            list_item = [{ text: "Gestion du temps" }, { text: "Confidentialité" }, { text: "À propos" }, { text: "Déconnexion" }];
-        }
+        let list_item = [{ text: "Gestion du temps" }, { text: "Confidentialité" }, { text: "À propos" }, { text: "Déconnexion" }];
 
         if (this.props.langue === "109") {
             list_item = [{ text: "Zeitmanagement" }, { text: "Vertraulichkeit" }, { text: "Etwa" }, { text: "Ausloggen" }];
