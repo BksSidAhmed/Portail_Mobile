@@ -1368,7 +1368,7 @@ class ManagementTime extends React.Component {
                     <Text style={styles.text_title_overlay}>{libelle}</Text>
                 </View>
                 <View style={styles.container_ico_response}>
-                    {button === "F00" || activite === "O" || activite === "F" ? (
+                    {(button === "F00" || activite === "O" || activite === "F") && ico !== null ? (
                         <FontAwesome5 name="check-circle" color="#62B554" size={50} />
                     ) : (button !== "F00" || activite !== "O" || activite !== "F") && ico === null ? (
                         <FontAwesome5 name="exclamation-circle" color="#AC6867" size={50} />
