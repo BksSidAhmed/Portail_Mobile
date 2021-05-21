@@ -75,6 +75,7 @@ class ManagementTime extends React.Component {
             text_milieu_etat_error_mouvement_envoi: " echoué",
             text_start_etat_mouvement_envoi: "Début de la séquence d'envoi",
             text_title_response_success: "Transaction validé",
+            text_title_response_error: "Erreur",
             text_days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
             text_months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
             text_mouvement: "",
@@ -136,6 +137,7 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_error_mouvement_envoi: " gescheitert",
                 text_start_etat_mouvement_envoi: "Start der Sendesequenz",
                 text_title_response_success: "Validierte Transaktion",
+                text_title_response_error: "Fehler",
                 text_days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
                 text_months: ["Januar", "Februar", "März", "April", "Kann", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
             });
@@ -163,6 +165,7 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_error_mouvement_envoi: " ha fallado",
                 text_start_etat_mouvement_envoi: "Inicio de la secuencia de envío",
                 text_title_response_success: "Transacción validada",
+                text_title_response_error: "Error",
                 text_days: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
                 text_months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             });
@@ -190,6 +193,7 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_error_mouvement_envoi: " failed",
                 text_start_etat_mouvement_envoi: "Start of the sending sequence",
                 text_title_response_success: "Validated transaction",
+                text_title_response_error: "Mistake",
                 text_days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                 text_months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             });
@@ -217,6 +221,7 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_error_mouvement_envoi: " fallito",
                 text_start_etat_mouvement_envoi: "Inizio della sequenza di invio",
                 text_title_response_success: "Transazione convalidata",
+                text_title_response_error: "Sbaglio",
                 text_days: ["Lunedi", "MARTEDi̇̀", "Mercoledi̇̀", "Giovedi", "Venerdi̇̀", "Sabato", "Domenica"],
                 text_months: ["Gennaio", "Febbraio", "Marzo", "Aaprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
             });
@@ -244,6 +249,7 @@ class ManagementTime extends React.Component {
                 text_milieu_etat_error_mouvement_envoi: " mislukt",
                 text_start_etat_mouvement_envoi: "Start van de verzendprocedure",
                 text_title_response_success: "Gevalideerde transactie",
+                text_title_response_error: "Vergissing",
                 text_days: ["Maandag", "Dinsdag", "Woensdag", "Donerdag", "Vrijdag", "Zaterdag", "Zondag"],
                 text_months: ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"],
             });
@@ -1356,8 +1362,10 @@ class ManagementTime extends React.Component {
     };
 
     _renderResponse = (visible, libelle, ico, text, button, activite) => {
-        if (button === "F00" || activite === "O" || activite === "F") {
+        if ((button === "F00" || activite === "O" || activite === "F") && ico !== null) {
             libelle = this.state.text_title_response_success;
+        } else if ((button !== "F00" || activite !== "O" || activite !== "F") && ico === null) {
+            libelle = this.state.text_title_response_error;
         }
         if (!visible) {
             return null;
