@@ -1399,15 +1399,17 @@ class ManagementTime extends React.Component {
             return null;
         }
         return (
-            <View style={styles.view_flex_direction_row_flex}>
-                <View style={styles.view_collapse}>
-                    <Text style={styles.text_collapse}>{this.state.text_modal_date}</Text>
-                    <Text style={styles.text_collapse}>{this.state.text_modal_heure}</Text>
-                    <Text style={styles.text_collapse}>{this.state.text_modal_confirmation}</Text>
+            <View style={styles.view_collapse}>
+                <View style={styles.view_flex_direction_row_flex}>
+                    <Text style={styles.text_collapse_1}>{this.state.text_modal_date}</Text>
+                    <Text>{this._renderTextClock()}</Text>
                 </View>
-                <View style={styles.view_collapse_flex_2}>
-                    <Text style={styles.text_padding_5}>{this._renderTextClock()}</Text>
-                    <Text style={styles.text_padding_5}>{this.state.time_fixed}</Text>
+                <View style={styles.view_flex_direction_row_flex}>
+                    <Text style={styles.text_collapse_2}>{this.state.text_modal_heure}</Text>
+                    <Text>{this.state.time_fixed}</Text>
+                </View>
+                <View style={styles.view_flex_direction_row_flex}>
+                    <Text style={styles.text_collapse_3}>{this.state.text_modal_confirmation}</Text>
                     <View style={styles.view_flow_direction_row}>
                         <Button
                             buttonStyle={styles.button_cancel_collapse}
@@ -1803,12 +1805,20 @@ const styles = StyleSheet.create({
     text_welcome_name: {
         fontWeight: "bold",
     },
-    text_collapse: {
-        paddingVertical: 5,
+    text_collapse_1: {
         fontWeight: "bold",
+        marginRight: 70,
+    },
+    text_collapse_2: {
+        fontWeight: "bold",
+        marginRight: 62,
+    },
+    text_collapse_3: {
+        fontWeight: "bold",
+        marginRight: 5,
     },
     text_padding_5: {
-        paddingVertical: 5,
+        // paddingVertical: 5,
     },
     dialog: {
         textAlign: "center",
@@ -1916,6 +1926,8 @@ const styles = StyleSheet.create({
     view_flex_direction_row_flex: {
         flex: 1,
         flexDirection: "row",
+        paddingVertical: 5,
+        alignItems: "center",
     },
     button_tiles_activite: {
         backgroundColor: "white",
