@@ -78,6 +78,9 @@ class ManagementTime extends React.Component {
             text_title_response_error: "Erreur",
             text_days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
             text_months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+            text_title_erreur_serveur: "Erreur serveur",
+            text_erreur_serveur: "Serveur actuellement indisponible.\nLe mouvement a été enregistré dans votre mobile.",
+            text_serveur_indisponible: "Serveur actuellement indisponible.",
             text_mouvement: "",
             expanded_0: false,
             expanded_1: false,
@@ -140,6 +143,9 @@ class ManagementTime extends React.Component {
                 text_title_response_error: "Fehler",
                 text_days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
                 text_months: ["Januar", "Februar", "März", "April", "Kann", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+                text_title_erreur_serveur: "Serverfehler",
+                text_erreur_serveur: "Server derzeit nicht verfügbar. Die Bewegung wurde auf Ihrem Handy gespeichert.",
+                text_serveur_indisponible: "Server derzeit nicht verfügbar.",
             });
         }
 
@@ -168,6 +174,9 @@ class ManagementTime extends React.Component {
                 text_title_response_error: "Error",
                 text_days: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
                 text_months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                text_title_erreur_serveur: "Error del Servidor",
+                text_erreur_serveur: "Servidor actualmente no disponible. El movimiento se ha guardado en tu móvil.",
+                text_serveur_indisponible: "Servidor actualmente no disponible.",
             });
         }
 
@@ -196,6 +205,9 @@ class ManagementTime extends React.Component {
                 text_title_response_error: "Mistake",
                 text_days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                 text_months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                text_title_erreur_serveur: "Server Error",
+                text_erreur_serveur: "Server currently unavailable. The movement has been saved to your mobile.",
+                text_serveur_indisponible: "Server currently unavailable.",
             });
         }
 
@@ -224,6 +236,9 @@ class ManagementTime extends React.Component {
                 text_title_response_error: "Sbaglio",
                 text_days: ["Lunedi", "MARTEDi̇̀", "Mercoledi̇̀", "Giovedi", "Venerdi̇̀", "Sabato", "Domenica"],
                 text_months: ["Gennaio", "Febbraio", "Marzo", "Aaprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+                text_title_erreur_serveur: "Errore del server",
+                text_erreur_serveur: "Server attualmente non disponibile. Il movimento è stato salvato sul tuo cellulare.",
+                text_serveur_indisponible: "Server attualmente non disponibile.",
             });
         }
 
@@ -252,6 +267,9 @@ class ManagementTime extends React.Component {
                 text_title_response_error: "Vergissing",
                 text_days: ["Maandag", "Dinsdag", "Woensdag", "Donerdag", "Vrijdag", "Zaterdag", "Zondag"],
                 text_months: ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"],
+                text_title_erreur_serveur: "Serverfout",
+                text_erreur_serveur: "Server momenteel niet beschikbaar. De beweging is opgeslagen op uw mobiel.",
+                text_serveur_indisponible: "Server momenteel niet beschikbaar.",
             });
         }
     }
@@ -757,8 +775,8 @@ class ManagementTime extends React.Component {
             render_response: true,
             activite: null,
             current_ico: null,
-            current_libelle: "Erreur serveur",
-            current_text: "Serveur actuellement indisponible.\nLe mouvement a été enregistré dans votre mobile.",
+            current_libelle: this.state.text_title_erreur_serveur,
+            current_text: this.state.text_erreur_serveur,
         });
 
         if (buttonError === "F00" || activite != null) {
@@ -784,7 +802,7 @@ class ManagementTime extends React.Component {
             }
         } else {
             this.setState({
-                current_text: "Serveur actuellement indisponible.",
+                current_text: this.state.text_serveur_indisponible,
             });
         }
     };
