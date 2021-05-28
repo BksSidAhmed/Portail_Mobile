@@ -662,7 +662,7 @@ class ManagementTime extends React.Component {
                 for (const pointing of element.pointage) {
                     const token = await getToken(this.props.email, this.props.password);
                     if (token[0] === 200) {
-                        const action = await postAction(token[1].token, pointing[0], pointing[1], pointing[2], pointing[3], pointing[4], pointing[5], pointing[6], null, pointing[7], pointing[8]);
+                        const action = await postAction(token[1].token, pointing[0], pointing[1], pointing[2], pointing[3], pointing[4], pointing[5], pointing[6], pointing[7], pointing[8]);
                         if (action[0] === 200) {
                             if (action[1].code === 200) {
                                 this.state.mouvements[compteur].ico = "check-circle";
