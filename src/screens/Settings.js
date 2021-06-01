@@ -7,65 +7,19 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import * as Animatable from "react-native-animatable";
 import NetInfo from "@react-native-community/netinfo";
 import { Button, Overlay } from "react-native-elements";
+import { traduction } from "../locale/local";
 
 class Settings extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            switchOn: false,
-            title_message: "",
-            text_localisation: "",
-            text_localisation_active: "",
-            text_localisation_desactive: "",
-            text_password: "",
-            text_modal_no_internet_connection: "Il semblerait que vous n'ayez pas d'accès à internet. Vous pourrez réessayer lorsque vous aurez à nouveau un accès.",
-            text_modal_button_close: "Fermer",
             text_error_network: "",
-            text_button_error_no_internet_connection: "Aucune connexion internet.\nAppuyer pour rafraichir.",
             visible_modal_no_internet_connection: false,
         };
+    }
 
-        if (this.props.langue === "100") {
-            this.state.text_localisation_active = "Localisation activé";
-            this.state.text_localisation_desactive = "Localisation désactivé";
-            this.state.text_password = "Changer le mot de passe";
-            this.props.navigation.setOptions({ title: "Niva - Paramètres" });
-        }
-
-        if (this.props.langue === "109") {
-            this.state.text_localisation_active = "Lage aktiviert";
-            this.state.text_localisation_desactive = "Lage deaktiviert";
-            this.state.text_password = "Kennwort ändern";
-            this.props.navigation.setOptions({ title: "Niva - Einstellungen" });
-        }
-
-        if (this.props.langue === "134") {
-            this.state.text_localisation_active = "Localización activado";
-            this.state.text_localisation_desactive = "Localización desactivado";
-            this.state.text_password = "Cambiar la contraseña";
-            this.props.navigation.setOptions({ title: "Niva - Configuraciones" });
-        }
-
-        if (this.props.langue === "132") {
-            this.state.text_localisation_active = "Location enabled";
-            this.state.text_localisation_desactive = "Location disabled";
-            this.state.text_password = "Change password";
-            this.props.navigation.setOptions({ title: "Niva - Settings" });
-        }
-
-        if (this.props.langue === "127") {
-            this.state.text_localisation_active = "Posizione abilitato";
-            this.state.text_localisation_desactive = "Posizione disattivato";
-            this.state.text_password = "Cambia la password";
-            this.props.navigation.setOptions({ title: "Niva - Impostazioni" });
-        }
-
-        if (this.props.langue === "135") {
-            this.state.text_localisation_active = "Locatie ingeschakeld";
-            this.state.text_localisation_desactive = "Locatie uitgeschakeld";
-            this.state.text_password = "Wachtwoord wijzigen";
-            this.props.navigation.setOptions({ title: "Niva - Instellingen" });
-        }
+    UNSAFE_componentWillMount() {
+        this.props.navigation.setOptions({ title: "Niva - " + traduction("TITLE_SETTINGS", this.props.langue) });
     }
 
     onPressPassword = () => {
@@ -80,7 +34,7 @@ class Settings extends React.Component {
 
     _toggleOverlay = (selector) => {
         if (selector === "no-internet-connection") {
-            this.setState({ visible_modal_no_internet_connection: !this.state.visible_modal_no_internet_connection, text_error_network: this.state.text_button_error_no_internet_connection });
+            this.setState({ visible_modal_no_internet_connection: !this.state.visible_modal_no_internet_connection, text_error_network: traduction("ERROR_NO_INTERNET_CONNECTION", this.props.langue) });
         }
     };
 
@@ -88,9 +42,9 @@ class Settings extends React.Component {
         if (selector === "no-internet-connection") {
             return (
                 <View style={styles.view_overlay}>
-                    <Text style={styles.text_overlay}>{this.state.text_modal_no_internet_connection}</Text>
+                    <Text style={styles.text_overlay}>{traduction("NO_INTERNET_CONNECTION", this.props.langue)}</Text>
                     <View style={styles.view_button_overlay}>
-                        <Button buttonStyle={styles.button_overlay_accept} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("no-internet-connection")} />
+                        <Button buttonStyle={styles.button_overlay_accept} title={traduction("CLOSE", this.props.langue)} onPress={() => this._toggleOverlay("no-internet-connection")} />
                     </View>
                 </View>
             );
@@ -121,7 +75,7 @@ class Settings extends React.Component {
                     <Animatable.View animation="bounceIn" delay={300}>
                         <TouchableOpacity style={styles.button_body} onPress={() => this.onPressPassword()}>
                             <FontAwesome5 name="key" color="#31859C" size={20} />
-                            <Text style={styles.text_button}>{this.state.text_password}</Text>
+                            <Text style={styles.text_button}>{traduction("RENEW_PASSWORD", this.props.langue)}</Text>
                         </TouchableOpacity>
                     </Animatable.View>
                 </View>

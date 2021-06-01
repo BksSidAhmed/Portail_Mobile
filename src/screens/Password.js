@@ -4,6 +4,7 @@ import { Button, Input, Overlay } from "react-native-elements";
 import { getToken, postEditPassword } from "../api";
 import { connect } from "react-redux";
 import { passwordAction } from "../redux/actions/passwordAction";
+import { traduction } from "../locale/local";
 
 class Password extends React.Component {
     constructor(props) {
@@ -16,14 +17,16 @@ class Password extends React.Component {
             disable_buttons_send_request: false,
             visible_modal_error_unknown: false,
             visible_modal_response_edit_password: false,
-            text_modal_button_close: "Fermer",
-            text_modal_error_unknown: "Il semblerait y avoir un problème avec le serveur distant. Veuillez réessayer plus tard.",
             text_modal_response_edit_password: "",
             error_input_old_password: "",
             error_input_new_password_1: "",
             error_input_new_password_2: "",
             error: false,
         };
+    }
+
+    UNSAFE_componentWillMount() {
+        this.props.navigation.setOptions({ title: "Niva - " + traduction("TITLE_PASSWORD", this.props.langue) });
     }
 
     valider(newPassword, oldPassword, samePassword) {
@@ -54,7 +57,7 @@ class Password extends React.Component {
                                         } else {
                                             this.setState({
                                                 error: true,
-                                                text_modal_response_edit_password: "Erreur côté serveur. Veuillez réessayer ultérieurement.",
+                                                text_modal_response_edit_password: traduction("ERROR_UNKNOWN", this.props.langue),
                                                 loader_button_send_request: false,
                                                 disable_buttons_send_request: false,
                                                 visible_modal_error_unknown: true,
@@ -71,24 +74,24 @@ class Password extends React.Component {
                             });
                         } else {
                             this.setState({
-                                error_input_old_password: "Votre mot de passe est erroné",
+                                error_input_old_password: traduction("BAD_PASSWORD", this.props.langue),
                             });
                         }
                     } else {
                         this.setState({
-                            error_input_new_password_1: "Les deux mot de passe ne sont pas identiques",
-                            error_input_new_password_2: "Les deux mot de passe ne sont pas identiques",
+                            error_input_new_password_1: traduction("ERROR_SAME_PASSWORD", this.props.langue),
+                            error_input_new_password_2: traduction("ERROR_SAME_PASSWORD", this.props.langue),
                         });
                     }
                 } else {
-                    this.setState({ error_input_new_password_2: "Veuillez l'entrer à nouveau" });
+                    this.setState({ error_input_new_password_2: traduction("ERROR_INPUT_NEW_1", this.props.langue) });
                 }
             } else {
-                this.setState({ error_input_new_password_1: "Veuillez entrer votre nouveau mot de passe" });
+                this.setState({ error_input_new_password_1: traduction("ERROR_INPUT_NEW_2", this.props.langue) });
             }
         } else {
             this.setState({
-                error_input_old_password: "Veuillez entrer votre mot de passe",
+                error_input_old_password: traduction("ERROR_INPUT_OLD_PASSWORD", this.props.langue),
             });
         }
     }
@@ -98,7 +101,7 @@ class Password extends React.Component {
         if (text !== "") {
             this.setState({ error_input_old_password: "" });
         } else {
-            this.setState({ error_input_old_password: "Veuillez entrer votre mot de passe" });
+            this.setState({ error_input_old_password: traduction("ERROR_INPUT_OLD_PASSWORD", this.props.langue) });
         }
     };
 
@@ -107,7 +110,7 @@ class Password extends React.Component {
         if (text !== "") {
             this.setState({ error_input_new_password_1: "" });
         } else {
-            this.setState({ error_input_new_password_1: "Veuillez entrer votre nouveau mot de passe" });
+            this.setState({ error_input_new_password_1: traduction("ERROR_INPUT_NEW_1", this.props.langue) });
         }
     };
 
@@ -116,7 +119,7 @@ class Password extends React.Component {
         if (text !== "") {
             this.setState({ error_input_new_password_2: "" });
         } else {
-            this.setState({ error_input_new_password_2: "Veuillez l'entrer à nouveau" });
+            this.setState({ error_input_new_password_2: traduction("ERROR_INPUT_NEW_2", this.props.langue) });
         }
     };
 
@@ -133,9 +136,9 @@ class Password extends React.Component {
         if (selector === "error-unknown") {
             return (
                 <View style={styles.view_overlay}>
-                    <Text style={styles.text_overlay}>{this.state.text_modal_error_unknown}</Text>
+                    <Text style={styles.text_overlay}>{traduction("ERROR_UNKNOWN", this.props.langue)}</Text>
                     <View style={styles.view_button_overlay}>
-                        <Button buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("error-unknown")} />
+                        <Button buttonStyle={styles.button_overlay_refuse} title={traduction("CLOSE", this.props.langue)} onPress={() => this._toggleOverlay("error-unknown")} />
                     </View>
                 </View>
             );
@@ -145,7 +148,7 @@ class Password extends React.Component {
                 <View style={styles.view_overlay}>
                     <Text style={styles.text_overlay}>{this.state.text_modal_response_edit_password}</Text>
                     <View style={styles.view_button_overlay}>
-                        <Button buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this.setState({ visible_modal_response_edit_password: false })} />
+                        <Button buttonStyle={styles.button_overlay_refuse} title={traduction("CLOSE", this.props.langue)} onPress={() => this.setState({ visible_modal_response_edit_password: false })} />
                     </View>
                 </View>
             );
@@ -158,7 +161,7 @@ class Password extends React.Component {
                 <ScrollView style={styles.container_flex_1}>
                     <View style={styles.view_input}>
                         <Input
-                            placeholder="Mot de passe actuel"
+                            placeholder={traduction("INPUT_OLD", this.props.langue)}
                             rightIcon={{ type: "font-awesome", name: "unlock" }}
                             errorMessage={this.state.error_input_old_password}
                             style={styles.text_input}
@@ -168,7 +171,7 @@ class Password extends React.Component {
                             value={this.oldPassword}
                         />
                         <Input
-                            placeholder="Nouveau Mot de Passe"
+                            placeholder={traduction("INPUT_NEW_1", this.props.langue)}
                             rightIcon={{ type: "font-awesome", name: "lock" }}
                             errorMessage={this.state.error_input_new_password_1}
                             style={styles.text_input}
@@ -178,7 +181,7 @@ class Password extends React.Component {
                             value={this.newPassword}
                         />
                         <Input
-                            placeholder="Saisir à nouveau"
+                            placeholder={traduction("INPUT_NEW_2", this.props.langue)}
                             rightIcon={{ type: "font-awesome", name: "lock" }}
                             errorMessage={this.state.error_input_new_password_2}
                             style={styles.text_input}
@@ -196,7 +199,7 @@ class Password extends React.Component {
                         disabled={this.state.disable_buttons_send_request}
                         loading={this.state.loader_button_send_request}
                         loadingProps={styles.loader_password}
-                        title="Valider"
+                        title={traduction("VALIDATE", this.props.langue)}
                         titleStyle={styles.text_button_validate}
                         onPress={() => this.valider(this.newPassword, this.oldPassword, this.samePassword)}
                     />
@@ -350,6 +353,7 @@ const mapStateToProps = (state) => {
     return {
         email: state.emailReducer.email,
         password: state.passwordReducer.password,
+        langue: state.langueReducer.langue,
     };
 };
 

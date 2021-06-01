@@ -5,49 +5,14 @@ import { listeEmailAction } from "../redux/actions/listeEmailAction";
 import { pointingAction } from "../redux/actions/pointingHorsLigneAction";
 import * as Animatable from "react-native-animatable";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { traduction } from "../locale/local";
 class Confidential extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            text_confidential_1: "",
-            text_confidential_2: "",
-        };
+    }
 
-        if (this.props.langue === "100") {
-            this.state.text_confidential_1 = "Vos données sont protégées.";
-            this.state.text_confidential_2 = "Les données échangées entre votre téléphone mobile et le serveur NIVA sont sécurisées et cryptées par certificat.";
-            this.props.navigation.setOptions({ title: "Niva - Confidentialité" });
-        }
-
-        if (this.props.langue === "109") {
-            this.state.text_confidential_1 = "Ihre Daten sind geschützt.";
-            this.state.text_confidential_2 = "Die zwischen Ihrem Mobiltelefon und dem NIVA-Server ausgetauschten Daten werden durch ein Zertifikat gesichert und verschlüsselt.";
-            this.props.navigation.setOptions({ title: "Niva - Vertraulichkeit" });
-        }
-
-        if (this.props.langue === "134") {
-            this.state.text_confidential_1 = "Tus datos están protegidos.";
-            this.state.text_confidential_2 = "Los datos intercambiados entre su teléfono móvil y el servidor NIVA están protegidos y encriptados por certificado.";
-            this.props.navigation.setOptions({ title: "Niva - Confidencialidad" });
-        }
-
-        if (this.props.langue === "132") {
-            this.state.text_confidential_1 = "Your data is protected.";
-            this.state.text_confidential_2 = "The data exchanged between your mobile phone and the NIVA server is secured and encrypted by certificate.";
-            this.props.navigation.setOptions({ title: "Niva - Confidentiality" });
-        }
-
-        if (this.props.langue === "127") {
-            this.state.text_confidential_1 = "I tuoi dati sono protetti.";
-            this.state.text_confidential_2 = "I dati scambiati tra il tuo telefono cellulare e il server NIVA sono protetti e crittografati da certificato.";
-            this.props.navigation.setOptions({ title: "Niva - Riservatezza" });
-        }
-
-        if (this.props.langue === "135") {
-            this.state.text_confidential_1 = "Uw gegevens zijn beschermd.";
-            this.state.text_confidential_2 = "De gegevens die tussen uw mobiele telefoon en de NIVA-server worden uitgewisseld, zijn beveiligd en versleuteld met een certificaat.";
-            this.props.navigation.setOptions({ title: "Niva - Vertrouwelijkheid" });
-        }
+    UNSAFE_componentWillMount() {
+        this.props.navigation.setOptions({ title: "Niva - " + traduction("TITLE_CONFIDENTIAL", this.props.langue) });
     }
 
     render() {
@@ -63,8 +28,8 @@ class Confidential extends React.Component {
                 <View style={styles.container_body}>
                     <Animatable.View animation="bounceIn" delay={300}>
                         <TouchableOpacity style={styles.text_body}>
-                            <Text style={styles.text_confidential}>{this.state.text_confidential_1}</Text>
-                            <Text style={styles.text_confidential}>{this.state.text_confidential_2}</Text>
+                            <Text style={styles.text_confidential}>{traduction("CONFIDENTIAL_1", this.props.langue)}</Text>
+                            <Text style={styles.text_confidential}>{traduction("CONFIDENTIAL_2", this.props.langue)}</Text>
                         </TouchableOpacity>
                     </Animatable.View>
                 </View>

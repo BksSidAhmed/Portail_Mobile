@@ -10,6 +10,7 @@ import { langueAction } from "../redux/actions/langueAction";
 import { Button, Input, Overlay } from "react-native-elements";
 import { Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
+import { traduction } from "../locale/local";
 class SignIn extends React.Component {
     constructor(props) {
         super(props);
@@ -21,17 +22,7 @@ class SignIn extends React.Component {
             loader_button_send_connection: false,
             disable_button_send_lost_password: false,
             disable_buttons_send_connection: false,
-            text_input_email: "Email",
-            text_input_password: "Mot de passe",
-            text_bouton_connexion: "Connexion",
-            text_modal_button_send: "Envoyer",
-            text_modal_button_cancel: "Annuler",
-            text_modal_button_close: "Fermer",
-            text_bouton_lost_password: "Mot de passe oublié ?",
-            text_modal_error_credentials: "Le nom d'utilisateur et/ou le mot de passe est incorrect.",
-            text_modal_lost_password: "Entrez votre email. Un lien vous permettant de renouveler votre mot de passe vous sera envoyé.",
-            text_modal_no_internet_connection: "Il semblerait que vous n'ayez pas d'accès à internet. Vous pourrez réessayer lorsque vous aurez à nouveau un accès.",
-            text_modal_error_unknown: "Il semblerait y avoir un problème avec le serveur distant. Veuillez réessayer plus tard.",
+            langue: "100",
             error_input_lost_password: "",
             error_input_password: "",
             error_input_email: "",
@@ -58,79 +49,19 @@ class SignIn extends React.Component {
         });
 
         if (locale === "de_DE") {
-            this.setState({
-                text_input_email: "Email",
-                text_input_password: "Passwort",
-                text_bouton_connexion: "Einloggen",
-                text_bouton_lost_password: "Passwort vergessen ?",
-                text_modal_button_send: "Senden",
-                text_modal_button_cancel: "Abbrechen",
-                text_modal_button_close: "Schließen",
-                text_modal_error_credentials: "Der Benutzername und / oder das Passwort sind falsch.",
-                text_modal_lost_password: "Geben sie ihre E-Mail Adresse ein. Ein Link, über den Sie Ihr Passwort erneuern können, wird an Sie gesendet.",
-                text_modal_no_internet_connection: "Es sieht so aus, als hätten Sie keinen Internetzugang. Sie können es erneut versuchen, wenn Sie erneut Zugriff haben.",
-                text_modal_error_unknown: "Es scheint ein Problem mit dem Remote-Server zu geben. Bitte versuchen Sie es später noch einmal.",
-            });
+            this.setState({ langue: "109" });
         }
         if (locale === "es_ES") {
-            this.setState({
-                text_input_email: "Correo electrónico",
-                text_input_password: "Contraseña",
-                text_bouton_connexion: "Iniciar sesión",
-                text_bouton_lost_password: "Contraseña olvidada ?",
-                text_modal_button_send: "Enviar",
-                text_modal_button_cancel: "Anular",
-                text_modal_button_close: "Cerrar",
-                text_modal_error_credentials: "El nombre de usuario y / o la contraseña son incorrectos.",
-                text_modal_lost_password: "Introduce tu correo electrónico. Se le enviará un enlace que le permitirá renovar su contraseña.",
-                text_modal_no_internet_connection: "Parece que no tienes acceso a Internet. Puede intentarlo de nuevo cuando tenga acceso de nuevo.",
-                text_modal_error_unknown: "Parece haber un problema con el servidor remoto. Por favor, inténtelo de nuevo más tarde.",
-            });
+            this.setState({ langue: "134" });
         }
-        if (locale === "en_GB") {
-            this.setState({
-                text_input_email: "Email",
-                text_input_password: "Password",
-                text_bouton_connexion: "Login",
-                text_bouton_lost_password: "Lost password ?",
-                text_modal_button_send: "Send",
-                text_modal_button_cancel: "Cancel",
-                text_modal_button_close: "Close",
-                text_modal_error_credentials: "The username and / or password is incorrect.",
-                text_modal_lost_password: "Enter your e-mail. A link allowing you to renew your password will be sent to you.",
-                text_modal_no_internet_connection: "It looks like you don't have internet access. You can try again when you have access again.",
-                text_modal_error_unknown: "There appears to be a problem with the remote server. Please try again later.",
-            });
+        if (locale === "en_GB" || locale === "en_US") {
+            this.setState({ langue: "132" });
         }
         if (locale === "it_IT") {
-            this.setState({
-                text_input_email: "E-mail",
-                text_input_password: "Parola d'ordine",
-                text_bouton_connexion: "Accedi",
-                text_bouton_lost_password: "Password dimenticata ?",
-                text_modal_button_send: "Mandare",
-                text_modal_button_cancel: "Cancellare",
-                text_modal_button_close: "Chiudere",
-                text_modal_error_credentials: "Il nome utente e / o la password non sono corretti.",
-                text_modal_lost_password: "Inserisci il tuo indirizzo email. Ti verrà inviato un collegamento che ti consentirà di rinnovare la password.",
-                text_modal_no_internet_connection: "Sembra che tu non abbia accesso a Internet. Puoi riprovare quando avrai di nuovo accesso.",
-                text_modal_error_unknown: "Sembra che ci sia un problema con il server remoto. Per favore riprova più tardi.",
-            });
+            this.setState({ langue: "127" });
         }
         if (locale === "nl_NL") {
-            this.setState({
-                text_input_email: "E-mail",
-                text_input_password: "Wachtwoord",
-                text_bouton_connexion: "Inloggen",
-                text_bouton_lost_password: "Vergeten wachtwoord ?",
-                text_modal_button_send: "Sturen",
-                text_modal_button_cancel: "Annuleren",
-                text_modal_button_close: "Sluiten",
-                text_modal_error_credentials: "De gebruikersnaam en / of het wachtwoord is onjuist.",
-                text_modal_lost_password: "Voer uw e-mailadres in. U ontvangt een link waarmee u uw wachtwoord kunt vernieuwen.",
-                text_modal_no_internet_connection: "Het lijkt erop dat u geen internettoegang heeft. U kunt het opnieuw proberen als u weer toegang heeft.",
-                text_modal_error_unknown: "Er lijkt een probleem te zijn met de externe server. Probeer het later nog eens.",
-            });
+            this.setState({ langue: "135" });
         }
     };
 
@@ -139,7 +70,7 @@ class SignIn extends React.Component {
         if (text !== "") {
             this.setState({ error_input_email: "" });
         } else {
-            this.setState({ error_input_email: "Veuillez enter votre mail" });
+            this.setState({ error_input_email: traduction("ERROR_INPUT_EMAIL", this.state.langue) });
         }
     };
 
@@ -148,7 +79,7 @@ class SignIn extends React.Component {
         if (text !== "") {
             this.setState({ error_input_lost_password: "" });
         } else {
-            this.setState({ error_input_lost_password: "Veuillez renseigner un mail" });
+            this.setState({ error_input_lost_password: traduction("ERROR_INPUT_EMAIL", this.state.langue) });
         }
     };
 
@@ -157,7 +88,7 @@ class SignIn extends React.Component {
         if (text !== "") {
             this.setState({ error_input_password: "" });
         } else {
-            this.setState({ error_input_password: "Veuillez entrer votre mot de passe" });
+            this.setState({ error_input_password: traduction("ERROR_INPUT_PASSWORD", this.state.langue) });
         }
     };
 
@@ -204,12 +135,12 @@ class SignIn extends React.Component {
                         });
                     } else {
                         this.setState({
-                            error_input_password: "Veuillez entrer votre mot de passe",
+                            error_input_password: traduction("ERROR_INPUT_PASSWORD", this.state.langue),
                         });
                     }
                 } else {
                     this.setState({
-                        error_input_email: "Veuillez entrer votre mail",
+                        error_input_email: traduction("ERROR_INPUT_EMAIL", this.state.langue),
                     });
                 }
             }
@@ -237,7 +168,7 @@ class SignIn extends React.Component {
                     });
                 } else {
                     this.setState({
-                        error_input_lost_password: "Veuillez renseigner un mail",
+                        error_input_lost_password: traduction("ERROR_INPUT_EMAIL", this.state.langue),
                     });
                 }
             }
@@ -269,9 +200,9 @@ class SignIn extends React.Component {
         if (selector === "error-credentials") {
             return (
                 <View style={styles.view_overlay}>
-                    <Text style={styles.text_overlay}>{this.state.text_modal_error_credentials}</Text>
+                    <Text style={styles.text_overlay}>{traduction("ERROR_CREDENTIALS", this.state.langue)}</Text>
                     <View style={styles.view_button_overlay}>
-                        <Button buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("error-credentials")} />
+                        <Button buttonStyle={styles.button_overlay_refuse} title={traduction("CLOSE", this.state.langue)} onPress={() => this._toggleOverlay("error-credentials")} />
                     </View>
                 </View>
             );
@@ -280,9 +211,9 @@ class SignIn extends React.Component {
         if (selector === "error-unknown") {
             return (
                 <View style={styles.view_overlay}>
-                    <Text style={styles.text_overlay}>{this.state.text_modal_error_unknown}</Text>
+                    <Text style={styles.text_overlay}>{traduction("ERROR_UNKNOWN", this.state.langue)}</Text>
                     <View style={styles.view_button_overlay}>
-                        <Button buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("error-unknown")} />
+                        <Button buttonStyle={styles.button_overlay_refuse} title={traduction("CLOSE", this.state.langue)} onPress={() => this._toggleOverlay("error-unknown")} />
                     </View>
                 </View>
             );
@@ -292,9 +223,9 @@ class SignIn extends React.Component {
             return (
                 <View style={styles.view_overlay}>
                     <View>
-                        <Text style={styles.text_overlay}>{this.state.text_modal_lost_password}</Text>
+                        <Text style={styles.text_overlay}>{traduction("TEXT_LOST_PASSWORD", this.state.langue)}</Text>
                         <Input
-                            placeholder={this.state.text_input_email}
+                            placeholder={traduction("INPUT_EMAIL", this.state.langue)}
                             rightIcon={{ type: "font-awesome", name: "envelope" }}
                             errorMessage={this.state.error_input_lost_password}
                             style={styles.text_input}
@@ -307,7 +238,7 @@ class SignIn extends React.Component {
                         <Button
                             buttonStyle={styles.button_overlay_accept}
                             containerStyle={styles.container_button_overlay_accept}
-                            title={this.state.text_modal_button_send}
+                            title={traduction("SEND", this.state.langue)}
                             disabled={this.state.disable_button_send_lost_password}
                             loading={this.state.loader_button_send_lost_password}
                             loadingProps={styles.loader_lost_password}
@@ -316,7 +247,7 @@ class SignIn extends React.Component {
                         <Button
                             buttonStyle={styles.button_overlay_refuse}
                             containerStyle={styles.container_button_overlay_accept}
-                            title={this.state.text_modal_button_cancel}
+                            title={traduction("CANCEL", this.state.langue)}
                             disabled={this.state.disable_button_send_lost_password}
                             onPress={() => this._toggleOverlay("lost-password")}
                         />
@@ -330,7 +261,7 @@ class SignIn extends React.Component {
                 <View style={styles.view_overlay}>
                     <Text style={styles.text_overlay}>{this.state.response_lost_password}</Text>
                     <View style={styles.view_button_overlay}>
-                        <Button buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("response-lost-password")} />
+                        <Button buttonStyle={styles.button_overlay_refuse} title={traduction("CLOSE", this.state.langue)} onPress={() => this._toggleOverlay("response-lost-password")} />
                     </View>
                 </View>
             );
@@ -339,9 +270,9 @@ class SignIn extends React.Component {
         if (selector === "no-internet-connection") {
             return (
                 <View style={styles.view_overlay}>
-                    <Text style={styles.text_overlay}>{this.state.text_modal_no_internet_connection}</Text>
+                    <Text style={styles.text_overlay}>{traduction("NO_INTERNET_CONNECTION", this.state.langue)}</Text>
                     <View style={styles.view_button_overlay}>
-                        <Button buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("no-internet-connection")} />
+                        <Button buttonStyle={styles.button_overlay_refuse} title={traduction("CLOSE", this.state.langue)} onPress={() => this._toggleOverlay("no-internet-connection")} />
                     </View>
                 </View>
             );
@@ -362,7 +293,7 @@ class SignIn extends React.Component {
                         <Animatable.View animation="fadeInUp">
                             <View style={styles.view_input}>
                                 <Input
-                                    placeholder={this.state.text_input_email}
+                                    placeholder={traduction("INPUT_EMAIL", this.state.langue)}
                                     rightIcon={{ type: "font-awesome", name: "envelope" }}
                                     errorMessage={this.state.error_input_email}
                                     style={styles.text_input}
@@ -371,7 +302,7 @@ class SignIn extends React.Component {
                                     onChangeText={(text) => this.editEmail(text)}
                                 />
                                 <Input
-                                    placeholder={this.state.text_input_password}
+                                    placeholder={traduction("INPUT_PASSWORD", this.state.langue)}
                                     rightIcon={{ type: "font-awesome", name: "lock" }}
                                     errorMessage={this.state.error_input_password}
                                     style={styles.text_input}
@@ -384,14 +315,20 @@ class SignIn extends React.Component {
                                 <Button
                                     containerStyle={styles.container_button}
                                     buttonStyle={styles.button_style}
-                                    title={this.state.text_bouton_connexion}
+                                    title={traduction("CONNECTION", this.state.langue)}
                                     titleStyle={styles.text_button}
                                     disabled={this.state.disable_buttons_send_connection}
                                     loading={this.state.loader_button_send_connection}
                                     loadingProps={styles.loader_connection}
                                     onPress={() => this._sendRequest("connection")}
                                 />
-                                <Button containerStyle={styles.container_button} buttonStyle={styles.button_style} title={this.state.text_bouton_lost_password} titleStyle={styles.text_button} onPress={() => this._toggleOverlay("lost-password")} />
+                                <Button
+                                    containerStyle={styles.container_button}
+                                    buttonStyle={styles.button_style}
+                                    title={traduction("LOST_PASSWORD", this.state.langue)}
+                                    titleStyle={styles.text_button}
+                                    onPress={() => this._toggleOverlay("lost-password")}
+                                />
                             </View>
                         </Animatable.View>
                     </ScrollView>

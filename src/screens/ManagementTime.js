@@ -20,6 +20,7 @@ import { getDistance } from "geolib";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Collapse, CollapseHeader, CollapseBody } from "accordion-collapse-react-native";
 import NetInfo from "@react-native-community/netinfo";
+import { traduction } from "../locale/local";
 
 class ManagementTime extends React.Component {
     constructor(props) {
@@ -55,32 +56,7 @@ class ManagementTime extends React.Component {
             mouvements_en_attente: false,
             mouvements: null,
             disable_bouton_mouvements: true,
-            text_welcome: "Bonjour, ",
-            text_modal_no_internet_connection: "Il semblerait que vous n'ayez pas d'accès à internet. Vous pourrez réessayer lorsque vous aurez à nouveau un accès.",
-            text_modal_button_close: "Fermer",
-            text_modal_button_cancel: "Annuler",
-            text_modal_button_validate: "Valider",
-            text_modal_date: "Date",
-            text_modal_heure: "Heure",
-            text_modal_confirmation: "Confirmation ?",
-            text_modal_error_unknown: "Il semblerait y avoir un problème avec le serveur distant. Veuillez réessayer plus tard.",
-            text_button_error_no_internet_connection: "Aucune connexion internet.\nAppuyer pour rafraichir.",
-            text_button_error_unknown: "Erreur du serveur distant.\nAppuyer pour rafraichir.",
             text_error_network: "",
-            text_title_mouvement_envoi: "Envoi des mouvements en attente en cours. Merci de bien vouloir patienter.",
-            text_debut_list_mouvement_envoi: "Mouvement du",
-            text_milieu_list_mouvement_envoi: "à",
-            text_debut_etat_mouvement_envoi: "Envoi du mouvement ",
-            text_milieu_etat_succed_mouvement_envoi: " réussi",
-            text_milieu_etat_error_mouvement_envoi: " echoué",
-            text_start_etat_mouvement_envoi: "Début de la séquence d'envoi",
-            text_title_response_success: "Transaction validé",
-            text_title_response_error: "Erreur",
-            text_days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
-            text_months: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-            text_title_erreur_serveur: "Erreur serveur",
-            text_erreur_serveur: "Serveur actuellement indisponible.\nLe mouvement a été enregistré dans votre mobile.",
-            text_serveur_indisponible: "Serveur actuellement indisponible.",
             text_mouvement: "",
             expanded_0: false,
             expanded_1: false,
@@ -114,164 +90,7 @@ class ManagementTime extends React.Component {
         });
         this._startClock();
 
-        if (this.props.langue === "100") {
-            this.props.navigation.setOptions({ title: "Niva - Gestion du temps" });
-        }
-
-        if (this.props.langue === "109") {
-            this.props.navigation.setOptions({ title: "Niva - Zeiteinteilung" });
-            this.setState({
-                text_welcome: "Hallo, ",
-                text_modal_no_internet_connection: "Es sieht so aus, als hätten Sie keinen Internetzugang. Sie können es erneut versuchen, wenn Sie erneut Zugriff haben.",
-                text_modal_button_close: "Schließen",
-                text_modal_button_cancel: "Abbrechen",
-                text_modal_button_validate: "Bestätigen",
-                text_modal_date: "Datiert",
-                text_modal_heure: "Stunde",
-                text_modal_confirmation: "Bestätigung ?",
-                text_modal_error_unknown: "Es scheint ein Problem mit dem Remote-Server zu geben. Bitte versuchen Sie es später noch einmal.",
-                text_button_error_no_internet_connection: "Keine Internetverbindung.\nDrücken Sie zum Aktualisieren.",
-                text_button_error_unknown: "Remote-Server-Fehler.\nDrücken Sie zum Aktualisieren.",
-                text_title_mouvement_envoi: "Senden anstehender laufender Bewegungen. Vielen Dank für Ihre Geduld.",
-                text_debut_list_mouvement_envoi: "Bewegung von",
-                text_milieu_list_mouvement_envoi: "beim",
-                text_debut_etat_mouvement_envoi: "Bewegung senden ",
-                text_milieu_etat_succed_mouvement_envoi: " Erfolg",
-                text_milieu_etat_error_mouvement_envoi: " gescheitert",
-                text_start_etat_mouvement_envoi: "Start der Sendesequenz",
-                text_title_response_success: "Validierte Transaktion",
-                text_title_response_error: "Fehler",
-                text_days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
-                text_months: ["Januar", "Februar", "März", "April", "Kann", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
-                text_title_erreur_serveur: "Serverfehler",
-                text_erreur_serveur: "Server derzeit nicht verfügbar. Die Bewegung wurde auf Ihrem Handy gespeichert.",
-                text_serveur_indisponible: "Server derzeit nicht verfügbar.",
-            });
-        }
-
-        if (this.props.langue === "134") {
-            this.props.navigation.setOptions({ title: "Niva - Gestión del tiempo" });
-            this.setState({
-                text_welcome: "Buenos dias, ",
-                text_modal_no_internet_connection: "Parece que no tienes acceso a Internet. Puede intentarlo de nuevo cuando tenga acceso de nuevo.",
-                text_modal_button_close: "Cerrar",
-                text_modal_button_cancel: "Anular",
-                text_modal_button_validate: "Validar",
-                text_modal_date: "Con fecha de",
-                text_modal_heure: "Hora",
-                text_modal_confirmation: "¿Confirmación?",
-                text_modal_error_unknown: "Parece haber un problema con el servidor remoto. Por favor, inténtelo de nuevo más tarde.",
-                text_button_error_no_internet_connection: "Sin conexión a Internet.\nPresione para actualizar.",
-                text_button_error_unknown: "Error del servidor remoto.\nPresione para actualizar.",
-                text_title_mouvement_envoi: "Envío de movimientos pendientes en curso. Gracias por su paciencia.",
-                text_debut_list_mouvement_envoi: "Movimiento de",
-                text_milieu_list_mouvement_envoi: "a",
-                text_debut_etat_mouvement_envoi: "Enviando el movimiento ",
-                text_milieu_etat_succed_mouvement_envoi: " éxito",
-                text_milieu_etat_error_mouvement_envoi: " ha fallado",
-                text_start_etat_mouvement_envoi: "Inicio de la secuencia de envío",
-                text_title_response_success: "Transacción validada",
-                text_title_response_error: "Error",
-                text_days: ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
-                text_months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-                text_title_erreur_serveur: "Error del Servidor",
-                text_erreur_serveur: "Servidor actualmente no disponible. El movimiento se ha guardado en tu móvil.",
-                text_serveur_indisponible: "Servidor actualmente no disponible.",
-            });
-        }
-
-        if (this.props.langue === "132") {
-            this.props.navigation.setOptions({ title: "Niva - Time management" });
-            this.setState({
-                text_welcome: "Hello, ",
-                text_modal_no_internet_connection: "It looks like you don't have internet access. You can try again when you have access again.",
-                text_modal_button_close: "Close",
-                text_modal_button_cancel: "Cancel",
-                text_modal_button_validate: "Validate",
-                text_modal_date: "Date",
-                text_modal_heure: "Hour",
-                text_modal_confirmation: "Confirmation ?",
-                text_modal_error_unknown: "There appears to be a problem with the remote server. Please try again later.",
-                text_button_error_no_internet_connection: "No internet connection.\nPress to refresh.",
-                text_button_error_unknown: "Remote server error.\nPress to refresh.",
-                text_title_mouvement_envoi: "Sending pending movements in progress. Thank you for your patience.",
-                text_debut_list_mouvement_envoi: "Movement of",
-                text_milieu_list_mouvement_envoi: "at",
-                text_debut_etat_mouvement_envoi: "Sending the movement ",
-                text_milieu_etat_succed_mouvement_envoi: " success",
-                text_milieu_etat_error_mouvement_envoi: " failed",
-                text_start_etat_mouvement_envoi: "Start of the sending sequence",
-                text_title_response_success: "Validated transaction",
-                text_title_response_error: "Mistake",
-                text_days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                text_months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                text_title_erreur_serveur: "Server Error",
-                text_erreur_serveur: "Server currently unavailable. The movement has been saved to your mobile.",
-                text_serveur_indisponible: "Server currently unavailable.",
-            });
-        }
-
-        if (this.props.langue === "127") {
-            this.props.navigation.setOptions({ title: "Niva - Gestione del tempo" });
-            this.setState({
-                text_welcome: "Buongiorno, ",
-                text_modal_no_internet_connection: "Sembra che tu non abbia accesso a Internet. Puoi riprovare quando avrai di nuovo accesso.",
-                text_modal_button_close: "Chiudere",
-                text_modal_button_cancel: "Cancellare",
-                text_modal_button_validate: "Convalidare",
-                text_modal_date: "Datato",
-                text_modal_heure: "Ora",
-                text_modal_confirmation: "Conferma ?",
-                text_modal_error_unknown: "Sembra che ci sia un problema con il server remoto. Per favore riprova più tardi.",
-                text_button_error_no_internet_connection: "Nessuna connessione internet.\nPremere per aggiornare.",
-                text_button_error_unknown: "Errore del server remoto.\nPremere per aggiornare.",
-                text_title_mouvement_envoi: "Invio movimenti in sospeso in corso. Grazie per la vostra pazienza.",
-                text_debut_list_mouvement_envoi: "Movimento di",
-                text_milieu_list_mouvement_envoi: "a",
-                text_debut_etat_mouvement_envoi: "Invio del movimento ",
-                text_milieu_etat_succed_mouvement_envoi: " successo",
-                text_milieu_etat_error_mouvement_envoi: " fallito",
-                text_start_etat_mouvement_envoi: "Inizio della sequenza di invio",
-                text_title_response_success: "Transazione convalidata",
-                text_title_response_error: "Sbaglio",
-                text_days: ["Lunedi", "MARTEDi̇̀", "Mercoledi̇̀", "Giovedi", "Venerdi̇̀", "Sabato", "Domenica"],
-                text_months: ["Gennaio", "Febbraio", "Marzo", "Aaprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
-                text_title_erreur_serveur: "Errore del server",
-                text_erreur_serveur: "Server attualmente non disponibile. Il movimento è stato salvato sul tuo cellulare.",
-                text_serveur_indisponible: "Server attualmente non disponibile.",
-            });
-        }
-
-        if (this.props.langue === "135") {
-            this.props.navigation.setOptions({ title: "Niva - Tijdsbeheer" });
-            this.setState({
-                text_welcome: "Hallo, ",
-                text_modal_no_internet_connection: "Het lijkt erop dat u geen internettoegang heeft. U kunt het opnieuw proberen als u weer toegang heeft.",
-                text_modal_button_close: "Sluiten",
-                text_modal_button_cancel: "Annuleren",
-                text_modal_button_validate: "Bevestigen",
-                text_modal_date: "Gedateerd",
-                text_modal_heure: "Uur",
-                text_modal_confirmation: "Bevestiging ?",
-                text_modal_error_unknown: "Er lijkt een probleem te zijn met de externe server. Probeer het later nog eens.",
-                text_button_error_no_internet_connection: "Geen internet verbinding.\nDruk op om te vernieuwen.",
-                text_button_error_unknown: "Fout met externe server.\nDruk op om te vernieuwen.",
-                text_title_mouvement_envoi: "Bezig met verzenden van lopende bewegingen. Bedankt voor uw geduld.",
-                text_debut_list_mouvement_envoi: "Beweging van",
-                text_milieu_list_mouvement_envoi: "Bij",
-                text_debut_etat_mouvement_envoi: "De beweging verzenden ",
-                text_milieu_etat_succed_mouvement_envoi: " succes",
-                text_milieu_etat_error_mouvement_envoi: " mislukt",
-                text_start_etat_mouvement_envoi: "Start van de verzendprocedure",
-                text_title_response_success: "Gevalideerde transactie",
-                text_title_response_error: "Vergissing",
-                text_days: ["Maandag", "Dinsdag", "Woensdag", "Donerdag", "Vrijdag", "Zaterdag", "Zondag"],
-                text_months: ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"],
-                text_title_erreur_serveur: "Serverfout",
-                text_erreur_serveur: "Server momenteel niet beschikbaar. De beweging is opgeslagen op uw mobiel.",
-                text_serveur_indisponible: "Server momenteel niet beschikbaar.",
-            });
-        }
+        this.props.navigation.setOptions({ title: "Niva - " + traduction("TITLE_MANAGEMENT_TIME", this.props.langue) });
     }
 
     componentWillUnmount = () => {
@@ -593,10 +412,10 @@ class ManagementTime extends React.Component {
 
     _toggleOverlay = async (selector) => {
         if (selector === "no-internet-connection") {
-            this.setState({ visible_modal_no_internet_connection: !this.state.visible_modal_no_internet_connection, text_error_network: this.state.text_button_error_no_internet_connection });
+            this.setState({ visible_modal_no_internet_connection: !this.state.visible_modal_no_internet_connection, text_error_network: traduction("ERROR_NO_INTERNET_CONNECTION", this.props.langue) });
         }
         if (selector === "error-unknown") {
-            this.setState({ visible_modal_error_unknown: !this.state.visible_modal_error_unknown, text_error_network: this.state.text_button_error_unknown });
+            this.setState({ visible_modal_error_unknown: !this.state.visible_modal_error_unknown, text_error_network: traduction("BUTTON_ERROR_UNKNOWN", this.props.langue) });
         }
     };
 
@@ -641,7 +460,7 @@ class ManagementTime extends React.Component {
 
         this.setState({
             mouvements: await this._getMouvementsEnAttenteByEmail(),
-            text_mouvement: this.state.text_start_etat_mouvement_envoi,
+            text_mouvement: traduction("START_SEQUENCE_STATE_SEND_MOVEMENT", this.props.langue),
             disable_bouton_mouvements: true,
         });
 
@@ -670,7 +489,7 @@ class ManagementTime extends React.Component {
                                 this.state.mouvements[compteur].loadingMouvement = false;
 
                                 this.setState({
-                                    text_mouvement: this.state.text_debut_etat_mouvement_envoi + (compteur + 1) + this.state.text_milieu_etat_succed_mouvement_envoi,
+                                    text_mouvement: traduction("START_STATE_SEND_MOVEMENT", this.props.langue) + (compteur + 1) + traduction("HALF_STATE_SEND_MOVEMENT_SUCCED", this.props.langue),
                                 });
 
                                 compteur_delete++;
@@ -697,7 +516,7 @@ class ManagementTime extends React.Component {
                                 this.state.mouvements[compteur].loadingMouvement = false;
 
                                 this.setState({
-                                    text_mouvement: this.state.text_debut_etat_mouvement_envoi + (compteur + 1) + this.state.text_milieu_etat_error_mouvement_envoi,
+                                    text_mouvement: traduction("START_STATE_SEND_MOVEMENT", this.props.langue) + (compteur + 1) + traduction("HALF_STATE_SEND_MOVEMENT_FAIL", this.props.langue),
                                 });
 
                                 compteur++;
@@ -714,7 +533,7 @@ class ManagementTime extends React.Component {
                             this.state.mouvements[compteur].loadingMouvement = false;
 
                             this.setState({
-                                text_mouvement: this.state.text_debut_etat_mouvement_envoi + (compteur + 1) + this.state.text_milieu_etat_error_mouvement_envoi,
+                                text_mouvement: traduction("START_STATE_SEND_MOVEMENT", this.props.langue) + (compteur + 1) + traduction("HALF_STATE_SEND_MOVEMENT_FAIL", this.props.langue),
                             });
 
                             compteur++;
@@ -734,7 +553,7 @@ class ManagementTime extends React.Component {
                         this.state.mouvements[compteur].loadingMouvement = false;
 
                         this.setState({
-                            text_mouvement: this.state.text_debut_etat_mouvement_envoi + (compteur + 1) + this.state.text_milieu_etat_error_mouvement_envoi,
+                            text_mouvement: traduction("START_STATE_SEND_MOVEMENT", this.props.langue) + (compteur + 1) + traduction("HALF_STATE_SEND_MOVEMENT_FAIL", this.props.langue),
                             disable_bouton_mouvements: false,
                         });
 
@@ -775,8 +594,8 @@ class ManagementTime extends React.Component {
             render_response: true,
             activite: null,
             current_ico: null,
-            current_libelle: this.state.text_title_erreur_serveur,
-            current_text: this.state.text_erreur_serveur,
+            current_libelle: traduction("TITLE_SERVER_ERROR", this.props.langue),
+            current_text: traduction("ERROR_SERVER", this.props.langue),
         });
 
         if (buttonError === "F00" || activite != null) {
@@ -802,7 +621,7 @@ class ManagementTime extends React.Component {
             }
         } else {
             this.setState({
-                current_text: this.state.text_serveur_indisponible,
+                current_text: traduction("SERVER_UNAVAILABLE", this.props.langue),
             });
         }
     };
@@ -1373,7 +1192,7 @@ class ManagementTime extends React.Component {
                     keyExtractor={(item) => item.code}
                 />
                 <View style={styles.container_button_animation}>
-                    <Button onPress={() => this._resetCollapse()} title={this.state.text_modal_button_cancel} buttonStyle={styles.button_cancel_collapse_activite} />
+                    <Button onPress={() => this._resetCollapse()} title={traduction("CANCEL", this.props.langue)} buttonStyle={styles.button_cancel_collapse_activite} />
                 </View>
             </View>
         );
@@ -1381,9 +1200,9 @@ class ManagementTime extends React.Component {
 
     _renderResponse = (visible, libelle, ico, text, button, activite) => {
         if ((button === "F00" || activite === "O" || activite === "F") && ico !== null) {
-            libelle = this.state.text_title_response_success;
+            libelle = traduction("TITLE_RESPONSE_SUCCED", this.props.langue);
         } else if ((button !== "F00" || activite !== "O" || activite !== "F") && ico === null) {
-            libelle = this.state.text_title_response_error;
+            libelle = traduction("TITLE_RESPONSE_ERROR", this.props.langue);
         }
         if (!visible) {
             return null;
@@ -1406,7 +1225,7 @@ class ManagementTime extends React.Component {
                     <Text style={styles.text_body_overlay}>{text}</Text>
                 </View>
                 <View style={styles.container_button_response}>
-                    <Button buttonStyle={styles.button_cancel_collapse} title={this.state.text_modal_button_close} onPress={() => this._refresh("normal")} />
+                    <Button buttonStyle={styles.button_cancel_collapse} title={traduction("CLOSE", this.props.langue)} onPress={() => this._refresh("normal")} />
                 </View>
             </View>
         );
@@ -1419,26 +1238,26 @@ class ManagementTime extends React.Component {
         return (
             <View style={styles.view_collapse}>
                 <View style={styles.view_flex_direction_row_flex}>
-                    <Text style={styles.text_collapse_1}>{this.state.text_modal_date}</Text>
+                    <Text style={styles.text_collapse}>{traduction("DATE", this.props.langue)}</Text>
                     <Text>{this._renderTextClock()}</Text>
                 </View>
                 <View style={styles.view_flex_direction_row_flex}>
-                    <Text style={styles.text_collapse_2}>{this.state.text_modal_heure}</Text>
+                    <Text style={styles.text_collapse}>{traduction("HOUR", this.props.langue)}</Text>
                     <Text>{this.state.time_fixed}</Text>
                 </View>
                 <View style={styles.view_flex_direction_row_flex}>
-                    <Text style={styles.text_collapse_3}>{this.state.text_modal_confirmation}</Text>
+                    <Text style={styles.text_collapse}>{traduction("CONFIRMATION", this.props.langue)}</Text>
                     <View style={styles.view_flow_direction_row}>
                         <Button
                             buttonStyle={styles.button_cancel_collapse}
-                            title={this.state.text_modal_button_cancel}
+                            title={traduction("CANCEL", this.props.langue)}
                             onPress={() => {
                                 this._resetCollapse();
                             }}
                         />
                         <Button
                             buttonStyle={styles.button_validate_collapse}
-                            title={this.state.text_modal_button_validate}
+                            title={traduction("VALIDATE", this.props.langue)}
                             onPress={() => {
                                 this._sendAction(button, libelle, localisation, activites);
                             }}
@@ -1456,7 +1275,7 @@ class ManagementTime extends React.Component {
                     <Animatable.View animation="bounceIn" delay={0} style={styles.container_animation_header_overlay}>
                         <View style={styles.container_title_overlay}>
                             <FontAwesome5 name="arrow-alt-circle-up" color="black" size={50} style={styles.ico_margin_10} />
-                            <Text style={styles.text_title_overlay_mouvement}>{this.state.text_title_mouvement_envoi}</Text>
+                            <Text style={styles.text_title_overlay_mouvement}>{traduction("TITLE_SEND_MOVEMENT", this.props.langue)}</Text>
                         </View>
                     </Animatable.View>
                     <View style={styles.container_global_tiles_overlay}>
@@ -1472,7 +1291,7 @@ class ManagementTime extends React.Component {
                                                 <FontAwesome5 name={item.ico} color={item.colorIco} size={20} style={styles.indicator_padding_horizontal_10} />
                                             )}
                                             <Text style={styles.text_mouvement_overlay}>
-                                                {this.state.text_debut_list_mouvement_envoi} {item.date} {this.state.text_milieu_list_mouvement_envoi} {item.heure}
+                                                {traduction("START_LIST_SEND_MOVEMENT", this.props.langue)} {item.date} {traduction("HALF_LIST_SEND_MOVEMENT", this.props.langue)} {item.heure}
                                             </Text>
                                         </View>
                                     )}
@@ -1484,7 +1303,7 @@ class ManagementTime extends React.Component {
                                 <Text style={styles.text_mouvement_overlay}>{this.state.text_mouvement}</Text>
                             </View>
                         </Animatable.View>
-                        <Button disabled={this.state.disable_bouton_mouvements} buttonStyle={styles.button_overlay_refuse} title={this.state.text_modal_button_close} onPress={() => this.setState({ visible_modal_mouvements_en_attente: false })} />
+                        <Button disabled={this.state.disable_bouton_mouvements} buttonStyle={styles.button_overlay_refuse} title={traduction("CLOSE", this.props.langue)} onPress={() => this.setState({ visible_modal_mouvements_en_attente: false })} />
                     </View>
                 </View>
             </View>
@@ -1499,7 +1318,7 @@ class ManagementTime extends React.Component {
         return (
             <Animatable.View animation="slideInLeft">
                 <Text style={styles.text_welcome}>
-                    {this.state.text_welcome}
+                    {traduction("WELCOME", this.props.langue)}
                     <Text style={styles.text_welcome_name}>
                         {this.props.prenom} {this.props.nom}
                     </Text>
@@ -1517,8 +1336,8 @@ class ManagementTime extends React.Component {
         let day = "";
         let month = "";
         let fullDate = "";
-        let days = this.state.text_days;
-        let months = this.state.text_months;
+        let days = traduction("DAYS", this.props.langue);
+        let months = traduction("MONTHS", this.props.langue);
         if (intDay === "1") {
             day = days[0];
         }
@@ -1598,9 +1417,9 @@ class ManagementTime extends React.Component {
         if (selector === "no-internet-connection") {
             return (
                 <View style={styles.view_overlay}>
-                    <Text style={styles.text_overlay}>{this.state.text_modal_no_internet_connection}</Text>
+                    <Text style={styles.text_overlay}>{traduction("NO_INTERNET_CONNECTION", this.props.langue)}</Text>
                     <View style={styles.view_button_overlay}>
-                        <Button buttonStyle={styles.button_overlay_accept} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("no-internet-connection")} />
+                        <Button buttonStyle={styles.button_overlay_accept} title={traduction("CLOSE", this.props.langue)} onPress={() => this._toggleOverlay("no-internet-connection")} />
                     </View>
                 </View>
             );
@@ -1608,9 +1427,9 @@ class ManagementTime extends React.Component {
         if (selector === "error-unknown") {
             return (
                 <View style={styles.view_overlay}>
-                    <Text style={styles.text_overlay}>{this.state.text_modal_error_unknown}</Text>
+                    <Text style={styles.text_overlay}>{traduction("ERROR_UNKNOWN", this.props.langue)}</Text>
                     <View style={styles.view_button_overlay}>
-                        <Button buttonStyle={styles.button_overlay_accept} title={this.state.text_modal_button_close} onPress={() => this._toggleOverlay("error-unknown")} />
+                        <Button buttonStyle={styles.button_overlay_accept} title={traduction("CLOSE", this.props.langue)} onPress={() => this._toggleOverlay("error-unknown")} />
                     </View>
                 </View>
             );
@@ -1823,20 +1642,9 @@ const styles = StyleSheet.create({
     text_welcome_name: {
         fontWeight: "bold",
     },
-    text_collapse_1: {
+    text_collapse: {
         fontWeight: "bold",
-        marginRight: 70,
-    },
-    text_collapse_2: {
-        fontWeight: "bold",
-        marginRight: 62,
-    },
-    text_collapse_3: {
-        fontWeight: "bold",
-        marginRight: 5,
-    },
-    text_padding_5: {
-        // paddingVertical: 5,
+        width: 100,
     },
     dialog: {
         textAlign: "center",
