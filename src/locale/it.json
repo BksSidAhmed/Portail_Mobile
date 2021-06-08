@@ -30,7 +30,7 @@
     "ERROR_SERVER": "Server attualmente non disponibile. Il movimento è stato salvato sul tuo cellulare.",
     "SERVER_UNAVAILABLE": "Server attualmente non disponibile.",
     "LIST_ABOUT": [
-        { "key": 1, "text": "NIVA® versione V3.0 2021" },
+        { "key": 1, "text": "NIVA® versione V1.0 2021" },
         { "key": 2, "text": "Questa applicazione è stata prodotta da ALPHASYS - Lyon - France." },
         { "key": 3, "text": "NIVA è un marchio registrato di ALPHASYS - Lyon - France." },
         { "key": 4, "text": "Questa applicazione mira a : " },

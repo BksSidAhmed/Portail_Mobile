@@ -30,7 +30,7 @@
     "ERROR_SERVER": "Server derzeit nicht verfügbar. Die Bewegung wurde auf Ihrem Handy gespeichert.",
     "SERVER_UNAVAILABLE": "Server derzeit nicht verfügbar.",
     "LIST_ABOUT": [
-        { "key": 1, "text": "NIVA® fassung V3.0 2021" },
+        { "key": 1, "text": "NIVA® fassung V1.0 2021" },
         { "key": 2, "text": "Diese Anwendung wurde von ALPHASYS erstellt - Lyon - France." },
         { "key": 3, "text": "NIVA ist eine eingetragene Marke von ALPHASYS - Lyon - France." },
         { "key": 4, "text": "Diese Anwendung zielt darauf ab : " },
