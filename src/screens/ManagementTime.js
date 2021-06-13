@@ -587,13 +587,13 @@ class ManagementTime extends React.Component {
         return granted;
     };
 
-    _errorServeur = async (buttonError, lat, long, activite, lieu) => {
+    _errorServeur = async (buttonError, lat, long, activite, lieu, ico) => {
         this.setState({
             loader_list_buttons: false,
             render_loader: false,
             render_response: true,
             activite: null,
-            current_ico: null,
+            current_ico: ico,
             current_libelle: traduction("TITLE_SERVER_ERROR", this.props.langue),
             current_text: traduction("ERROR_SERVER", this.props.langue),
         });
@@ -652,8 +652,7 @@ class ManagementTime extends React.Component {
         let ligne_2 = "";
         let ligne_3 = "";
         let ligne_4 = "";
-        let dataIco = null;
-
+        // let ico_error = false;
         ligne_1 = action.message.ligne_1;
         ligne_2 = action.message.ligne_2;
         ligne_3 = action.message.ligne_3;
@@ -668,11 +667,9 @@ class ManagementTime extends React.Component {
         if (ligne_3 !== "") {
             ligne_3 = ligne_3 + "\n";
         }
-        if (selector === "normal") {
-            if (action.ico !== "") {
-                dataIco = action.ico;
-            }
-        }
+        // if (selector === "error") {
+        //     ico_error = true;
+        // }
 
         this.setState({
             loader_list_buttons: false,
@@ -685,8 +682,8 @@ class ManagementTime extends React.Component {
             statut_3: action.statut3,
             statut_4: action.statut4,
             statut_5: action.statut5,
-            current_ico: dataIco,
-            current_libelle: libelle,
+            current_ico: action.ico,
+            current_libelle: action.libelle,
             current_text: ligne_1 + ligne_2 + ligne_3 + ligne_4,
         });
     };
@@ -730,7 +727,7 @@ class ManagementTime extends React.Component {
                             await this._responseAction("normal", action[1], libelle);
                             await this._scrollToIndex(button);
                         } else {
-                            await this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null);
+                            await this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null, action.ico);
                             await this._scrollToIndex(button);
                         }
                     } else {
@@ -762,7 +759,7 @@ class ManagementTime extends React.Component {
                                         await this._responseAction("normal", action[1], libelle);
                                         await this._scrollToIndex(button);
                                     } else {
-                                        await this._errorServeur(button, this.state.latitude, this.state.longitude, activite, test_geolocalisation.code_lieu);
+                                        await this._errorServeur(button, this.state.latitude, this.state.longitude, activite, test_geolocalisation.code_lieu, action.ico);
                                         await this._scrollToIndex(button);
                                     }
                                 } else {
@@ -778,7 +775,7 @@ class ManagementTime extends React.Component {
                                         await this._responseAction("error", action[1], libelle);
                                         await this._scrollToIndex(button);
                                     } else {
-                                        await this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null);
+                                        await this._errorServeur(button, this.state.latitude, this.state.longitude, activite, null, action.ico);
                                         await this._scrollToIndex(button);
                                     }
                                 } else {
@@ -795,7 +792,7 @@ class ManagementTime extends React.Component {
                                     await this._responseAction("error", action[1], libelle);
                                     await this._scrollToIndex(button);
                                 } else {
-                                    await this._errorServeur(button, null, null, activite, null);
+                                    await this._errorServeur(button, null, null, activite, null, action.ico);
                                     await this._scrollToIndex(button);
                                 }
                             } else {
@@ -812,7 +809,7 @@ class ManagementTime extends React.Component {
                                 await this._responseAction("normal", action[1], libelle);
                                 await this._scrollToIndex(button);
                             } else {
-                                await this._errorServeur(button, null, null, activite, null);
+                                await this._errorServeur(button, null, null, activite, null, action.ico);
                                 await this._scrollToIndex(button);
                             }
                         } else {
@@ -1199,11 +1196,11 @@ class ManagementTime extends React.Component {
     };
 
     _renderResponse = (visible, libelle, ico, text, button, activite) => {
-        if ((button === "F00" || activite === "O" || activite === "F") && ico !== null) {
-            libelle = traduction("TITLE_RESPONSE_SUCCED", this.props.langue);
-        } else if ((button !== "F00" || activite !== "O" || activite !== "F") && ico === null) {
-            libelle = traduction("TITLE_RESPONSE_ERROR", this.props.langue);
-        }
+        // if ((button === "F00" || activite === "O" || activite === "F") && ico !== null) {
+        //     libelle = traduction("TITLE_RESPONSE_SUCCED", this.props.langue);
+        // } else if ((button !== "F00" || activite !== "O" || activite !== "F") && ico === null) {
+        //     libelle = traduction("TITLE_RESPONSE_ERROR", this.props.langue);
+        // }
         if (!visible) {
             return null;
         }
@@ -1213,13 +1210,13 @@ class ManagementTime extends React.Component {
                     <Text style={styles.text_title_overlay}>{libelle}</Text>
                 </View>
                 <View style={styles.container_ico_response}>
-                    {(button === "F00" || activite === "O" || activite === "F") && ico !== null ? (
+                    {/* {(button === "F00" || activite === "O" || activite === "F") && ico !== null ? (
                         <FontAwesome5 name="check-circle" color="#62B554" size={50} />
                     ) : (button !== "F00" || activite !== "O" || activite !== "F") && ico === null ? (
                         <FontAwesome5 name="exclamation-circle" color="#AC6867" size={50} />
-                    ) : (
-                        <Image style={styles.image} source={{ uri: `data:image/png;base64,${ico}` }} />
-                    )}
+                    ) : ( */}
+                    <Image style={styles.image} source={{ uri: `data:image/png;base64,${ico}` }} />
+                    {/* )} */}
                 </View>
                 <View style={styles.container_text_response}>
                     <Text style={styles.text_body_overlay}>{text}</Text>
