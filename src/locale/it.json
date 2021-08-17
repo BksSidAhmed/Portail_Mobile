@@ -24,7 +24,7 @@
     "START_SEQUENCE_STATE_SEND_MOVEMENT": "Inizio della sequenza di invio",
     "TITLE_RESPONSE_SUCCED": "Transazione convalidata",
     "TITLE_RESPONSE_ERROR": "Sbaglio",
-    "DAYS": ["Lunedi", "MARTEDi̇̀", "Mercoledi̇̀", "Giovedi", "Venerdi̇̀", "Sabato", "Domenica"],
+    "DAYS": ["Lunedi", "Martedi̇̀", "Mercoledi̇̀", "Giovedi", "Venerdi̇̀", "Sabato", "Domenica"],
     "MONTHS": ["Gennaio", "Febbraio", "Marzo", "Aaprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
     "TITLE_SERVER_ERROR": "Errore del server",
     "ERROR_SERVER": "Server attualmente non disponibile. Il movimento è stato salvato sul tuo cellulare.",

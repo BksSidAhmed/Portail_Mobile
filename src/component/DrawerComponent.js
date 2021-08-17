@@ -40,6 +40,10 @@ class DrawerComponent extends React.Component {
             list_item = [{ text: "Tijdsbeheer" }, { text: "Vertrouwelijkheid" }, { text: "Over" }, { text: "Uitloggen" }];
         }
 
+        if (this.props.langue === "139") {
+            list_item = [{ text: "Gerenciamento de tempo" }, { text: "Confidencialidade" }, { text: "Em relação a" }, { text: "Sair" }];
+        }
+
         const Initialnom = this.props.nom.substr(0, 1);
         const Initialprenom = this.props.prenom.substr(0, 1);
 

@@ -4,6 +4,7 @@ import es from "./es.json";
 import en from "./en.json";
 import it from "./it.json";
 import nl from "./nl.json";
+import pt from "./pt.json";
 
 const lang = {
     fr,
@@ -12,6 +13,7 @@ const lang = {
     en,
     it,
     nl,
+    pt,
 };
 
 export const setAppLocale = (codeLangue) => {
@@ -30,6 +32,9 @@ export const setAppLocale = (codeLangue) => {
     }
     if (codeLangue === "135") {
         trad = "nl";
+    }
+    if (codeLangue === "139") {
+        trad = "pt";
     }
     return trad;
 };
